@@ -42,8 +42,10 @@ body {
   justify-content: space-between;
   align-items: center;
   padding: 1.5rem 4rem;
-  background: transparent;
-  position: absolute; /* Let it sit over the hero gradient */
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  position: sticky;
+  /* Make navbar sticky */
   width: 100%;
   box-sizing: border-box;
   top: 0;
@@ -122,6 +124,7 @@ body {
   padding-inline: 2.5rem;
   border: none;
   text-decoration: none;
+  box-sizing: border-box;
 }
 
 .le-button-primary {
@@ -158,5 +161,303 @@ body {
 @media (max-width: 1024px) {
   .navbar {
     padding: 1rem 2rem;
+  }
+}
+
+/* Responsive Home Page Classes */
+
+/* General Utilities */
+.text-gradient {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Feature List */
+.feature-list {
+  list-style: none;
+  padding: 0;
+  margin: 1.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 500;
+}
+
+.feature-icon-wrapper {
+  min-width: 24px;
+  height: 24px;
+  background: rgba(37, 99, 235, 0.1);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #60a5fa;
+}
+
+.feature-icon-wrapper.dark {
+  background: rgba(59, 130, 246, 0.2);
+}
+
+/* Visual Container */
+.visual-container {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  border-radius: 2rem;
+  overflow: hidden;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.3s ease;
+}
+
+.visual-container:hover {
+  transform: scale(1.02);
+}
+
+.visual-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.visual-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.2), transparent);
+  pointer-events: none;
+}
+
+/* Navbar Classes for Navigation Buttons */
+.nav-btn.le-button {
+  height: 2.5rem;
+  padding-inline: 1.5rem;
+  font-size: 0.9rem;
+}
+
+.nav-btn.le-button-outline {
+  border-color: #bfdbfe;
+  color: #3b82f6;
+}
+
+.nav-btn.le-button-outline:hover {
+  background: #eff6ff;
+}
+
+/* Hero Section */
+.home-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 80vh;
+  text-align: center;
+  padding: 2rem 1rem 0;
+  background: radial-gradient(circle at top, #eff6ff 0%, #f8fafc 60%);
+}
+
+.hero-content {
+  max-width: 720px;
+}
+
+.hero-title {
+  font-size: clamp(2.5rem, 6vw, 4vw);
+  font-weight: 900;
+  line-height: 1.1;
+  margin-bottom: 1.25rem;
+  color: var(--text-main);
+  letter-spacing: -0.03em;
+}
+
+.hero-subtitle {
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  color: var(--text-muted);
+  margin-bottom: 2.5rem;
+  line-height: 1.6;
+  max-width: 540px;
+  margin-inline: auto;
+}
+
+.hero-buttons {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2rem;
+}
+
+.hero-image-wrapper {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 2rem;
+  margin-top: 1rem;
+  margin-bottom: -20rem;
+  z-index: 10;
+  position: relative;
+  box-sizing: border-box;
+  margin-inline: auto;
+}
+
+.hero-image-inner {
+  background: white;
+  border-radius: 2.5rem;
+  box-shadow: 0 50px 100px -20px rgba(0, 0, 0, 0.15), 0 30px 60px -30px rgba(0, 0, 0, 0.2);
+  border: 1px solid var(--border);
+  overflow: hidden;
+  aspect-ratio: 16/9;
+  max-height: 600px;
+  position: relative;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+/* Solutions Section */
+.solutions-container {
+  background: linear-gradient(to bottom, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+  color: white;
+  padding-top: 20rem;
+  /* Clears negative margin */
+}
+
+.solution-section {
+  padding: 4rem 2rem 8rem;
+}
+
+.solution-grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 5rem;
+  align-items: center;
+}
+
+.solution-tag {
+  font-weight: 700;
+  font-size: 0.875rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.text-blue {
+  color: #60a5fa;
+}
+
+.text-purple {
+  color: #a855f7;
+}
+
+.solution-title {
+  font-size: clamp(2rem, 5vw, 3rem);
+  font-weight: 900;
+  margin: 1rem 0;
+  color: #f8fafc;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.text-blue-highlight {
+  color: #3b82f6;
+}
+
+.text-purple-highlight {
+  color: #a855f7;
+}
+
+.solution-description {
+  color: #94a3b8;
+  font-size: clamp(1rem, 3vw, 1.25rem);
+  line-height: 1.6;
+  margin-bottom: 2.5rem;
+}
+
+.tutor-join-btn {
+  width: auto;
+  margin-top: 1.5rem;
+  padding-inline: 2.5rem;
+}
+
+.visual-first {
+  order: 1;
+}
+
+.text-second {
+  order: 2;
+}
+
+/* Media Queries for Mobile Responsiveness */
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 1rem;
+    flex-wrap: wrap;
+    /* in case logo and buttons overlap */
+    gap: 1rem;
+  }
+
+  .nav-links {
+    gap: 1rem;
+  }
+
+  .hero-buttons {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .inline-btn {
+    width: 100%;
+  }
+
+  .home-hero {
+    min-height: 60vh;
+  }
+
+  .hero-title {
+    font-size: clamp(2.5rem, 8vw, 3.5rem);
+  }
+
+  .hero-image-wrapper {
+    margin-bottom: -8rem;
+    padding: 0 1rem;
+  }
+
+  .solutions-container {
+    padding-top: 8rem;
+  }
+
+  .solution-section {
+    padding: 3rem 1.5rem 4rem;
+  }
+
+  .solution-grid {
+    grid-template-columns: 1fr;
+    gap: 3rem;
+    /* Reduced gap between text and image */
+  }
+
+  .visual-container {
+    height: 300px;
+    /* Shorter image height on mobile */
+  }
+
+  /* Make image wrap correctly for 'For Tutors' */
+  .visual-first {
+    order: 2;
+  }
+
+  .text-second {
+    order: 1;
   }
 }
