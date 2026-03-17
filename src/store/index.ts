@@ -10,7 +10,7 @@ import {
   REGISTER,
 } from 'redux-persist';
 import storage from 'redux-persist/es/storage'; // defaults to localStorage for web
-import { baseApi } from './api';
+import { baseApi } from '../services/leApi';
 import authReducer from './slices/authSlice';
 
 // Combine all our reducers
