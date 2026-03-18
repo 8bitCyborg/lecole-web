@@ -2,10 +2,40 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
+import { useSignupMutation } from '../../services/leApi/authApi';
+import { useAppDispatch } from '../../store/hooks';
+import { setCredentials } from '../../store/slices/authSlice';
 import LeInput from '../ui/LeInput';
+
+interface SignUpFormValues {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+  password: string;
+}
 
 const SignUpForm: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [signup, { isLoading }] = useSignupMutation();
+
+  const handleSignup = async (values: SignUpFormValues) => {
+    try {
+      const result: any = await signup({
+        email: values.email,
+        password: values.password,
+        phone: values.phone,
+        first_name: values.firstName,
+        last_name: values.lastName,
+      }).unwrap();
+
+      dispatch(setCredentials({ user: result }));
+    } catch (err: any) {
+      console.error('Signup failed:', err);
+      // Error handling could be improved here (e.g., showing a toast)
+    }
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -30,9 +60,7 @@ const SignUpForm: React.FC = () => {
         .oneOf([Yup.ref('password')], 'Passwords must match')
         .required('Please confirm your password'),
     }),
-    onSubmit: (values) => {
-      console.log('Signup values:', values);
-    },
+    onSubmit: async (values) => handleSignup(values),
   });
 
   return (
@@ -102,8 +130,12 @@ const SignUpForm: React.FC = () => {
           {...formik.getFieldProps('confirmPassword')}
         />
 
-        <button type="submit" className="le-button le-button-primary auth-submit-btn">
-          Create Account
+        <button
+          type="submit"
+          className={`le-button le-button-primary auth-submit-btn ${isLoading ? 'loading' : ''}`}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Creating Account...' : 'Create Account'}
         </button>
       </form>
 

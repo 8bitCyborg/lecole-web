@@ -7,20 +7,21 @@ export interface LoginRequest {
 }
 
 export interface SignupRequest extends LoginRequest {
-  name: string;
+  first_name: string;
+  last_name: string;
+  phone: string;
 }
 
 export interface AuthResponse {
   user: User;
   message: string;
-  // Tokens are handled via cookies, so they don't need to be in the response body
 }
 
 export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     login: builder.mutation<AuthResponse, LoginRequest>({
       query: (credentials) => ({
-        url: '/auth/login',
+        url: '/auth/local/signin',
         method: 'POST',
         body: credentials,
       }),
@@ -28,7 +29,7 @@ export const authApi = baseApi.injectEndpoints({
     }),
     signup: builder.mutation<AuthResponse, SignupRequest>({
       query: (userData) => ({
-        url: '/auth/signup',
+        url: '/auth/local/signup',
         method: 'POST',
         body: userData,
       }),

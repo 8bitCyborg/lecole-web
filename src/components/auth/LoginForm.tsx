@@ -4,8 +4,23 @@ import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import LeInput from '../ui/LeInput';
 
+import { useLoginMutation } from '../../services/leApi/authApi';
+import { useAppDispatch } from '../../store/hooks';
+import { setCredentials } from '../../store/slices/authSlice';
+
 const LoginForm: React.FC = () => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const [login, { isLoading }] = useLoginMutation();
+
+  const handleLogin = async (values: any) => {
+    try {
+      const result: any = await login(values).unwrap();
+      dispatch(setCredentials({ user: result }));
+    } catch (error) {
+      console.error('Login failed:', error);
+    }
+  }
 
   const formik = useFormik({
     initialValues: {
@@ -19,9 +34,7 @@ const LoginForm: React.FC = () => {
       password: Yup.string()
         .required('Password is required'),
     }),
-    onSubmit: (values) => {
-      console.log('Login values:', values);
-    },
+    onSubmit: async (values) => handleLogin(values)
   });
 
   return (
@@ -52,8 +65,12 @@ const LoginForm: React.FC = () => {
           {...formik.getFieldProps('password')}
         />
 
-        <button type="submit" className="le-button le-button-primary auth-submit-btn">
-          Sign In
+        <button
+          type="submit"
+          className={`le-button le-button-primary auth-submit-btn ${isLoading ? 'loading' : ''}`}
+          disabled={isLoading}
+        >
+          {isLoading ? 'Signing In...' : 'Sign In'}
         </button>
       </form>
 
