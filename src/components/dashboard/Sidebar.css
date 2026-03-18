@@ -1,13 +1,13 @@
 :root {
   --sidebar-width: 260px;
   --sidebar-collapsed-width: 80px;
-  --sidebar-bg: #1d4ed8;
-  --sidebar-border: rgba(255, 255, 255, 0.15);
-  --sidebar-text: #dbeafe;
+  --sidebar-bg: #172554;
+  --sidebar-border: rgba(255, 255, 255, 0.1);
+  --sidebar-text: #bfdbfe;
   --sidebar-text-active: #ffffff;
-  --sidebar-item-hover: rgba(255, 255, 255, 0.1);
-  --sidebar-item-active: rgba(255, 255, 255, 0.2);
-  --primary: #2563eb;
+  --sidebar-item-hover: rgba(255, 255, 255, 0.05);
+  --sidebar-item-active: rgba(255, 255, 255, 0.15);
+  --primary: #3b82f6;
   --border: #e2e8f0;
   --text-muted: #64748b;
   --text-main: #1e293b;
@@ -36,8 +36,8 @@
   top: 32px;
   width: 24px;
   height: 24px;
-  background: #1d4ed8;
-  border: 1px solid rgba(255, 255, 255, 0.25);
+  background: #172554;
+  border: 1px solid rgba(255, 255, 255, 0.15);
   border-radius: 6px;
   display: flex;
   align-items: center;
