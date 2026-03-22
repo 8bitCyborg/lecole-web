@@ -1,0 +1,78 @@
+.school-form-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 3rem 1rem;
+  width: 100%;
+}
+
+.school-form-card {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 3rem;
+  width: 100%;
+  max-width: 600px;
+  animation: fadeIn 0.4s ease-out;
+}
+
+.school-form-header {
+  margin-bottom: 2.5rem;
+  text-align: center;
+}
+
+.school-form-title {
+  font-size: 2rem;
+  font-weight: 800;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.school-form-subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+}
+
+.school-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+@media (max-width: 640px) {
+  .school-form-container {
+    padding: 1.5rem 0;
+  }
+  
+  .school-form-card {
+    padding: 1.5rem;
+    border-radius: 0;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+.form-error {
+  color: #ef4444;
+  font-size: 0.875rem;
+  text-align: center;
+  background: #fef2f2;
+  padding: 0.75rem;
+  border-radius: 0.5rem;
+  border: 1px solid #fee2e2;
+}
+
+.submit-btn {
+  width: 100%;
+  margin-top: 1rem;
+  height: 3.5rem;
+}

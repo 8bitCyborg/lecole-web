@@ -3,6 +3,7 @@ import Home from '../pages/Home';
 import Dashboard from '../pages/dashboard';
 import Auth from '../pages/auth';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
+import School from '../pages/school';
 
 export const publicRouter = createBrowserRouter([
   {
@@ -33,6 +34,10 @@ export const authRouter = createBrowserRouter([
         element: <Dashboard />,
       },
       {
+        path: 'school',
+        element: <School />,
+      },
+      {
         path: 'courses',
         element: <Dashboard />, // Placeholder for now
       },
@@ -47,7 +52,7 @@ export const authRouter = createBrowserRouter([
       {
         path: 'settings',
         element: <Dashboard />, // Placeholder
-      },
+      }
     ]
   },
   {

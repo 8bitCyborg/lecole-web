@@ -1,0 +1,68 @@
+import React, { useEffect, useState } from "react";
+import SchoolForm from "./components/SchoolForm";
+import SchoolDetailsCard from "./components/SchoolDetailsCard";
+import { useFindMySchoolQuery } from "../../services/leApi/schoolApi";
+import { useDispatch, useSelector } from "react-redux";
+import { setSchool } from "../../store/slices/schoolSlice";
+import type { RootState } from "../../store";
+import './SchoolOverview.css';
+
+const School = () => {
+  const { data: schoolData, isLoading, isError, refetch } = useFindMySchoolQuery();
+  const dispatch = useDispatch();
+  const school = useSelector((state: RootState) => state.school.school);
+  const isLoaded = useSelector((state: RootState) => state.school.isLoaded);
+
+
+  console.log('school', school);
+
+  const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    if (schoolData) {
+      dispatch(setSchool(schoolData));
+    }
+  }, [schoolData, dispatch]);
+
+  if (isLoading && !isLoaded) {
+    return <div className="school-loading">Loading school info...</div>;
+  }
+
+  if (isError && !school) {
+    return <SchoolForm onSuccess={() => refetch()} />;
+  }
+
+  return (
+    <section className="school-overview-section">
+      <div className="school-header-banner">
+        <div className="school-header-content">
+          <h1 className="school-name">{school?.name}</h1>
+          <p className="school-location">{school?.address}, {school?.state}</p>
+          <button
+            className="le-button le-button-outline edit-school-btn"
+            onClick={() => setIsEditing(!isEditing)}
+          >
+            {isEditing ? 'Cancel Edit' : 'Edit School'}
+          </button>
+        </div>
+      </div>
+
+      <div className="school-details-container">
+        {isEditing ? (
+          <SchoolForm
+            initialData={school}
+            isEditMode={true}
+            onSuccess={() => {
+              setIsEditing(false);
+              refetch();
+            }}
+          />
+        ) : (
+          <SchoolDetailsCard school={school} />
+        )}
+      </div>
+    </section>
+  );
+};
+
+export default School;

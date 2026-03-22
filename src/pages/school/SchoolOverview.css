@@ -1,0 +1,137 @@
+.school-overview-section {
+  padding: 2rem 4rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-out;
+}
+
+.school-header-banner {
+  background: linear-gradient(135deg, #0f172a, #1e293b);
+  border-radius: 1.5rem;
+  padding: 3rem;
+  color: white;
+  margin-bottom: 2rem;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.school-header-content {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.school-name {
+  font-size: 2.5rem;
+  font-weight: 800;
+  margin: 0;
+  color: white;
+  letter-spacing: -0.02em;
+}
+
+.school-location {
+  font-size: 1.125rem;
+  color: #94a3b8;
+  margin: 0;
+}
+
+.edit-school-btn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: white;
+}
+
+.edit-school-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.school-details-container {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.school-info-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.school-info-card h3 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  font-size: 1.25rem;
+  color: var(--text-main);
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 1rem;
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 2rem;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.info-label {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.info-value {
+  font-size: 1.125rem;
+  color: var(--text-main);
+  font-weight: 500;
+}
+
+.school-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 50vh;
+  font-size: 1.25rem;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+
+@media (max-width: 768px) {
+  .school-overview-section {
+    padding: 1.5rem;
+  }
+
+  .school-header-banner {
+    padding: 2rem;
+  }
+
+  .school-name {
+    font-size: 2rem;
+  }
+
+  .edit-school-btn {
+    position: static;
+    margin-top: 1rem;
+    width: 100%;
+  }
+
+  .info-grid {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}

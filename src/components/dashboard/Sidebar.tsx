@@ -31,7 +31,7 @@ const Sidebar: React.FC<SidebarProps> = ({
 }) => {
   const navItems = [
     { icon: LayoutDashboard, label: 'Overview', path: '/' },
-    { icon: University, label: 'School', path: '/schools' },
+    { icon: University, label: 'School', path: '/school' },
     { icon: Presentation, label: 'Classes', path: '/classes' },
     { icon: UsersRound, label: 'Teachers', path: '/teachers' },
     { icon: Users, label: 'Students', path: '/students' },
