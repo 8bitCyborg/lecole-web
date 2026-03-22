@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
@@ -12,15 +12,17 @@ const LoginForm: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [login, { isLoading }] = useLoginMutation();
+  const [error, setError] = useState<string | null>(null);
 
   const handleLogin = async (values: any) => {
     try {
       const result: any = await login(values).unwrap();
       dispatch(setCredentials({ user: result }));
-    } catch (error) {
-      console.error('Login failed:', error);
-    }
-  }
+    } catch (error: any) {
+      console.error('Login failed:', error?.data?.message);
+      setError(error?.data?.message || 'Unable to login. Please try again later.')
+    };
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -72,6 +74,8 @@ const LoginForm: React.FC = () => {
         >
           {isLoading ? 'Signing In...' : 'Sign In'}
         </button>
+
+        <p className="auth-error">{error && error}</p>
       </form>
 
       <div className="auth-footer">

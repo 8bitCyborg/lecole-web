@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
@@ -19,6 +19,7 @@ const SignUpForm: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const [signup, { isLoading }] = useSignupMutation();
+  const [error, setError] = useState<string | null>(null);
 
   const handleSignup = async (values: SignUpFormValues) => {
     try {
@@ -31,9 +32,8 @@ const SignUpForm: React.FC = () => {
       }).unwrap();
 
       dispatch(setCredentials({ user: result }));
-    } catch (err: any) {
-      console.error('Signup failed:', err);
-      // Error handling could be improved here (e.g., showing a toast)
+    } catch (error: any) {
+      setError(error?.data?.message || "Unable to signup. Please try again later.");
     }
   }
 
@@ -137,6 +137,8 @@ const SignUpForm: React.FC = () => {
         >
           {isLoading ? 'Creating Account...' : 'Create Account'}
         </button>
+
+        <p className="auth-error">{error && error}</p>
       </form>
 
       <div className="auth-footer">
