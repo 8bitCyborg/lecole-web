@@ -1,11 +1,25 @@
 import React from 'react';
 import type { School } from '../../../store/slices/schoolSlice';
+import {
+  School as SchoolIcon,
+  BookOpen,
+  GraduationCap,
+  Calendar,
+  Layers,
+  Users,
+  User,
+  Quote,
+  Globe,
+  History
+} from 'lucide-react';
 
 interface SchoolDetailsCardProps {
   school: School | null;
 }
 
 const SchoolDetailsCard: React.FC<SchoolDetailsCardProps> = ({ school }) => {
+  if (!school) return null;
+
   const formatValue = (val: string | null | undefined) => {
     if (!val) return 'N/A';
     return val.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
@@ -24,65 +38,69 @@ const SchoolDetailsCard: React.FC<SchoolDetailsCardProps> = ({ school }) => {
     }
   };
 
-  return (
-    <div className="school-details-wrapper">
-      <div className="school-info-card">
-        <h3>Academic Details</h3>
-        <div className="info-grid">
-          <div className="info-item">
-            <span className="info-label">School Type</span>
-            <span className="info-value">{formatValue(school?.type)}</span>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Curriculum</span>
-            <span className="info-value">{formatValue(school?.curriculum)}</span>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Grading System</span>
-            <span className="info-value">{formatValue(school?.grading_system)}</span>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Current Term</span>
-            <span className="info-value">{formatValue(school?.current_term)}</span>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Current Session</span>
-            <span className="info-value">{school?.current_session || 'N/A'}</span>
-          </div>
-        </div>
-      </div>
+  const sections = [
+    {
+      title: 'Academic Framework',
+      items: [
+        { label: 'School Type', value: formatValue(school.type), icon: <SchoolIcon size={24} /> },
+        { label: 'Curriculum', value: formatValue(school.curriculum), icon: <BookOpen size={24} /> },
+        { label: 'Grading System', value: formatValue(school.grading_system), icon: <GraduationCap size={24} /> },
+      ]
+    },
 
-      <div className="school-info-card">
-        <h3>Institutional Profile</h3>
-        <div className="info-grid">
-          <div className="info-item">
-            <span className="info-label">Ownership</span>
-            <span className="info-value">{formatValue(school?.ownership_type)}</span>
+    {
+      title: 'Administration & History',
+      items: [
+        { label: 'Ownership', value: formatValue(school.ownership_type), icon: <Users size={24} /> },
+        { label: 'Proprietor', value: school.proprietor || 'N/A', icon: <User size={24} /> },
+        { label: 'Inception', value: formatDate(school.date_of_inception), icon: <History size={24} /> },
+      ]
+    },
+    {
+      title: 'Institutional Brand',
+      items: [
+        { label: 'School Motto', value: school.motto || 'N/A', icon: <Quote size={24} /> },
+        {
+          label: 'Official Website',
+          value: school.website || 'N/A',
+          icon: <Globe size={24} />,
+          isLink: !!school.website
+        },
+      ]
+    }
+  ];
+
+  return (
+    <div className="school-details-container">
+      {sections.map((section, sIndex) => (
+        <div key={sIndex} className="detail-section">
+          <h3 className="detail-section-title">{section.title}</h3>
+          <div className="le-profile-grid">
+            {section.items.map((item, index) => (
+              <div key={index} className="le-detail-card">
+                <div className="le-card-icon">{item.icon}</div>
+                <div className="le-card-info">
+                  <div className="le-card-label">{item.label}</div>
+                  <div className="le-card-value">
+                    {item.isLink ? (
+                      <a
+                        href={item.value}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="le-card-link"
+                      >
+                        {item.value.replace(/^https?:\/\//, '')}
+                      </a>
+                    ) : (
+                      <span>{item.value}</span>
+                    )}
+                  </div>
+                </div>
+              </div>
+            ))}
           </div>
-          <div className="info-item">
-            <span className="info-label">Proprietor / Owner</span>
-            <span className="info-value">{school?.proprietor || 'N/A'}</span>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Date of Inception</span>
-            <span className="info-value">{formatDate(school?.date_of_inception)}</span>
-          </div>
-          <div className="info-item">
-            <span className="info-label">Motto</span>
-            <span className="info-value italic-motto">{school?.motto ? `"${school.motto}"` : 'N/A'}</span>
-          </div>
-          {school?.website && (
-            <div className="info-item">
-              <span className="info-label">Website</span>
-              <span className="info-value">
-                <a href={school.website} target="_blank" rel="noopener noreferrer" className="school-web-link">
-                  {school.website.replace(/^https?:\/\//, '')}
-                </a>
-              </span>
-            </div>
-          )}
         </div>
-      </div>
+      ))}
     </div>
   );
 };

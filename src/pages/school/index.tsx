@@ -14,6 +14,11 @@ const School = () => {
   const isLoaded = useSelector((state: RootState) => state.school.isLoaded);
 
 
+  const formatValue = (val: string | null | undefined) => {
+    if (!val) return 'N/A';
+    return val.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+  };
+
   console.log('school', school);
 
   const [isEditing, setIsEditing] = useState(false);
@@ -56,6 +61,13 @@ const School = () => {
               <span className="meta-item">{school?.phone}</span>
             )}
           </div>
+
+          <div className="school-header-status">
+            <div className="status-badge">
+              <span className="status-value">{formatValue(school?.current_session) + ', ' + formatValue(school?.current_term)}</span>
+            </div>
+          </div>
+
           <button
             className="le-button le-button-outline edit-school-btn"
             onClick={() => setIsEditing(!isEditing)}

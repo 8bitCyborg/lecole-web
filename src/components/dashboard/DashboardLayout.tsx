@@ -105,7 +105,7 @@ const DashboardLayout: React.FC = () => {
           </div>
         </header>
 
-        <div style={{ padding: '2rem', flex: 1, minHeight: 0 }}>
+        <div style={{ padding: '1rem', flex: 1, minHeight: 0 }}>
           <Outlet />
         </div>
       </main>

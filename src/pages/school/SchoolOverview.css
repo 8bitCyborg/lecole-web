@@ -66,6 +66,37 @@
   color: white;
 }
 
+.school-header-status {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.status-badge {
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.6rem 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  backdrop-filter: blur(8px);
+}
+
+.status-label {
+  font-size: 0.7rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0.1em;
+}
+
+.status-value {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: white;
+}
+
 .info-label-header {
   font-weight: 700;
   text-transform: uppercase;
@@ -98,81 +129,123 @@
   border-color: rgba(255, 255, 255, 0.3);
 }
 
-.school-details-container {
+.detail-section {
+  margin-bottom: 2.5rem;
+}
+
+.detail-section-title {
+  font-size: 0.9rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #1e3a8a;
+  letter-spacing: 0.1em;
+  margin-bottom: 1.25rem;
   display: flex;
-  flex-direction: column;
-  gap: 2rem;
+  align-items: center;
+  gap: 0.75rem;
+  opacity: 0.8;
 }
 
-.school-details-wrapper {
+.detail-section-title::after {
+  content: '';
+  height: 2px;
+  flex: 1;
+  background: linear-gradient(to right, rgba(30, 58, 138, 0.1), transparent);
+}
+
+/* Grid & Cards */
+.le-profile-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
+  margin-top: 2rem;
 }
 
-@media (min-width: 1024px) {
-  .school-details-wrapper {
-    grid-template-columns: 1fr 1fr;
+@media (max-width: 1200px) {
+  .le-profile-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
-.school-info-card {
+@media (max-width: 768px) {
+  .le-profile-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.le-detail-card {
   background: white;
-  border: 1px solid #1e3a8a;
-  border-radius: 1rem;
-  padding: 2rem;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-}
-
-.school-info-card h3 {
-  margin-top: 0;
-  margin-bottom: 1.5rem;
-  font-size: 1.25rem;
+  padding: 1.5rem;
+  border-radius: 1.2rem;
+  border: 1.5px solid #1e3a8a;
+  display: flex;
+  align-items: center;
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: default;
   color: var(--text-main);
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 1rem;
 }
 
-.info-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 2rem;
+.le-detail-card:hover {
+  transform: translateY(-8px);
+  border-color: var(--primary);
+  box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.5);
 }
 
-.info-item {
+.le-card-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: 1.25rem;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1e3a8a;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+  margin-right: 1rem
+}
+
+.le-detail-card:hover .le-card-icon {
+  background: #1e3a8a;
+  color: white;
+  transform: scale(1.1);
+}
+
+.le-card-info {
   display: flex;
   flex-direction: column;
-  gap: 0.25rem;
 }
 
-.info-label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: var(--text-muted);
+.le-card-label {
+  font-size: 0.9rem;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.075em;
+  color: var(--text-muted);
+  font-weight: 600;
 }
 
-.info-value {
-  font-size: 1.125rem;
-  color: var(--text-main);
+.le-card-value {
+  font-size: 1rem;
   font-weight: 500;
+  color: var(--text-main);
+  letter-spacing: -0.01em;
+}
+
+.le-card-link {
+  color: #1e3a8a;
+  text-decoration: none;
+  border-bottom: 2px solid transparent;
+  transition: all 0.2s;
+  word-break: break-all;
+}
+
+.le-card-link:hover {
+  border-bottom-color: #1e3a8a;
 }
 
 .italic-motto {
   font-style: italic;
   color: var(--text-muted);
-}
-
-.school-web-link {
-  color: #2563eb;
-  text-decoration: none;
-  border-bottom: 1px solid transparent;
-  transition: all 0.2s;
-}
-
-.school-web-link:hover {
-  border-bottom-color: #2563eb;
 }
 
 .school-loading {
