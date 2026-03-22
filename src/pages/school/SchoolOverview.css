@@ -6,12 +6,26 @@
 }
 
 .school-header-banner {
-  background: linear-gradient(135deg, #0f172a, #1e293b);
-  border-radius: 1.5rem;
-  padding: 3rem;
+  background: linear-gradient(135deg, #1e3a8a, #000);
+  border-radius: 2rem;
+  padding: 4rem;
   color: white;
-  margin-bottom: 2rem;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  margin-bottom: 1rem;
+  box-shadow: 0 20px 50px -12px rgba(30, 58, 138, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.school-header-banner::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  right: -10%;
+  width: 500px;
+  height: 500px;
+  background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%);
+  border-radius: 50%;
+  pointer-events: none;
 }
 
 .school-header-content {
@@ -23,22 +37,55 @@
 }
 
 .school-name {
-  font-size: 2.5rem;
-  font-weight: 800;
+  font-size: 3rem;
+  font-weight: 900;
   margin: 0;
   color: white;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.school-header-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  margin-top: 1.5rem;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.05rem;
+  color: rgba(255, 255, 255, 0.85);
+  transition: color 0.2s;
+}
+
+.meta-item:hover {
+  color: white;
+}
+
+.info-label-header {
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  color: rgba(255, 255, 255, 0.6);
+  margin-right: 0.5rem;
+  width: 70px;
+  /* Fixed width for alignment */
+  display: inline-block;
 }
 
 .school-location {
-  font-size: 1.125rem;
-  color: #94a3b8;
-  margin: 0;
+  color: #dbeafe;
+  font-weight: 500;
 }
 
 .edit-school-btn {
   position: absolute;
-  top: 0;
+  bottom: 0;
   right: 0;
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(255, 255, 255, 0.2);
@@ -57,9 +104,21 @@
   gap: 2rem;
 }
 
+.school-details-wrapper {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1.5rem;
+}
+
+@media (min-width: 1024px) {
+  .school-details-wrapper {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
 .school-info-card {
   background: white;
-  border: 1px solid var(--border);
+  border: 1px solid #1e3a8a;
   border-radius: 1rem;
   padding: 2rem;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
@@ -100,6 +159,22 @@
   font-weight: 500;
 }
 
+.italic-motto {
+  font-style: italic;
+  color: var(--text-muted);
+}
+
+.school-web-link {
+  color: #2563eb;
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: all 0.2s;
+}
+
+.school-web-link:hover {
+  border-bottom-color: #2563eb;
+}
+
 .school-loading {
   display: flex;
   justify-content: center;
@@ -113,11 +188,11 @@
 
 @media (max-width: 768px) {
   .school-overview-section {
-    padding: 1.5rem;
+    padding: 0rem;
   }
 
   .school-header-banner {
-    padding: 2rem;
+    padding: 2.5rem 1.5rem;
   }
 
   .school-name {

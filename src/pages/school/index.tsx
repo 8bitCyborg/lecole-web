@@ -47,7 +47,15 @@ const School = () => {
       <div className="school-header-banner">
         <div className="school-header-content">
           <h1 className="school-name">{school?.name}</h1>
-          <p className="school-location">{school?.address}, {school?.state}</p>
+          <div className="school-header-meta">
+            <span className="meta-item">{school?.address}, {school?.state}</span>
+            {school?.email && (
+              <span className="meta-item">{school?.email}</span>
+            )}
+            {school?.phone && (
+              <span className="meta-item">{school?.phone}</span>
+            )}
+          </div>
           <button
             className="le-button le-button-outline edit-school-btn"
             onClick={() => setIsEditing(!isEditing)}

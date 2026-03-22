@@ -131,13 +131,12 @@
   height: 3.25rem;
   padding: 0 1rem;
   border-radius: 0.75rem;
-  border: 1px solid rgba(37, 99, 235, 0.2);
+  border: 1.5px solid #3b82f6;
   font-family: inherit;
   font-size: 0.9375rem;
   transition: all 0.2s;
-  background: #f8fafc;
+  background: #fcfdfe;
   color: #000000;
-  /* Ensure text is black and visible */
   width: 100%;
 }
 
@@ -178,8 +177,8 @@
 .phone-input-wrapper {
   display: flex;
   align-items: stretch;
-  background: #f8fafc;
-  border: 1px solid rgba(37, 99, 235, 0.2);
+  background: #fcfdfe;
+  border: 1.5px solid #3b82f6;
   border-radius: 0.75rem;
   overflow: hidden;
   transition: all 0.2s;

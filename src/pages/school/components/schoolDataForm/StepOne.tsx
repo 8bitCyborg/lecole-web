@@ -152,13 +152,15 @@ const StepOne: React.FC<StepOneProps> = ({ onSuccess, initialData, isEditMode = 
 
           {error && <div className="form-error">An error occurred while saving. Please try again.</div>}
 
-          <button
-            type="submit"
-            className="le-button le-button-primary submit-btn"
-            disabled={isLoading || !formik.isValid}
-          >
-            {isLoading ? 'Saving...' : 'Continue'}
-          </button>
+          <div className="form-actions right">
+            <button
+              type="submit"
+              className="le-button le-button-primary form-btn-small"
+              disabled={isLoading || !formik.isValid}
+            >
+              {isLoading ? 'Saving...' : 'Continue'}
+            </button>
+          </div>
         </form>
       </div>
     </div>

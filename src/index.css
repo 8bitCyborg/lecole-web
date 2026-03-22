@@ -7,7 +7,8 @@
 
   --text-main: #0f172a;
   --text-muted: #475569;
-  --border: #e2e8f0;
+  /* --border: #e2e8f0; */
+  --border: #1e3a8a;
   --bg-main: #ffffff;
 
   color-scheme: light dark;

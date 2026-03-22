@@ -2,17 +2,22 @@
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  padding: 3rem 1rem;
+  padding: 0rem;
   width: 100%;
 }
 
 .school-form-card {
   background: white;
   border-radius: 1.5rem;
-  padding: 3rem;
+  padding: 1rem;
   width: 100%;
   max-width: 600px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.05);
   animation: fadeIn 0.4s ease-out;
+}
+
+.school-form-card.form-card-wide {
+  max-width: 900px;
 }
 
 .school-form-header {
@@ -45,11 +50,17 @@
   gap: 1.5rem;
 }
 
+.form-row-3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
 @media (max-width: 640px) {
   .school-form-container {
     padding: 1.5rem 0;
   }
-  
+
   .school-form-card {
     padding: 1.5rem;
     border-radius: 0;
@@ -58,6 +69,17 @@
   .form-row {
     grid-template-columns: 1fr;
     gap: 1.5rem;
+  }
+
+  .form-row-3 {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+@media (max-width: 1024px) and (min-width: 641px) {
+  .form-row-3 {
+    grid-template-columns: 1fr 1fr;
   }
 }
 
@@ -95,31 +117,30 @@
   padding: 0 1rem;
   padding-right: 2.5rem;
   border-radius: 0.75rem;
-  border: none;
+  border: 1.5px solid #3b82f6;
   font-family: inherit;
   font-size: 0.9375rem;
-  font-weight: 600;
+  font-weight: 500;
   transition: all 0.2s ease;
   width: 100%;
   appearance: none;
-  background-color: transparent;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='white'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E"), linear-gradient(135deg, #2563eb, #3b82f6);
-  background-repeat: no-repeat, no-repeat;
-  background-position: right 1rem center, center;
-  background-size: 1.25em, 100% 100%;
-  color: white;
-  box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2), 0 2px 4px -1px rgba(37, 99, 235, 0.1);
-  cursor: pointer;
+  background-color: #fcfdfe;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%233b82f6'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1.25em;
+  color: var(--text-main);
 }
 
 .le-select:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(37, 99, 235, 0.3), 0 4px 6px -2px rgba(37, 99, 235, 0.15);
+  border-color: #3b82f6;
 }
 
 .le-select:focus {
   outline: none;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.3);
+  border-color: #3b82f6;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.08);
 }
 
 .le-select option {
@@ -129,5 +150,47 @@
 }
 
 .le-select-error {
-  box-shadow: 0 0 0 2px #ef4444; /* red outline since border is none */
+  border-color: #ef4444;
+}
+
+/* Button Layouts */
+.form-actions {
+  display: flex;
+  margin-top: 1.5rem;
+  align-items: center;
+}
+
+.form-actions.right {
+  justify-content: flex-end;
+}
+
+.form-actions.between {
+  justify-content: space-between;
+}
+
+.form-btn-small {
+  height: 2.75rem !important;
+  padding-inline: 2rem !important;
+  min-width: 140px;
+  font-size: 0.9375rem !important;
+  width: auto !important;
+  margin-top: 0 !important;
+}
+
+.btn-continue-later {
+  border: none !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  color: var(--text-muted) !important;
+  transition: color 1s ease !important;
+  padding: 0 1rem !important;
+  min-width: 140px;
+  height: 2.75rem !important;
+  width: auto !important;
+}
+
+.btn-continue-later:hover {
+  color: #ef4444 !important;
+  background: transparent !important;
+  transform: none !important;
 }

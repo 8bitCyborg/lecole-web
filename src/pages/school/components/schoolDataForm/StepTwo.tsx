@@ -2,6 +2,8 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useUpdateSchoolMutation } from '../../../../services/leApi/schoolApi';
+import { useSelector } from 'react-redux';
+import type { RootState } from '../../../../store';
 import LeInput from '../../../../components/ui/LeInput';
 import '../SchoolForm.css';
 import type { School } from '../../../../store/slices/schoolSlice';
@@ -27,14 +29,15 @@ const StepTwoSchema = Yup.object().shape({
 
 const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
   const [updateSchool, { isLoading, error }] = useUpdateSchoolMutation();
+  const reduxSchool = useSelector((state: RootState) => state.school.school);
 
   const formik = useFormik({
     initialValues: {
-      type: schoolData.type || 'K12',
-      curriculum: schoolData.curriculum || 'nigerian',
-      grading_system: schoolData.grading_system || 'waec',
-      current_term: schoolData.current_term || 'first_term',
-      current_session: schoolData.current_session || '2025/2026',
+      type: schoolData.type || '',
+      curriculum: schoolData.curriculum || '',
+      grading_system: schoolData.grading_system || '',
+      current_term: schoolData.current_term || '',
+      current_session: schoolData.current_session || '',
       ownership_type: schoolData.ownership_type || '',
       proprietor: schoolData.proprietor || '',
       website: schoolData.website || '',
@@ -58,7 +61,7 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
         }
 
         await updateSchool({
-          id: schoolData.id,
+          id: reduxSchool?.id || schoolData.id,
           ...payload
         }).unwrap();
 
@@ -71,7 +74,7 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
 
   return (
     <div className="school-form-container">
-      <div className="school-form-card">
+      <div className="school-form-card form-card-wide">
         <div className="school-form-header">
           <h2 className="school-form-title">Additional Information</h2>
           <p className="school-form-subtitle">
@@ -80,7 +83,7 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
         </div>
 
         <form onSubmit={formik.handleSubmit} className="school-form">
-          <div className="form-row">
+          <div className="form-row-3">
             <div className="le-select-container">
               <label htmlFor="type" className="le-select-label">School Type</label>
               <select
@@ -88,6 +91,7 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
                 className={`le-select ${formik.touched.type && formik.errors.type ? 'le-select-error' : ''}`}
                 {...formik.getFieldProps('type')}
               >
+                <option value="">Select School Type...</option>
                 <option value="nursery">Nursery</option>
                 <option value="primary">Primary</option>
                 <option value="secondary">Secondary</option>
@@ -102,15 +106,14 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
                 className={`le-select ${formik.touched.curriculum && formik.errors.curriculum ? 'le-select-error' : ''}`}
                 {...formik.getFieldProps('curriculum')}
               >
+                <option value="">Select Curriculum...</option>
                 <option value="nigerian">Nigerian</option>
                 <option value="british">British</option>
                 <option value="montessori">Montessori</option>
                 <option value="other">Other</option>
               </select>
             </div>
-          </div>
 
-          <div className="form-row">
             <div className="le-select-container">
               <label htmlFor="grading_system" className="le-select-label">Grading System</label>
               <select
@@ -118,13 +121,16 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
                 className={`le-select ${formik.touched.grading_system && formik.errors.grading_system ? 'le-select-error' : ''}`}
                 {...formik.getFieldProps('grading_system')}
               >
+                <option value="">Select Grading System...</option>
                 <option value="waec">WAEC</option>
                 <option value="percentage">Percentage</option>
                 <option value="gpa">GPA</option>
                 <option value="other">Other</option>
               </select>
             </div>
+          </div>
 
+          <div className="form-row-3">
             <div className="le-select-container">
               <label htmlFor="current_term" className="le-select-label">Current Term</label>
               <select
@@ -132,14 +138,13 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
                 className={`le-select ${formik.touched.current_term && formik.errors.current_term ? 'le-select-error' : ''}`}
                 {...formik.getFieldProps('current_term')}
               >
+                <option value="">Select Current Term...</option>
                 <option value="first_term">First Term</option>
                 <option value="second_term">Second Term</option>
                 <option value="third_term">Third Term</option>
               </select>
             </div>
-          </div>
 
-          <div className="form-row">
             <LeInput
               id="current_session"
               label="Current Session"
@@ -164,7 +169,7 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
             </div>
           </div>
 
-          <div className="form-row">
+          <div className="form-row-3">
             <LeInput
               id="proprietor"
               label="Proprietor / Owner"
@@ -182,18 +187,7 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
               touched={formik.touched.website}
               placeholder="https://example.com"
             />
-          </div>
 
-          <LeInput
-            id="motto"
-            label="School Motto"
-            {...formik.getFieldProps('motto')}
-            error={formik.errors.motto as string}
-            touched={formik.touched.motto}
-            placeholder="e.g. Excellence in Education"
-          />
-
-          <div className="form-row">
             <LeInput
               id="date_of_inception"
               label="Date of Inception"
@@ -201,6 +195,17 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
               {...formik.getFieldProps('date_of_inception')}
               error={formik.errors.date_of_inception as string}
               touched={formik.touched.date_of_inception}
+            />
+          </div>
+
+          <div className="form-row">
+            <LeInput
+              id="motto"
+              label="School Motto"
+              {...formik.getFieldProps('motto')}
+              error={formik.errors.motto as string}
+              touched={formik.touched.motto}
+              placeholder="e.g. Excellence in Education"
             />
 
             <LeInput
@@ -215,13 +220,23 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
 
           {error && <div className="form-error">An error occurred while saving. Please try again.</div>}
 
-          <button
-            type="submit"
-            className="le-button le-button-primary submit-btn"
-            disabled={isLoading || !formik.isValid}
-          >
-            {isLoading ? 'Saving...' : 'Finish setup'}
-          </button>
+          <div className="form-actions between">
+            <button
+              type="button"
+              className="le-button btn-continue-later"
+              onClick={() => onSuccess()}
+              disabled={isLoading}
+            >
+              Continue later
+            </button>
+            <button
+              type="submit"
+              className="le-button le-button-primary form-btn-small"
+              disabled={isLoading || !formik.isValid}
+            >
+              {isLoading ? 'Saving...' : 'Finish setup'}
+            </button>
+          </div>
         </form>
       </div>
     </div>
