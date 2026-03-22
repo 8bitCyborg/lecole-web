@@ -22,7 +22,7 @@ export interface School {
   proprietor: string | null;
   website: string | null;
   logo: string | null;
-  description: string | null;
+  motto: string | null;
   date_of_inception: string | null;
 
   cac_number: string | null;

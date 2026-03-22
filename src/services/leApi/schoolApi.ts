@@ -14,6 +14,13 @@ export interface CreateSchoolRequest {
   proprietor?: string;
   description?: string;
   date_of_inception?: string;
+  type?: string;
+  curriculum?: string;
+  grading_system?: string;
+  current_term?: string;
+  current_session?: string;
+  ownership_type?: string;
+  motto?: string;
 }
 
 export interface UpdateSchoolRequest extends Partial<Omit<CreateSchoolRequest, 'user_id'>> {

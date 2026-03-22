@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import SchoolForm from "./components/SchoolForm";
+import SchoolDataForm from "./components/schoolDataForm";
 import SchoolDetailsCard from "./components/SchoolDetailsCard";
 import { useFindMySchoolQuery } from "../../services/leApi/schoolApi";
 import { useDispatch, useSelector } from "react-redux";
@@ -17,6 +17,13 @@ const School = () => {
   console.log('school', school);
 
   const [isEditing, setIsEditing] = useState(false);
+  const [isCreating, setIsCreating] = useState(false);
+
+  useEffect(() => {
+    if (isError && !school) {
+      setIsCreating(true);
+    }
+  }, [isError, school]);
 
   useEffect(() => {
     if (schoolData) {
@@ -28,8 +35,11 @@ const School = () => {
     return <div className="school-loading">Loading school info...</div>;
   }
 
-  if (isError && !school) {
-    return <SchoolForm onSuccess={() => refetch()} />;
+  if (isCreating || (isError && !school)) {
+    return <SchoolDataForm onSuccess={() => {
+      setIsCreating(false);
+      refetch();
+    }} />;
   }
 
   return (
@@ -49,7 +59,7 @@ const School = () => {
 
       <div className="school-details-container">
         {isEditing ? (
-          <SchoolForm
+          <SchoolDataForm
             initialData={school}
             isEditMode={true}
             onSuccess={() => {
