@@ -109,129 +109,14 @@
   gap: 1.25rem;
 }
 
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 0.4rem;
-}
-
 .form-row {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 1rem;
 }
 
-.form-group label {
-  font-size: 0.8125rem;
-  font-weight: 600;
-  color: var(--text-main);
-}
-
-.form-input {
-  height: 3.25rem;
-  padding: 0 1rem;
-  border-radius: 0.75rem;
-  border: 1.5px solid #3b82f6;
-  font-family: inherit;
-  font-size: 0.9375rem;
-  transition: all 0.2s;
-  background: #fcfdfe;
-  color: #000000;
-  width: 100%;
-}
-
-/* LeInput Wrapper for functional elements */
-.input-outer-wrapper {
-  position: relative;
-  display: flex;
-  align-items: stretch;
-  width: 100%;
-}
-
-.password-input-wrapper .form-input {
-  padding-right: 3.5rem;
-}
-
-.password-toggle {
-  position: absolute;
-  right: 1rem;
-  background: none;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  color: var(--text-muted);
-  font-size: 0.875rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100%;
-  transition: color 0.2s;
-}
-
-.password-toggle:hover {
-  color: #3b82f6;
-}
-
-/* Phone Prefix Styles */
-.phone-input-wrapper {
-  display: flex;
-  align-items: stretch;
-  background: #fcfdfe;
-  border: 1.5px solid #3b82f6;
-  border-radius: 0.75rem;
-  overflow: hidden;
-  transition: all 0.2s;
-}
-
-.phone-input-wrapper:focus-within {
-  border-color: #3b82f6;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.08);
-  background: white;
-}
-
-.phone-prefix {
-  display: flex;
-  align-items: center;
-  padding: 0 0.75rem;
-  background: #2563eb;
-  /* Lecole logo blue */
-  color: white;
-  font-weight: 600;
-  font-size: 0.9375rem;
-  border-right: 1px solid rgba(37, 99, 235, 0.2);
-}
-
-.phone-input-wrapper .form-input {
-  border: none;
-  background: transparent;
-  flex: 1;
-  border-radius: 0;
-}
-
-.phone-input-wrapper .form-input:focus {
-  box-shadow: none;
-  background: transparent;
-}
-
-.form-input:focus {
-  outline: none;
-  border-color: #3b82f6;
-  background: white;
-  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.08);
-}
-
-.form-input.error {
-  border-color: #ef4444;
-}
-
-.error-message {
-  color: #ef4444;
-  font-size: 0.75rem;
-  font-weight: 500;
-}
-
 .auth-submit-btn {
+
   width: 100%;
   margin-top: 0.5rem;
   height: 3.25rem;

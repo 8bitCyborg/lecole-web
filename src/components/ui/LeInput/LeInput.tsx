@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import './leinput.css';
+
 
 interface LeInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label: string;

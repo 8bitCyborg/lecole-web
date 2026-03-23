@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSignupMutation } from '../../services/leApi/authApi';
 import { useAppDispatch } from '../../store/hooks';
 import { setCredentials } from '../../store/slices/authSlice';
-import LeInput from '../ui/LeInput';
+import LeInput from '../ui/LeInput/LeInput';
 
 interface SignUpFormValues {
   firstName: string;

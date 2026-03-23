@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
-import LeInput from '../ui/LeInput';
+import LeInput from '../ui/LeInput/LeInput';
 
 import { useLoginMutation } from '../../services/leApi/authApi';
 import { useAppDispatch } from '../../store/hooks';

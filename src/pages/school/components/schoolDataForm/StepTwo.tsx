@@ -4,7 +4,8 @@ import * as Yup from 'yup';
 import { useUpdateSchoolMutation } from '../../../../services/leApi/schoolApi';
 import { useSelector } from 'react-redux';
 import type { RootState } from '../../../../store';
-import LeInput from '../../../../components/ui/LeInput';
+import LeInput from '../../../../components/ui/LeInput/LeInput';
+import LeDropdown from '../../../../components/ui/LeDropdown/LeDropdown';
 import '../SchoolForm.css';
 import type { School } from '../../../../store/slices/schoolSlice';
 
@@ -84,66 +85,62 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
 
         <form onSubmit={formik.handleSubmit} className="school-form">
           <div className="form-row-3">
-            <div className="le-select-container">
-              <label htmlFor="type" className="le-select-label">School Type</label>
-              <select
-                id="type"
-                className={`le-select ${formik.touched.type && formik.errors.type ? 'le-select-error' : ''}`}
-                {...formik.getFieldProps('type')}
-              >
-                <option value="">Select School Type...</option>
-                <option value="nursery">Nursery</option>
-                <option value="primary">Primary</option>
-                <option value="secondary">Secondary</option>
-                <option value="K12">K12</option>
-              </select>
-            </div>
+            <LeDropdown
+              id="type"
+              label="School Type"
+              options={[
+                { value: 'nursery', label: 'Nursery' },
+                { value: 'primary', label: 'Primary' },
+                { value: 'secondary', label: 'Secondary' },
+                { value: 'K12', label: 'K12' },
+              ]}
+              {...formik.getFieldProps('type')}
+              error={formik.errors.type as string}
+              touched={formik.touched.type}
+            />
 
-            <div className="le-select-container">
-              <label htmlFor="curriculum" className="le-select-label">Curriculum</label>
-              <select
-                id="curriculum"
-                className={`le-select ${formik.touched.curriculum && formik.errors.curriculum ? 'le-select-error' : ''}`}
-                {...formik.getFieldProps('curriculum')}
-              >
-                <option value="">Select Curriculum...</option>
-                <option value="nigerian">Nigerian</option>
-                <option value="british">British</option>
-                <option value="montessori">Montessori</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
+            <LeDropdown
+              id="curriculum"
+              label="Curriculum"
+              options={[
+                { value: 'nigerian', label: 'Nigerian' },
+                { value: 'british', label: 'British' },
+                { value: 'montessori', label: 'Montessori' },
+                { value: 'other', label: 'Other' },
+              ]}
+              {...formik.getFieldProps('curriculum')}
+              error={formik.errors.curriculum as string}
+              touched={formik.touched.curriculum}
+            />
 
-            <div className="le-select-container">
-              <label htmlFor="grading_system" className="le-select-label">Grading System</label>
-              <select
-                id="grading_system"
-                className={`le-select ${formik.touched.grading_system && formik.errors.grading_system ? 'le-select-error' : ''}`}
-                {...formik.getFieldProps('grading_system')}
-              >
-                <option value="">Select Grading System...</option>
-                <option value="waec">WAEC</option>
-                <option value="percentage">Percentage</option>
-                <option value="gpa">GPA</option>
-                <option value="other">Other</option>
-              </select>
-            </div>
+            <LeDropdown
+              id="grading_system"
+              label="Grading System"
+              options={[
+                { value: 'waec', label: 'WAEC' },
+                { value: 'percentage', label: 'Percentage' },
+                { value: 'gpa', label: 'GPA' },
+                { value: 'other', label: 'Other' },
+              ]}
+              {...formik.getFieldProps('grading_system')}
+              error={formik.errors.grading_system as string}
+              touched={formik.touched.grading_system}
+            />
           </div>
 
           <div className="form-row-3">
-            <div className="le-select-container">
-              <label htmlFor="current_term" className="le-select-label">Current Term</label>
-              <select
-                id="current_term"
-                className={`le-select ${formik.touched.current_term && formik.errors.current_term ? 'le-select-error' : ''}`}
-                {...formik.getFieldProps('current_term')}
-              >
-                <option value="">Select Current Term...</option>
-                <option value="first_term">First Term</option>
-                <option value="second_term">Second Term</option>
-                <option value="third_term">Third Term</option>
-              </select>
-            </div>
+            <LeDropdown
+              id="current_term"
+              label="Current Term"
+              options={[
+                { value: 'first_term', label: 'First Term' },
+                { value: 'second_term', label: 'Second Term' },
+                { value: 'third_term', label: 'Third Term' },
+              ]}
+              {...formik.getFieldProps('current_term')}
+              error={formik.errors.current_term as string}
+              touched={formik.touched.current_term}
+            />
 
             <LeInput
               id="current_session"
@@ -154,19 +151,18 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
               placeholder="e.g. 2025/2026"
             />
 
-            <div className="le-select-container">
-              <label htmlFor="ownership_type" className="le-select-label">Ownership Type</label>
-              <select
-                id="ownership_type"
-                className={`le-select ${formik.touched.ownership_type && formik.errors.ownership_type ? 'le-select-error' : ''}`}
-                {...formik.getFieldProps('ownership_type')}
-              >
-                <option value="">Select Ownership Type...</option>
-                <option value="private">Private</option>
-                <option value="mission">Mission</option>
-                <option value="public">Public</option>
-              </select>
-            </div>
+            <LeDropdown
+              id="ownership_type"
+              label="Ownership Type"
+              options={[
+                { value: 'private', label: 'Private' },
+                { value: 'mission', label: 'Mission' },
+                { value: 'public', label: 'Public' },
+              ]}
+              {...formik.getFieldProps('ownership_type')}
+              error={formik.errors.ownership_type as string}
+              touched={formik.touched.ownership_type}
+            />
           </div>
 
           <div className="form-row-3">

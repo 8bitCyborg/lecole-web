@@ -4,7 +4,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import type { RootState } from '../../../store';
 import { useCreateSchoolMutation, useUpdateSchoolMutation } from '../../../services/leApi/schoolApi';
-import LeInput from '../../../components/ui/LeInput';
+import LeInput from '../../../components/ui/LeInput/LeInput';
 import './SchoolForm.css';
 import type { School } from '../../../store/slices/schoolSlice';
 
