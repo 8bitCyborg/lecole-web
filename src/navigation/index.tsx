@@ -4,6 +4,8 @@ import Dashboard from '../pages/dashboard';
 import Auth from '../pages/auth';
 import DashboardLayout from '../components/dashboard/DashboardLayout';
 import School from '../pages/school';
+import Class from '../pages/class';
+import ClassArms from '../pages/class/classArms';
 
 export const publicRouter = createBrowserRouter([
   {
@@ -38,21 +40,18 @@ export const authRouter = createBrowserRouter([
         element: <School />,
       },
       {
-        path: 'courses',
-        element: <Dashboard />, // Placeholder for now
+        path: 'classes',
+        children: [
+          {
+            index: true,
+            element: <Class />,
+          },
+          {
+            path: ':classId',
+            element: <ClassArms />,
+          },
+        ]
       },
-      {
-        path: 'assignments',
-        element: <Dashboard />, // Placeholder
-      },
-      {
-        path: 'messages',
-        element: <Dashboard />, // Placeholder
-      },
-      {
-        path: 'settings',
-        element: <Dashboard />, // Placeholder
-      }
     ]
   },
   {
