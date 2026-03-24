@@ -32,6 +32,32 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
   const [updateSchool, { isLoading, error }] = useUpdateSchoolMutation();
   const reduxSchool = useSelector((state: RootState) => state.school.school);
 
+
+  const updateSchoolData = async (values: Record<string, string>) => {
+    try {
+      const payload: Record<string, string> = {};
+
+      Object.entries(values).forEach(([key, value]) => {
+        if (value !== '') {
+          payload[key] = value;
+        }
+      });
+
+      if (values.date_of_inception) {
+        payload.date_of_inception = new Date(values.date_of_inception).toISOString();
+      }
+
+      await updateSchool({
+        id: reduxSchool?.id || schoolData.id,
+        ...payload
+      }).unwrap();
+
+      onSuccess();
+    } catch (err) {
+      console.error('Failed to update school details:', err);
+    }
+  }
+
   const formik = useFormik({
     initialValues: {
       type: schoolData.type || '',
@@ -48,28 +74,7 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
     },
     validationSchema: StepTwoSchema,
     onSubmit: async (values) => {
-      try {
-        const payload: Record<string, string> = {};
-
-        Object.entries(values).forEach(([key, value]) => {
-          if (value !== '') {
-            payload[key] = value;
-          }
-        });
-
-        if (values.date_of_inception) {
-          payload.date_of_inception = new Date(values.date_of_inception).toISOString();
-        }
-
-        await updateSchool({
-          id: reduxSchool?.id || schoolData.id,
-          ...payload
-        }).unwrap();
-
-        onSuccess();
-      } catch (err) {
-        console.error('Failed to update school details:', err);
-      }
+      await updateSchoolData(values);
     },
   });
 

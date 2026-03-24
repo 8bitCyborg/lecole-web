@@ -2,7 +2,7 @@ import { baseApi } from '.';
 import type { School } from '../../store/slices/schoolSlice';
 
 export interface CreateSchoolRequest {
-  user_id: string;
+  userId: string;
   name: string;
   address: string;
   state: string;
@@ -23,7 +23,7 @@ export interface CreateSchoolRequest {
   motto?: string;
 }
 
-export interface UpdateSchoolRequest extends Partial<Omit<CreateSchoolRequest, 'user_id'>> {
+export interface UpdateSchoolRequest extends Partial<Omit<CreateSchoolRequest, 'userId'>> {
   id: string;
 }
 

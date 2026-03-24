@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
@@ -28,6 +28,35 @@ const StepOne: React.FC<StepOneProps> = ({ onSuccess, initialData, isEditMode = 
   const [createSchool, { isLoading: isCreating, error: createError }] = useCreateSchoolMutation();
   const [updateSchool, { isLoading: isUpdating, error: updateError }] = useUpdateSchoolMutation();
 
+  const [schoolError, setSchoolError] = useState<string | null>(null);
+
+  const saveSchool = async (values: any) => {
+    try {
+      const response = await createSchool({
+        userId: user?.id,
+        ...values,
+        lga: values.lga || undefined,
+      }).unwrap();
+      onSuccess(response);
+    } catch (error: any) {
+      console.log('error', error);
+      setSchoolError(error?.message?.data || 'Unable to Create School');
+    };
+  };
+
+  const editSchool = async (values: any) => {
+    try {
+      const response = await updateSchool({
+        id: initialData?.id,
+        ...values,
+        lga: values.lga || undefined,
+      }).unwrap();
+      onSuccess(response);
+    } catch (error: any) {
+      setSchoolError(error?.message?.data || 'Unable to Update School');
+    };
+  };
+
   const formik = useFormik({
     initialValues: {
       name: '',
@@ -39,28 +68,11 @@ const StepOne: React.FC<StepOneProps> = ({ onSuccess, initialData, isEditMode = 
     },
     validationSchema: SchoolSchema,
     onSubmit: async (values) => {
-      try {
-        let savedSchool: School;
-
-        if (isEditMode && initialData) {
-          savedSchool = await updateSchool({
-            id: initialData.id,
-            ...values,
-            lga: values.lga || undefined,
-          }).unwrap();
-        } else {
-          if (!user?.id) return;
-          savedSchool = await createSchool({
-            user_id: user.id,
-            ...values,
-            lga: values.lga || undefined,
-          }).unwrap();
-        }
-
-        onSuccess(savedSchool);
-      } catch (err) {
-        console.error('Failed to save school:', err);
-      }
+      if (isEditMode && initialData) {
+        editSchool(values);
+      } else {
+        saveSchool(values)
+      };
     },
   });
 
@@ -150,7 +162,7 @@ const StepOne: React.FC<StepOneProps> = ({ onSuccess, initialData, isEditMode = 
             />
           </div>
 
-          {error && <div className="form-error">An error occurred while saving. Please try again.</div>}
+          {schoolError && <div className="form-error">{schoolError}</div>}
 
           <div className="form-actions right">
             <button
