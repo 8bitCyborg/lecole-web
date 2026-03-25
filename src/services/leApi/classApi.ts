@@ -64,15 +64,33 @@ export const classApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Class'],
     }),
+    deleteClass: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/class/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Class'],
+    }),
+    deleteArm: builder.mutation<void, { classId: string; armId: string }>({
+      query: ({ classId, armId }) => ({
+        url: `/class/${classId}/arms/${armId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Class'],
+    }),
   }),
 });
 
-export const { 
-  useGetClassesQuery, 
+export const {
+  useGetClassesQuery,
   useCreateClassMutation,
   useCreateArmMutation,
-  useGetArmsQuery 
+  useGetArmsQuery,
+  useDeleteClassMutation,
+  useDeleteArmMutation,
 } = classApi;
+
+
 
 
 
