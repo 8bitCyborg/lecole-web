@@ -79,10 +79,15 @@ const ClassPage = () => {
                 onClick={() => navigate(`/classes/${cls.id}`)}
               >
                 <div className="class-card-content">
-                  <h3 className="class-name-title class-card-actions">
-                    {cls.name}
+                  <div className="class-name-title class-card-actions">
+                    <div className="class-info-main">
+                      {cls.name}
+                      <span className="class-arms-count">
+                        {cls._count?.arms || 0} {cls._count?.arms === 1 ? 'Arm' : 'Arms'}
+                      </span>
+                    </div>
                     <ChevronRight size={20} className="class-card-icon" />
-                  </h3>
+                  </div>
                   <Trash2
                     size={20}
                     className="class-card-icon delete-icon"

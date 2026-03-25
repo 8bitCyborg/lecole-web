@@ -5,6 +5,9 @@ export interface Class {
   name: string;
   schoolId: string;
   order?: number;
+  _count?: {
+    arms: number;
+  };
   createdAt: string;
   updatedAt: string;
 }

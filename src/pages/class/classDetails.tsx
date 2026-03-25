@@ -57,7 +57,7 @@ const ClassArmsPage = () => {
             <span className="class-id-badge">ID: {classId}</span>
           </div>
           <p className="classes-subtitle">
-            Manage subclasses and academic arms for <strong>{currentClass?.name}</strong>.
+            Currently managing <strong>{currentClass?._count?.arms || 0} {currentClass?._count?.arms === 1 ? 'arm' : 'arms'}</strong>.
             This is the hub for arm-level distribution, student assignments, and class-specific scheduling.
           </p>
         </div>
@@ -91,10 +91,23 @@ const ClassArmsPage = () => {
         {!armsLoading && arms.length > 0 && (
           <div className="classes-grid">
             {arms.map((arm: any) => (
-              <div key={arm.id} className="class-card">
+              <div
+                key={arm.id}
+                className="class-card"
+                onClick={() => navigate(`/classes/${classId}/arms/${arm.id}`, {
+                  state: {
+                    className: currentClass?.name,
+                    armName: arm.name,
+                    capacity: arm.capacity
+                  }
+                })}
+                style={{ cursor: 'pointer' }}
+              >
                 <div className="class-card-content">
                   <div className="arm-info">
-                    <h3 className="class-name-title">{currentClass?.name}{arm.name}</h3>
+                    <h3 className="class-name-title">
+                      {currentClass?.name} <span style={{ color: '#aaa', margin: '0 4px' }}>:</span> {arm.name}
+                    </h3>
                     {arm.capacity && (
                       <span className="arm-capacity-badge">
                         Capacity: {arm.capacity}

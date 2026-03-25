@@ -274,3 +274,50 @@
   color: #450a0a;
 }
 
+.class-info-main {
+  display: flex;
+  flex-direction: column;
+}
+
+.class-arms-count {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  margin-top: 0.25rem;
+}
+
+.arm-header-separator {
+  color: rgba(255, 255, 255, 0.4);
+  margin: 0 0.75rem;
+  font-weight: 300;
+}
+
+.banner-actions {
+  display: flex;
+  gap: 1rem;
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+}
+
+.arm-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 2rem;
+  margin-top: 2rem;
+}
+
+.section-title {
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.section-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin: 0;
+}
