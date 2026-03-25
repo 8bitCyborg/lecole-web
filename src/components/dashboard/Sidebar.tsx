@@ -12,6 +12,7 @@ import {
   UsersRound,
   Presentation,
   University,
+  BookOpen,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -32,6 +33,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const navItems = [
     { icon: LayoutDashboard, label: 'Overview', path: '/' },
     { icon: University, label: 'School', path: '/school' },
+    { icon: BookOpen, label: 'Subjects', path: '/subjects' },
     { icon: Presentation, label: 'Classes', path: '/classes' },
     { icon: UsersRound, label: 'Teachers', path: '/teachers' },
     { icon: Users, label: 'Students', path: '/students' },

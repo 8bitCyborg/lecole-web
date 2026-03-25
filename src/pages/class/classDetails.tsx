@@ -69,6 +69,21 @@ const ClassArmsPage = () => {
         </button>
       </div>
 
+      <div className="class-subjects-section">
+        <h2 className="class-name-title" style={{ fontSize: '1.25rem' }}>Assigned Subjects</h2>
+        <div className="class-subjects-list">
+          {!currentClass?.subjects || currentClass.subjects.length === 0 ? (
+            <p style={{ color: '#64748b', fontSize: '0.9rem', fontStyle: 'italic' }}>No subjects currently assigned to this class.</p>
+          ) : (
+            currentClass.subjects.map((sub: any, idx: number) => (
+              <div key={idx} className="assigned-subject-pill">
+                {sub.name}
+              </div>
+            ))
+          )}
+        </div>
+      </div>
+
       <div className="classes-listing-section">
         {armsLoading && <div className="loading-state">Loading Arms...</div>}
 

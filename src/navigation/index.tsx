@@ -7,6 +7,8 @@ import School from '../pages/school';
 import Class from '../pages/class';
 import ClassArms from '../pages/class/classDetails';
 import ClassArmDetails from '../pages/class/classArmDetails';
+import Subject from '../pages/subject';
+import SubjectDetails from '../pages/subject/subjectDetails';
 
 export const publicRouter = createBrowserRouter([
   {
@@ -39,6 +41,19 @@ export const authRouter = createBrowserRouter([
       {
         path: 'school',
         element: <School />,
+      },
+      {
+        path: 'subjects',
+        children: [
+          {
+            index: true,
+            element: <Subject />,
+          },
+          {
+            path: ':subjectId',
+            element: <SubjectDetails />,
+          },
+        ]
       },
       {
         path: 'classes',

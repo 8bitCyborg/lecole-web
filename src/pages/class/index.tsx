@@ -10,7 +10,11 @@ const ClassPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [classToDelete, setClassToDelete] = useState<any>(null);
-  const { data: classes = [] } = useGetClassesQuery();
+  const { data: classes = [] } = useGetClassesQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+  });
   const [deleteClass] = useDeleteClassMutation();
   const navigate = useNavigate();
 
@@ -82,9 +86,14 @@ const ClassPage = () => {
                   <div className="class-name-title class-card-actions">
                     <div className="class-info-main">
                       {cls.name}
-                      <span className="class-arms-count">
-                        {cls._count?.arms || 0} {cls._count?.arms === 1 ? 'Arm' : 'Arms'}
-                      </span>
+                      <div className="class-meta-counts">
+                        <span className="class-arms-count">
+                          {cls._count?.arms || 0} {cls._count?.arms === 1 ? 'Arm' : 'Arms'}
+                        </span>
+                        <span className="class-arms-count">
+                          {cls._count?.subjects || 0} {cls._count?.subjects === 1 ? 'Subject' : 'Subjects'}
+                        </span>
+                      </div>
                     </div>
                     <ChevronRight size={20} className="class-card-icon" />
                   </div>

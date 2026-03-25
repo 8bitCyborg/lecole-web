@@ -1,0 +1,71 @@
+import { baseApi } from '.';
+
+export interface Subject {
+  id: string;
+  name: string;
+  code?: string;
+  schoolId: string;
+  classes?: { id: string; name: string }[];
+  _count?: {
+    classes: number;
+    teachers: number;
+  };
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface CreateSubjectRequest {
+  name: string;
+  schoolId: string;
+  code?: string;
+}
+
+export const subjectApi = baseApi.injectEndpoints({
+  endpoints: (builder) => ({
+    getSubjects: builder.query<Subject[], void>({
+      query: () => ({
+        url: '/subject',
+        method: 'GET',
+      }),
+      providesTags: ['Subject'],
+    }),
+    getSubjectById: builder.query<Subject & { _count: { classes: number; teachers: number } }, string>({
+      query: (id) => ({
+        url: `/subject/${id}`,
+        method: 'GET',
+      }),
+      providesTags: ['Subject'],
+    }),
+    createSubject: builder.mutation<Subject, CreateSubjectRequest>({
+      query: (subjectData) => ({
+        url: '/subject',
+        method: 'POST',
+        body: subjectData,
+      }),
+      invalidatesTags: ['Subject'],
+    }),
+    assignClasses: builder.mutation<Subject, { id: string; classIds: string[] }>({
+      query: ({ id, classIds }) => ({
+        url: `/subject/${id}/classes`,
+        method: 'PATCH',
+        body: { classIds },
+      }),
+      invalidatesTags: ['Subject'],
+    }),
+    deleteSubject: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/subject/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Subject'],
+    }),
+  }),
+});
+
+export const {
+  useGetSubjectsQuery,
+  useGetSubjectByIdQuery,
+  useCreateSubjectMutation,
+  useAssignClassesMutation,
+  useDeleteSubjectMutation,
+} = subjectApi;

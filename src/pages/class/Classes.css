@@ -283,7 +283,37 @@
   font-size: 0.85rem;
   color: var(--text-muted);
   font-weight: 500;
+}
+
+.class-meta-counts {
+  display: flex;
+  gap: 0.75rem;
   margin-top: 0.25rem;
+}
+
+.class-subjects-section {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid #e2e8f0;
+}
+
+.class-subjects-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.assigned-subject-pill {
+  background: #eff6ff;
+  color: #1e40af;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  border: 1px solid #dbeafe;
 }
 
 .arm-header-separator {

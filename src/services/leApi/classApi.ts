@@ -7,7 +7,9 @@ export interface Class {
   order?: number;
   _count?: {
     arms: number;
+    subjects: number;
   };
+  subjects?: { name: string }[];
   createdAt: string;
   updatedAt: string;
 }
