@@ -1,8 +1,7 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { ChevronRight, Trash2 } from 'lucide-react';
+import React, { useState } from 'react';
 import { useGetClassesQuery, useDeleteClassMutation } from '../../services/leApi/classApi';
 import AddClassForm from './components/AddClassForm';
+import ClassListing from './components/ClassListing';
 import DeleteConfirmationModal from '../../components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
 import './Classes.css';
 
@@ -16,7 +15,6 @@ const ClassPage = () => {
     refetchOnReconnect: true,
   });
   const [deleteClass] = useDeleteClassMutation();
-  const navigate = useNavigate();
 
   const handleAddSuccess = () => {
     setShowAddModal(false);
@@ -75,38 +73,10 @@ const ClassPage = () => {
             </button>
           </div>
         ) : (
-          <div className="classes-grid">
-            {classes.map((cls: any) => (
-              <div
-                key={cls.id}
-                className="class-card"
-                onClick={() => navigate(`/classes/${cls.id}`)}
-              >
-                <div className="class-card-content">
-                  <div className="class-name-title class-card-actions">
-                    <div className="class-info-main">
-                      {cls.name}
-                      <div className="class-meta-counts">
-                        <span className="class-arms-count">
-                          {cls._count?.arms || 0} {cls._count?.arms === 1 ? 'Arm' : 'Arms'}
-                        </span>
-                        <span className="class-arms-count">
-                          {cls._count?.subjects || 0} {cls._count?.subjects === 1 ? 'Subject' : 'Subjects'}
-                        </span>
-                      </div>
-                    </div>
-                    <ChevronRight size={20} className="class-card-icon" />
-                  </div>
-                  <Trash2
-                    size={20}
-                    className="class-card-icon delete-icon"
-                    color="red"
-                    onClick={(e) => handleDeleteClick(e, cls)}
-                  />
-                </div>
-              </div>
-            ))}
-          </div>
+          <ClassListing
+            classes={classes}
+            onDeleteClick={handleDeleteClick}
+          />
         )}
       </div>
 

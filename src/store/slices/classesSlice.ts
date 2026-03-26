@@ -3,7 +3,7 @@ import { classApi } from '../../services/leApi/classApi';
 import { logout } from './authSlice';
 
 interface ClassesState {
-  classMap: Record<string, string>; // id -> name mapping
+  classMap: Record<string, { name: string; category: string }>; // id -> details mapping
 }
 
 const initialState: ClassesState = {
@@ -28,9 +28,9 @@ const classesSlice = createSlice({
     builder.addMatcher(
       classApi.endpoints.getClasses.matchFulfilled,
       (state, action) => {
-        const newMap: Record<string, string> = {};
+        const newMap: Record<string, { name: string; category: string }> = {};
         action.payload.forEach((cls) => {
-          newMap[cls.id] = cls.name;
+          newMap[cls.id] = { name: cls.name, category: cls.category };
         });
         state.classMap = newMap;
       }
@@ -40,7 +40,10 @@ const classesSlice = createSlice({
     builder.addMatcher(
       classApi.endpoints.createClass.matchFulfilled,
       (state, action) => {
-        state.classMap[action.payload.id] = action.payload.name;
+        state.classMap[action.payload.id] = { 
+          name: action.payload.name, 
+          category: action.payload.category 
+        };
       }
     );
 

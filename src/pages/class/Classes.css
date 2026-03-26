@@ -7,7 +7,7 @@
 
 .classes-header-banner {
   background: linear-gradient(135deg, #1e3a8a, #000);
-  border-radius: 2rem;
+  border-radius: 1rem;
   padding: 4rem;
   color: white;
   margin-bottom: 3rem;
@@ -110,7 +110,7 @@
 
 @media (max-width: 1024px) {
   .classes-page-container {
-    padding: 2rem;
+    padding: 0;
   }
 }
 
@@ -118,8 +118,9 @@
   .classes-header-banner {
     flex-direction: column;
     align-items: flex-start;
-    padding: 2.5rem 2rem;
+    padding: 2.5rem 1.5rem;
     gap: 2rem;
+    margin-bottom: 2rem;
   }
 
   .classes-title {
@@ -135,6 +136,129 @@
     margin-top: 1rem;
   }
 
+  .classes-listing-section {
+    padding: 0;
+    /* Fully flush with the banner width */
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  /* Responsive Table styling */
+  .classes-table-container {
+    background: transparent;
+    box-shadow: none;
+    border: none;
+  }
+
+  .classes-table-container .classes-table thead {
+    display: none;
+  }
+
+  .classes-table-container .classes-table,
+  .classes-table-container .classes-table tbody,
+  .classes-table-container .classes-table tr,
+  .classes-table-container .classes-table td {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+  }
+
+  .classes-table-container .classes-table tr {
+    background: white;
+    margin-bottom: 2rem;
+    border-top: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+    /* Same flush style as banner */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+    /* Disable row click on mobile */
+    pointer-events: none;
+    cursor: default;
+  }
+
+  /* Disable hover effect on mobile since row is non-clickable */
+  .classes-table tbody tr:hover {
+    background-color: white !important;
+    box-shadow: none !important;
+  }
+
+  .classes-table tbody tr:nth-child(even):hover {
+    background-color: #f0f7ff !important;
+  }
+
+  .classes-table-container .classes-table tbody tr:nth-child(even) {
+    background-color: #f0f7ff;
+  }
+
+  .classes-table-container .classes-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 14px 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+    text-align: right;
+    min-height: 48px;
+    gap: 1rem;
+  }
+
+  /* Values should wrap if too long instead of cutting off */
+  .classes-table-container .classes-table td>div,
+  .classes-table-container .classes-table td>span {
+    word-break: break-word;
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  .classes-table-container .classes-table td:last-child {
+    border-bottom: none;
+    background: rgba(248, 250, 252, 0.5);
+  }
+
+  .classes-table-container .classes-table td::before {
+    content: attr(data-label);
+    font-weight: 700;
+    color: #64748b;
+    text-align: left;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .class-table-actions {
+    justify-content: flex-end;
+    width: 100%;
+    /* Re-enable pointer events for specific actions on mobile */
+    pointer-events: auto;
+  }
+}
+
+.category-group {
+  margin-bottom: 3.5rem;
+}
+
+.category-header {
+  font-size: 0.95rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  color: #1e3a8a;
+  letter-spacing: 0.12em;
+  margin-bottom: 1.5rem;
+  padding: 0 1.5rem 0.2rem;
+  /* Added side padding for mobile headers */
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.category-header::after {
+  content: '';
+  height: 2px;
+  flex: 1;
+  background: linear-gradient(to right, #1e3a8a, #eff6ff);
 }
 
 .classes-grid {
@@ -168,6 +292,7 @@
   align-items: center;
   width: 100%;
 }
+
 .classes-meta-info {
   margin-top: 1rem;
   display: flex;
@@ -215,6 +340,7 @@
   display: flex;
   align-items: center;
 }
+
 .back-navigator-btn {
   display: flex;
   align-items: center;
@@ -350,4 +476,131 @@
   font-weight: 700;
   color: #1e3a8a;
   margin: 0;
+}
+
+.classes-table-container {
+  background: white;
+  border-radius: 0;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+  border: 1px solid #e2e8f0;
+}
+
+.classes-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.classes-table th {
+  background: #f8f9fa;
+  padding: 8px 24px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #64748b;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid #cbd5e1;
+}
+
+.classes-table td {
+  padding: 8px 24px;
+  font-size: 14px;
+  font-family: 'Outfit', sans-serif;
+  color: #334155;
+  border-bottom: 1px solid #cbd5e1;
+  vertical-align: middle;
+}
+
+.classes-table tr {
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Row border styling is handled above */
+/* No special rule for last child to keep border consistent */
+
+/* Alternating rows: Light Blue and White */
+.classes-table tbody tr:nth-child(even) {
+  background-color: #f0f7ff;
+}
+
+.classes-table tbody tr:hover {
+  background-color: #e0efff !important;
+  box-shadow: inset 4px 0 0 #1e3a8a;
+}
+
+.class-name-cell {
+  display: flex;
+  align-items: center;
+}
+
+.class-name-text {
+  font-weight: 600;
+  color: #1e3a8a;
+  font-size: 14px;
+}
+
+.status-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+}
+
+.status-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.status-dot.active {
+  background-color: #22c55e;
+}
+
+.status-dot.inactive {
+  background-color: #ef4444;
+}
+
+.class-table-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 1.5rem;
+}
+
+.class-table-icon {
+  color: #cbd5e1;
+  transition: all 0.2s ease;
+}
+
+.classes-table tr:hover .class-table-icon {
+  color: #1e3a8a;
+  transform: translateX(3px);
+}
+
+.chevron-action-btn,
+.delete-action-btn {
+  background: transparent;
+  border: none;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  color: #94a3b8;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.chevron-action-btn:hover {
+  background: #f1f5f9;
+  color: #1e3a8a;
+  transform: translateX(3px);
+}
+
+.delete-action-btn:hover {
+  background: #fee2e2;
+  color: #ef4444;
 }

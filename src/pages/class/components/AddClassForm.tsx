@@ -5,22 +5,26 @@ import { useSelector } from 'react-redux';
 import { useCreateClassMutation } from '../../../services/leApi/classApi';
 import type { RootState } from '../../../store';
 import LeInput from '../../../components/ui/LeInput/LeInput';
+import LeDropdown from '../../../components/ui/LeDropdown/LeDropdown';
+import { CATEGORY_OPTIONS } from '../../../services/leApi/classApi';
+import type { Category } from '../../../services/leApi/classApi';
 import './AddClassForm.css';
 
 interface AddClassFormProps {
-  onSuccess?: (values: { name: string }) => void;
+  onSuccess?: (values: { name: string; category: Category }) => void;
   onCancel?: () => void;
 }
 
 const ClassSchema = Yup.object().shape({
   name: Yup.string().required('Class name is required').min(2, 'Class name is too short'),
+  category: Yup.string().required('Category is required'),
 });
 
 const AddClassForm: React.FC<AddClassFormProps> = ({ onSuccess, onCancel }) => {
   const school = useSelector((state: RootState) => state.school.school);
   const [createClass, { isLoading }] = useCreateClassMutation();
 
-  const handleAddClass = async (values: { name: string }) => {
+  const handleAddClass = async (values: { name: string; category: Category }) => {
     if (!school?.id) {
       console.error('No school ID found');
       return;
@@ -29,6 +33,7 @@ const AddClassForm: React.FC<AddClassFormProps> = ({ onSuccess, onCancel }) => {
     try {
       await createClass({
         name: values.name,
+        category: values.category,
         schoolId: school.id,
       }).unwrap();
 
@@ -41,6 +46,7 @@ const AddClassForm: React.FC<AddClassFormProps> = ({ onSuccess, onCancel }) => {
   const formik = useFormik({
     initialValues: {
       name: '',
+      category: '' as Category,
     },
     validationSchema: ClassSchema,
     onSubmit: handleAddClass,
@@ -62,6 +68,15 @@ const AddClassForm: React.FC<AddClassFormProps> = ({ onSuccess, onCancel }) => {
           touched={formik.touched.name}
           placeholder="e.g. Primary 1, Grade 10, JSS 1"
           autoFocus
+        />
+
+        <LeDropdown
+          id="category"
+          label="Academic Category"
+          {...formik.getFieldProps('category')}
+          error={formik.errors.category as string}
+          touched={formik.touched.category}
+          options={CATEGORY_OPTIONS}
         />
 
         <div className="form-actions">

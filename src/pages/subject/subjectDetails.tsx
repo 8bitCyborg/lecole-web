@@ -50,10 +50,10 @@ const SubjectDetails = () => {
           <h1 className="subjects-title">
             {subject.name} {subject.code && <span className="arm-header-separator">({subject.code})</span>}
           </h1>
-          <div className="classes-meta-info">
-            <span className="class-id-badge">ID: {subject.id}</span>
-            {/* <span className="class-id-badge">Updated: {new Date(subject.updatedAt).toLocaleDateString()}</span> */}
-          </div>
+          {/* <div className="classes-meta-info"> */}
+          {/* <span className="class-id-badge">ID: {subject.id}</span> */}
+          {/* <span className="class-id-badge">Updated: {new Date(subject.updatedAt).toLocaleDateString()}</span> */}
+          {/* </div> */}
           <p className="subjects-subtitle">
             Detailed overview of <strong>{subject.name}</strong>. Manage the curriculum, assign teachers,
             and track academic performance for this subject across all classes.

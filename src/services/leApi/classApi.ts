@@ -1,8 +1,19 @@
 import { baseApi } from '.';
 
+export type Category = 'EARLY_YEARS' | 'BASIC' | 'JUNIOR_SECONDARY' | 'SENIOR_SECONDARY' | 'OTHER';
+
+export const CATEGORY_OPTIONS: { value: Category; label: string }[] = [
+  { value: 'EARLY_YEARS', label: 'Early Years' },
+  { value: 'BASIC', label: 'Basic' },
+  { value: 'JUNIOR_SECONDARY', label: 'Junior Secondary' },
+  { value: 'SENIOR_SECONDARY', label: 'Senior Secondary' },
+  { value: 'OTHER', label: 'Other' },
+];
+
 export interface Class {
   id: string;
   name: string;
+  category: Category;
   schoolId: string;
   order?: number;
   _count?: {
@@ -17,6 +28,7 @@ export interface Class {
 export interface CreateClassRequest {
   schoolId: string;
   name: string;
+  category: Category;
 }
 
 export interface Arm {
