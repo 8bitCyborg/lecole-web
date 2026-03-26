@@ -13,6 +13,7 @@ const SubjectPage = () => {
   const { data: subjects = [], isLoading } = useGetSubjectsQuery();
   const [deleteSubject] = useDeleteSubjectMutation();
 
+  console.log('sub', subjects);
   const navigate = useNavigate();
 
   const handleAddSuccess = () => {
@@ -78,33 +79,60 @@ const SubjectPage = () => {
           </div>
         )}
 
-        {!isLoading && subjects.length > 0 && (
-          <div className="subjects-grid">
-            {subjects.map((sub: any) => (
-              <div
-                key={sub.id}
-                className="subject-card"
-                onClick={() => navigate(`/subjects/${sub.id}`)}
-              >
-                <div className="subject-card-content">
-                  <div className="subject-info-main">
-                    <div style={{ display: 'flex', flexDirection: 'column' }}>
-                      <span className="subject-name-title">{sub.name}</span>
-                      {sub.code && <span className="subject-code">{sub.code}</span>}
-                    </div>
-                    <ChevronRight size={20} className="class-card-icon" />
-                  </div>
-                  <div className="subject-card-actions">
-                    <Trash2
-                      size={18}
-                      className="subject-card-icon delete-icon"
-                      color="red"
-                      onClick={(e) => handleDeleteClick(e, sub)}
-                    />
-                  </div>
-                </div>
-              </div>
-            ))}
+        {!isLoading && subjects?.length > 0 && (
+          <div className="subjects-table-container">
+            <table className="subjects-table">
+              <thead>
+                <tr>
+                  <th>Subject Name</th>
+                  <th>Code</th>
+                  <th>Classes</th>
+                  <th style={{ textAlign: 'right' }}>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {subjects.map((sub: any) => (
+                  <tr
+                    key={sub.id}
+                    onClick={() => navigate(`/subjects/${sub.id}`)}
+                  >
+                    <td data-label="Subject Name">
+                      <div className="subject-name-cell">
+                        <span className="subject-name-text">{sub.name}</span>
+                      </div>
+                    </td>
+                    <td data-label="Code">
+                      <span className="subject-code-text">{sub.code || '—'}</span>
+                    </td>
+                    <td data-label="Classes">
+                      {sub._count?.classes || 0} {sub._count?.classes === 1 ? 'Class' : 'Classes'}
+                    </td>
+                    <td data-label="Actions" style={{ textAlign: 'right' }}>
+                      <div className="subject-table-actions">
+                        <button
+                          className="chevron-action-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            navigate(`/subjects/${sub.id}`);
+                          }}
+                        >
+                          <ChevronRight size={18} className="subject-table-icon" color='#00f' />
+                        </button>
+                        <button
+                          className="delete-action-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleDeleteClick(e, sub);
+                          }}
+                        >
+                          <Trash2 size={18} color='#f00' />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
         )}
       </div>
