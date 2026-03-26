@@ -14,6 +14,7 @@ import { baseApi } from '../services/leApi';
 import authReducer from './slices/authSlice';
 import schoolReducer from './slices/schoolSlice';
 import classesReducer from './slices/classesSlice';
+import teachersReducer from './slices/teachersSlice';
 
 // Combine all our reducers
 const rootReducer = combineReducers({
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   school: schoolReducer,
   classes: classesReducer,
+  teachers: teachersReducer,
 });
 
 // Configure redux-persist
