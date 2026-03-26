@@ -49,13 +49,12 @@ const ClassListing: React.FC<ClassListingProps> = ({ classes, onDeleteClick }) =
             <div className="classes-table-container">
               <table className="classes-table">
                 <thead>
-                  <tr>
+                  {/* <tr>
                     <th>Class Name</th>
                     <th>Arms</th>
                     <th>Subjects</th>
-                    <th>Status</th>
                     <th style={{ textAlign: 'right' }}>Actions</th>
-                  </tr>
+                  </tr> */}
                 </thead>
                 <tbody>
                   {categoryClasses.map((cls) => (
@@ -73,12 +72,6 @@ const ClassListing: React.FC<ClassListingProps> = ({ classes, onDeleteClick }) =
                       </td>
                       <td data-label="Subjects">
                         {cls._count?.subjects || 0} {cls._count?.subjects === 1 ? 'Subject' : 'Subjects'}
-                      </td>
-                      <td data-label="Status">
-                        <div className="status-cell">
-                          <span className="status-dot active"></span>
-                          <span>Active</span>
-                        </div>
                       </td>
                       <td data-label="Actions" style={{ textAlign: 'right' }}>
                         <div className="class-table-actions">
