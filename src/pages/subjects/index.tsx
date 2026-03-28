@@ -13,7 +13,6 @@ const SubjectPage = () => {
   const { data: subjects = [], isLoading } = useGetSubjectsQuery();
   const [deleteSubject] = useDeleteSubjectMutation();
 
-  console.log('sub', subjects);
   const navigate = useNavigate();
 
   const handleAddSuccess = () => {
