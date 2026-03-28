@@ -11,8 +11,10 @@ export interface Teacher {
     last_name: string;
     email?: string;
     phone: string;
+    role: string;
   };
   subjects?: any[];
+  arm?: any;
   createdAt: string;
   updatedAt: string;
 }
