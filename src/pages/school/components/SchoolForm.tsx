@@ -49,7 +49,7 @@ const SchoolForm: React.FC<SchoolFormProps> = ({ onSuccess, initialData, isEditM
         } else {
           if (!user?.id) return;
           await createSchool({
-            user_id: user.id,
+            userId: user.id,
             ...values,
             lga: values.lga || undefined,
           }).unwrap();

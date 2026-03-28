@@ -17,15 +17,15 @@ interface StepTwoProps {
 const StepTwoSchema = Yup.object().shape({
   type: Yup.string().required('School type is required'),
   curriculum: Yup.string().required('Curriculum is required'),
-  grading_system: Yup.string().required('Grading system is required'),
-  current_term: Yup.string().required('Current term is required'),
-  current_session: Yup.string().required('Current session is required'),
-  ownership_type: Yup.string().required('Ownership type is required'),
+  gradingSystem: Yup.string().required('Grading system is required'),
+  currentTerm: Yup.string().required('Current term is required'),
+  currentSession: Yup.string().required('Current session is required'),
+  ownershipType: Yup.string().required('Ownership type is required'),
   proprietor: Yup.string().optional(),
   website: Yup.string().url('Must be a valid URL').optional(),
   logo: Yup.string().optional(),
   motto: Yup.string().optional(),
-  date_of_inception: Yup.string().optional(),
+  dateOfInception: Yup.string().optional(),
 });
 
 const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
@@ -62,15 +62,15 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
     initialValues: {
       type: schoolData.type || '',
       curriculum: schoolData.curriculum || '',
-      grading_system: schoolData.grading_system || '',
-      current_term: schoolData.current_term || '',
-      current_session: schoolData.current_session || '',
-      ownership_type: schoolData.ownership_type || '',
+      gradingSystem: schoolData.gradingSystem || '',
+      currentTerm: schoolData.currentTerm || '',
+      currentSession: schoolData.currentSession || '',
+      ownershipType: schoolData.ownershipType || '',
       proprietor: schoolData.proprietor || '',
       website: schoolData.website || '',
       logo: schoolData.logo || '',
       motto: schoolData.motto || '',
-      date_of_inception: schoolData.date_of_inception ? new Date(schoolData.date_of_inception).toISOString().split('T')[0] : '',
+      dateOfInception: schoolData.dateOfInception ? new Date(schoolData.dateOfInception).toISOString().split('T')[0] : '',
     },
     validationSchema: StepTwoSchema,
     onSubmit: async (values) => {
@@ -127,9 +127,9 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
                 { value: 'gpa', label: 'GPA' },
                 { value: 'other', label: 'Other' },
               ]}
-              {...formik.getFieldProps('grading_system')}
-              error={formik.errors.grading_system as string}
-              touched={formik.touched.grading_system}
+              {...formik.getFieldProps('gradingSystem')}
+              error={formik.errors.gradingSystem as string}
+              touched={formik.touched.gradingSystem}
             />
           </div>
 
@@ -142,17 +142,17 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
                 { value: 'second_term', label: 'Second Term' },
                 { value: 'third_term', label: 'Third Term' },
               ]}
-              {...formik.getFieldProps('current_term')}
-              error={formik.errors.current_term as string}
-              touched={formik.touched.current_term}
+              {...formik.getFieldProps('currentTerm')}
+              error={formik.errors.currentTerm as string}
+              touched={formik.touched.currentTerm}
             />
 
             <LeInput
               id="current_session"
               label="Current Session"
-              {...formik.getFieldProps('current_session')}
-              error={formik.errors.current_session as string}
-              touched={formik.touched.current_session}
+              {...formik.getFieldProps('currentSession')}
+              error={formik.errors.currentSession as string}
+              touched={formik.touched.currentSession}
               placeholder="e.g. 2025/2026"
             />
 
@@ -164,9 +164,9 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
                 { value: 'mission', label: 'Mission' },
                 { value: 'public', label: 'Public' },
               ]}
-              {...formik.getFieldProps('ownership_type')}
-              error={formik.errors.ownership_type as string}
-              touched={formik.touched.ownership_type}
+              {...formik.getFieldProps('ownershipType')}
+              error={formik.errors.ownershipType as string}
+              touched={formik.touched.ownershipType}
             />
           </div>
 
@@ -193,9 +193,9 @@ const StepTwo: React.FC<StepTwoProps> = ({ onSuccess, schoolData }) => {
               id="date_of_inception"
               label="Date of Inception"
               type="date"
-              {...formik.getFieldProps('date_of_inception')}
-              error={formik.errors.date_of_inception as string}
-              touched={formik.touched.date_of_inception}
+              {...formik.getFieldProps('dateOfInception')}
+              error={formik.errors.dateOfInception as string}
+              touched={formik.touched.dateOfInception}
             />
           </div>
 

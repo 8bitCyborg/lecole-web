@@ -62,7 +62,7 @@ const School = () => {
 
           <div className="school-header-status">
             <div className="status-badge">
-              <span className="status-value">{formatValue(school?.current_session) + ', ' + formatValue(school?.current_term)}</span>
+              <span className="status-value">{formatValue(school?.currentSession) + ', ' + formatValue(school?.currentTerm)}</span>
             </div>
           </div>
 

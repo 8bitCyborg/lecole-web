@@ -7,8 +7,9 @@ export interface LoginRequest {
 }
 
 export interface SignupRequest extends LoginRequest {
-  first_name: string;
-  last_name: string;
+  firstName: string;
+  middleName?: string;
+  lastName: string;
   phone: string;
 }
 

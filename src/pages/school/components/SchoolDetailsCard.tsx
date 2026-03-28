@@ -44,16 +44,16 @@ const SchoolDetailsCard: React.FC<SchoolDetailsCardProps> = ({ school }) => {
       items: [
         { label: 'School Type', value: formatValue(school.type), icon: <SchoolIcon size={24} /> },
         { label: 'Curriculum', value: formatValue(school.curriculum), icon: <BookOpen size={24} /> },
-        { label: 'Grading System', value: formatValue(school.grading_system), icon: <GraduationCap size={24} /> },
+        { label: 'Grading System', value: formatValue(school.gradingSystem), icon: <GraduationCap size={24} /> },
       ]
     },
 
     {
       title: 'Administration & History',
       items: [
-        { label: 'Ownership', value: formatValue(school.ownership_type), icon: <Users size={24} /> },
+        { label: 'Ownership', value: formatValue(school.ownershipType), icon: <Users size={24} /> },
         { label: 'Proprietor', value: school.proprietor || 'N/A', icon: <User size={24} /> },
-        { label: 'Inception', value: formatDate(school.date_of_inception), icon: <History size={24} /> },
+        { label: 'Inception', value: formatDate(school.dateOfInception), icon: <History size={24} /> },
       ]
     },
     {

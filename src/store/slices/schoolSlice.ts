@@ -14,29 +14,29 @@ export interface School {
 
   type: string;
   curriculum: string;
-  grading_system: string;
-  current_term: string;
-  current_session: string;
-  ownership_type: string | null;
+  gradingSystem: string;
+  currentTerm: string;
+  currentSession: string;
+  ownershipType: string | null;
 
   proprietor: string | null;
   website: string | null;
   logo: string | null;
   motto: string | null;
-  date_of_inception: string | null;
+  dateOfInception: string | null;
 
-  cac_number: string | null;
-  cac_certificate_url: string | null;
-  moe_number: string | null;
-  moe_certicate_url: string | null;
-  trcn_url: string | null;
+  cacNumber: string | null;
+  cacCertificateUrl: string | null;
+  moeNumber: string | null;
+  moeCerticateUrl: string | null;
+  trcnUrl: string | null;
   tin: string | null;
 
-  bank_name: string | null;
-  account_number: string | null;
-  account_name: string | null;
+  bankName: string | null;
+  accountNumber: string | null;
+  accountName: string | null;
 
-  verification_status: string;
+  verificationStatus: string;
   createdAt: string;
   updatedAt: string;
 }

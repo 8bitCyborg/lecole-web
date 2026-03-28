@@ -27,8 +27,8 @@ const SignUpForm: React.FC = () => {
         email: values.email,
         password: values.password,
         phone: values.phone,
-        first_name: values.firstName,
-        last_name: values.lastName,
+        firstName: values.firstName,
+        lastName: values.lastName,
       }).unwrap();
 
       dispatch(setCredentials({ user: result }));

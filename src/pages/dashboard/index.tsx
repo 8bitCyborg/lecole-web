@@ -8,7 +8,7 @@ const Overview: React.FC = () => {
   return (
     <div className="overview-container">
       <header className="dashboard-header">
-        <h1>Welcome back, {user?.first_name}!</h1>
+        <h1>Welcome back, {user?.firstName}!</h1>
         <p>Your account overview and details.</p>
       </header>
 
