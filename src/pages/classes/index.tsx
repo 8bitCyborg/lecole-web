@@ -45,7 +45,7 @@ const ClassPage = () => {
           <h1 className="classes-title">Manage Your Classes</h1>
           <p className="classes-subtitle">
             Efficiently organize your school's academic structure. Create and manage all classes,
-            track student distribution, and assign teachers to their respective departments.
+            track student distribution, and assign staff to their respective departments.
           </p>
         </div>
         <button

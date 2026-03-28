@@ -1,16 +1,16 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { teacherApi } from '../../services/leApi/teacherApi';
+import { staffApi } from '../../services/leApi/staffApi';
 import { logout } from './authSlice';
 
 interface TeachersState {
-  teacherMap: Record<string, { name: string; email?: string }>; // id -> details mapping
+  teacherMap: Record<string, { name: string; email?: string }>;
 }
 
 const initialState: TeachersState = {
   teacherMap: {},
 };
 
-const teachersSlice = createSlice({
+export const teachersSlice = createSlice({
   name: 'teachers',
   initialState,
   reducers: {
@@ -24,38 +24,40 @@ const teachersSlice = createSlice({
       state.teacherMap = {};
     });
 
-    // Handle getTeachers success
+    // Handle getTeachingStaff success - ONLY teaching staff
     builder.addMatcher(
-      teacherApi.endpoints.getTeachers.matchFulfilled,
+      staffApi.endpoints.getTeachingStaff.matchFulfilled,
       (state, action) => {
         const newMap: Record<string, { name: string; email?: string }> = {};
-        action.payload.forEach((teacher) => {
-          newMap[teacher.id] = { 
-            name: `${teacher.user.first_name} ${teacher.user.last_name}`,
-            email: teacher.user.email 
+        action.payload.forEach((staff) => {
+          newMap[staff.id] = { 
+            name: `${staff.user.firstName} ${staff.user.lastName}`,
+            email: staff.user.email 
           };
         });
         state.teacherMap = newMap;
       }
     );
 
-    // Handle createTeacher success
+    // Handle createStaff success - ONLY if teaching staff
     builder.addMatcher(
-      teacherApi.endpoints.createTeacher.matchFulfilled,
+      staffApi.endpoints.createStaff.matchFulfilled,
       (state, action) => {
-        state.teacherMap[action.payload.id] = { 
-          name: `${action.payload.user.first_name} ${action.payload.user.last_name}`,
-          email: action.payload.user.email
-        };
+        if (action.payload.isTeachingStaff) {
+          state.teacherMap[action.payload.id] = { 
+            name: `${action.payload.user.firstName} ${action.payload.user.lastName}`,
+            email: action.payload.user.email
+          };
+        }
       }
     );
 
-    // Handle deleteTeacher success
+    // Handle deleteStaff success
     builder.addMatcher(
-      teacherApi.endpoints.deleteTeacher.matchFulfilled,
+      staffApi.endpoints.deleteStaff.matchFulfilled,
       (state, action) => {
-        const deletedId = action.meta.arg;
-        if (typeof deletedId === 'string') {
+        const deletedId = action.meta.arg.originalArgs;
+        if (typeof deletedId === 'string' && state.teacherMap[deletedId]) {
           delete state.teacherMap[deletedId];
         }
       }

@@ -51,7 +51,7 @@ export const baseApi = createApi({
     'School',
     'Class',
     'Subject',
-    'Teacher',
+    'Staff',
   ],
   endpoints: () => ({}), // Endpoints will be added in separate files using injectEndpoints
 });

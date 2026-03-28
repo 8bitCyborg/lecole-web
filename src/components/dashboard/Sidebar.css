@@ -117,6 +117,82 @@
   pointer-events: none;
 }
 
+.nav-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-parent {
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+.submenu-arrow {
+  margin-left: auto;
+  transition: transform 0.3s ease;
+  opacity: 0.6;
+}
+
+.submenu-arrow.rotated {
+  transform: rotate(180deg);
+}
+
+.nav-submenu {
+  margin-top: 0.25rem;
+  padding-left: 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  animation: slideDown 0.3s ease-out;
+}
+
+.nav-subitem {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.75rem;
+  border-radius: 8px;
+  color: var(--sidebar-text);
+  text-decoration: none;
+  font-size: 0.875rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.nav-subitem:hover {
+  background: var(--sidebar-item-hover);
+  color: var(--sidebar-text-active);
+  transform: translateX(4px);
+}
+
+.nav-subitem.active {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--sidebar-text-active);
+  font-weight: 600;
+}
+
+.subitem-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.5;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @media (max-width: 768px) {
   .sidebar {
     position: fixed;

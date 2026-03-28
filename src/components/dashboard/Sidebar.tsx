@@ -1,5 +1,5 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
+import React, { useState } from 'react';
+import { NavLink, useLocation } from 'react-router-dom';
 import './Sidebar.css';
 import {
   LayoutDashboard,
@@ -13,6 +13,8 @@ import {
   Presentation,
   University,
   BookOpen,
+  GraduationCap,
+  ChevronDown,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -30,16 +32,94 @@ const Sidebar: React.FC<SidebarProps> = ({
   onLogout,
   logoutLoading
 }) => {
+  const location = useLocation();
+  const [openSubmenus, setOpenSubmenus] = useState<string[]>(['staff']);
+
+  const toggleSubmenu = (id: string) => {
+    setOpenSubmenus(prev =>
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
+    );
+  };
+
   const navItems = [
     { icon: LayoutDashboard, label: 'Overview', path: '/' },
     { icon: University, label: 'School', path: '/school' },
     { icon: BookOpen, label: 'Subjects', path: '/subjects' },
     { icon: Presentation, label: 'Classes', path: '/classes' },
-    { icon: UsersRound, label: 'Teachers', path: '/teachers' },
+    {
+      id: 'staff',
+      icon: UsersRound,
+      label: 'Staff',
+      path: '/staff',
+      children: [
+        { label: 'General Listing', path: '/staff', icon: UsersRound },
+        { label: 'Teaching Staff', path: '/staff/teachers', icon: GraduationCap },
+      ]
+    },
     { icon: Users, label: 'Students', path: '/students' },
     { icon: UserCircle, label: 'Profile', path: '/profile' },
     { icon: Settings, label: 'Settings', path: '/settings' },
   ];
+
+  const renderNavItem = (item: any) => {
+    const isSubmenuOpen = openSubmenus.includes(item.id || '');
+    const hasChildren = item.children && item.children.length > 0;
+    const isParentActive = hasChildren && (
+        location.pathname === item.path || 
+        item.children.some((child: any) => location.pathname === child.path)
+    );
+
+    if (hasChildren) {
+      return (
+        <div key={item.id} className="nav-group">
+          <div
+            className={`nav-item nav-parent ${isParentActive ? 'active' : ''} ${isSubmenuOpen ? 'expanded' : ''}`}
+            onClick={() => !isCollapsed && toggleSubmenu(item.id)}
+            title={isCollapsed ? item.label : ''}
+          >
+            <item.icon size={20} />
+            {!isCollapsed && (
+              <>
+                <span className="nav-label">{item.label}</span>
+                <ChevronDown 
+                  size={14} 
+                  className={`submenu-arrow ${isSubmenuOpen ? 'rotated' : ''}`} 
+                />
+              </>
+            )}
+          </div>
+          
+          {!isCollapsed && isSubmenuOpen && (
+            <div className="nav-submenu">
+              {item.children.map((child: any) => (
+                <NavLink
+                  key={child.path}
+                  to={child.path}
+                  end={child.path === item.path}
+                  className={({ isActive }) => `nav-subitem ${isActive ? 'active' : ''}`}
+                >
+                  {child.icon ? <child.icon size={16} /> : <div className="subitem-dot" />}
+                  <span>{child.label}</span>
+                </NavLink>
+              ))}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    return (
+      <NavLink
+        key={item.path}
+        to={item.path}
+        className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
+        title={isCollapsed ? item.label : ''}
+      >
+        <item.icon size={20} />
+        {!isCollapsed && <span>{item.label}</span>}
+      </NavLink>
+    );
+  };
 
   return (
     <aside className={`sidebar ${isCollapsed ? 'sidebar-collapsed' : ''} ${isOpenMobile ? 'open' : ''}`}>
@@ -69,25 +149,15 @@ const Sidebar: React.FC<SidebarProps> = ({
       </div>
 
       <nav className="sidebar-nav">
-        {navItems.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) => `nav-item ${isActive ? 'active' : ''}`}
-            title={isCollapsed ? item.label : ''}
-          >
-            <item.icon size={20} />
-            {!isCollapsed && <span>{item.label}</span>}
-          </NavLink>
-        ))}
+        {navItems.map(renderNavItem)}
       </nav>
 
-      <div style={{ padding: '1rem', borderTop: '1px solid var(--border)' }}>
+      <div style={{ padding: '1rem', borderTop: '1px solid var(--sidebar-border)' }}>
         <button
           onClick={onLogout}
           disabled={logoutLoading}
           className="nav-item"
-          style={{ width: '100%', border: 'none', background: 'none', cursor: 'pointer' }}
+          style={{ width: '100%', border: 'none', background: 'none', cursor: 'pointer', textAlign: 'left' }}
           title={isCollapsed ? 'Logout' : ''}
         >
           <LogOut size={20} />
@@ -99,4 +169,3 @@ const Sidebar: React.FC<SidebarProps> = ({
 };
 
 export default Sidebar;
-

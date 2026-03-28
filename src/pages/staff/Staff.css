@@ -1,11 +1,11 @@
-.teachers-page-container {
+.staff-page-container {
   padding: 2rem 4rem;
   max-width: 1200px;
   margin: 0 auto;
   animation: fadeIn 0.5s ease-out;
 }
 
-.teachers-header-banner {
+.staff-header-banner {
   background: linear-gradient(135deg, #0f172a, #1e3a8a);
   border-radius: 1.5rem;
   padding: 3.5rem 4rem;
@@ -19,7 +19,7 @@
   align-items: center;
 }
 
-.teachers-header-banner::before {
+.staff-header-banner::before {
   content: '';
   position: absolute;
   top: -20%;
@@ -31,13 +31,13 @@
   pointer-events: none;
 }
 
-.teachers-header-content {
+.staff-header-content {
   position: relative;
   z-index: 1;
   max-width: 650px;
 }
 
-.teachers-title {
+.staff-title {
   font-size: 3rem;
   font-weight: 900;
   margin: 0;
@@ -46,7 +46,7 @@
   line-height: 1;
 }
 
-.teachers-subtitle {
+.staff-subtitle {
   font-size: 1.15rem;
   color: rgba(255, 255, 255, 0.75);
   margin-top: 1.5rem;
@@ -54,7 +54,7 @@
   font-weight: 400;
 }
 
-.add-teacher-btn-header {
+.add-staff-btn-header {
   background: white;
   color: #1e3a8a;
   border: none;
@@ -69,17 +69,17 @@
   bottom: 2rem;
 }
 
-.add-teacher-btn-header:hover {
+.add-staff-btn-header:hover {
   transform: translateY(-4px);
   background: #f8fafc;
   box-shadow: 0 15px 25px rgba(0, 0, 0, 0.25);
 }
 
-.teachers-listing-section {
+.staff-listing-section {
   width: 100%;
 }
 
-.teachers-empty-state {
+.staff-empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -113,7 +113,7 @@
   line-height: 1.6;
 }
 
-.teachers-table-container {
+.staff-table-container {
   background: white;
   border-radius: 1rem;
   border: 1px solid #e2e8f0;
@@ -121,12 +121,12 @@
   overflow: hidden;
 }
 
-.teachers-table {
+.staff-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.teachers-table th {
+.staff-table th {
   background: #f8fafc;
   padding: 1rem 1.5rem;
   text-align: left;
@@ -138,7 +138,7 @@
   border-bottom: 2px solid #f1f5f9;
 }
 
-.teachers-table td {
+.staff-table td {
   padding: 1rem 1.5rem;
   border-bottom: 1px solid #f1f5f9;
   vertical-align: middle;
@@ -146,22 +146,22 @@
   font-size: 0.95rem;
 }
 
-.teachers-table tr {
+.staff-table tr {
   transition: background 0.2s ease;
   cursor: pointer;
 }
 
-.teachers-table tr:hover {
+.staff-table tr:hover {
   background-color: #f8fafc;
 }
 
-.teacher-name-cell {
+.staff-name-cell {
   display: flex;
   align-items: center;
   gap: 1rem;
 }
 
-.teacher-avatar {
+.staff-avatar {
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -174,12 +174,12 @@
   font-size: 0.9rem;
 }
 
-.teacher-name {
+.staff-name {
   font-weight: 600;
   color: #0f172a;
 }
 
-.teacher-email {
+.staff-email {
   font-size: 0.85rem;
   color: #64748b;
 }
@@ -194,7 +194,42 @@
   font-family: 'JetBrains Mono', monospace;
 }
 
-.teachers-actions {
+.staff-designation-badge {
+  background: #eff6ff;
+  color: #1e40af;
+  padding: 0.35rem 0.75rem;
+  border-radius: 0.5rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  border: 1px solid #dbeafe;
+}
+
+.staff-category-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 2rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: capitalize;
+}
+
+.staff-category-pill.teaching {
+  background: #f0fdf4;
+  color: #166534;
+  border: 1px solid #dcfce7;
+}
+
+.staff-category-pill.non-teaching {
+  background: #fdf2f2;
+  color: #991b1b;
+  border: 1px solid #fee2e2;
+}
+
+.staff-actions {
   display: flex;
   gap: 0.75rem;
   justify-content: flex-end;
@@ -295,17 +330,17 @@
 }
 
 @media (max-width: 1024px) {
-  .teachers-page-container {
+  .staff-page-container {
     padding: 2rem;
   }
 }
 
 @media (max-width: 768px) {
-  .teachers-page-container {
+  .staff-page-container {
     padding: 0;
   }
 
-  .teachers-header-banner {
+  .staff-header-banner {
     flex-direction: column;
     align-items: flex-start;
     padding: 2.5rem 1.5rem;
@@ -316,11 +351,11 @@
     border-radius: 1rem;
   }
 
-  .teachers-title {
+  .staff-title {
     font-size: 2.25rem;
   }
 
-  .add-teacher-btn-header {
+  .add-staff-btn-header {
     position: relative !important;
     align-self: center;
     width: 90%;
@@ -330,26 +365,26 @@
   }
 
   /* Responsive Table styling */
-  .teachers-table-container {
+  .staff-table-container {
     background: transparent;
     box-shadow: none;
     border: none;
   }
 
-  .teachers-table-container .teachers-table thead {
+  .staff-table-container .staff-table thead {
     display: none;
   }
 
-  .teachers-table-container .teachers-table,
-  .teachers-table-container .teachers-table tbody,
-  .teachers-table-container .teachers-table tr,
-  .teachers-table-container .teachers-table td {
+  .staff-table-container .staff-table,
+  .staff-table-container .staff-table tbody,
+  .staff-table-container .staff-table tr,
+  .staff-table-container .staff-table td {
     display: block;
     width: 100%;
     box-sizing: border-box;
   }
 
-  .teachers-table-container .teachers-table tr {
+  .staff-table-container .staff-table tr {
     background: white;
     margin-bottom: 2rem;
     border-top: 1px solid #e2e8f0;
@@ -359,16 +394,16 @@
   }
 
   /* Disable hover effect on mobile */
-  .teachers-table tbody tr:hover {
+  .staff-table tbody tr:hover {
     background-color: white !important;
     box-shadow: none !important;
   }
 
-  .teachers-table-container .teachers-table tbody tr:nth-child(even) {
+  .staff-table-container .staff-table tbody tr:nth-child(even) {
     background-color: #f8fafc;
   }
 
-  .teachers-table-container .teachers-table td {
+  .staff-table-container .staff-table td {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -379,7 +414,7 @@
     text-align: right;
   }
 
-  .teachers-table-container .teachers-table td::before {
+  .staff-table-container .staff-table td::before {
     content: attr(data-label);
     font-weight: 700;
     color: #64748b;
@@ -390,19 +425,19 @@
     flex-shrink: 0;
   }
 
-  .teachers-table-container .teachers-table td:last-child {
+  .staff-table-container .staff-table td:last-child {
     border-bottom: none;
     background: rgba(248, 250, 252, 0.5);
   }
 
-  .teachers-actions {
+  .staff-actions {
     justify-content: flex-end;
     width: 100%;
     pointer-events: auto;
   }
 
   /* Ensure the name cell content aligns correctly on mobile */
-  .teacher-name-cell {
+  .staff-name-cell {
     justify-content: flex-end;
     text-align: right;
   }

@@ -44,7 +44,7 @@ const SubjectPage = () => {
           <h1 className="subjects-title">Academic Curriculum</h1>
           <p className="subjects-subtitle">
             Manage your school's curriculum by adding, updating, and organizing subjects.
-            Define clear subject codes and names to streamline teacher assignments and
+            Define clear subject codes and names to streamline staff assignments and
             student progress tracking.
           </p>
         </div>

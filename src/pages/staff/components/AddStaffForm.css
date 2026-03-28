@@ -1,4 +1,4 @@
-.add-teacher-form-container {
+.add-staff-form-container {
   width: 100%;
 }
 
@@ -20,7 +20,7 @@
   line-height: 1.5;
 }
 
-.add-teacher-form {
+.add-staff-form {
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
@@ -75,3 +75,37 @@
     width: 100% !important;
   }
 }
+
+/* Checkbox Styles */
+.checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0;
+  cursor: pointer;
+}
+
+.checkbox-visual {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #cbd5e1;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  flex-shrink: 0;
+}
+
+.checkbox-group:hover .checkbox-visual {
+  border-color: #3b82f6;
+  background-color: #f0f7ff;
+}
+
+.checkbox-label {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #334155;
+  user-select: none;
+}
+
