@@ -7,6 +7,8 @@ import Sidebar from './Sidebar';
 import { Menu, Search, Bell } from 'lucide-react';
 import { useLogoutMutation } from '../../services/leApi/authApi';
 import { logout } from '../../store/slices/authSlice';
+import { baseApi } from '../../services/leApi';
+import { persistor } from '../../store';
 
 const DashboardLayout: React.FC = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
@@ -16,15 +18,17 @@ const DashboardLayout: React.FC = () => {
   const user = useAppSelector((state) => state.auth.user);
   const [logoutApi, { isLoading: logoutLoading }] = useLogoutMutation();
 
-  const initials = `${user?.first_name?.charAt(0) || ''}${user?.last_name?.charAt(0) || ''}`.toUpperCase() || '??';
+  const initials = `${user?.firstName?.charAt(0) || ''}${user?.lastName?.charAt(0) || ''}`.toUpperCase() || '??';
 
   const handleLogout = async () => {
     try {
       await logoutApi().unwrap();
-      dispatch(logout());
     } catch (error: any) {
       console.error('Logout failed:', error);
+    } finally {
       dispatch(logout());
+      dispatch(baseApi.util.resetApiState());
+      await persistor.purge();
     }
   };
 
