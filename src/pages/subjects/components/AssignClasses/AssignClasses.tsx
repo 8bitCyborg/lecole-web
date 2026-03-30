@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { Check } from 'lucide-react';
-import { selectClassMap } from '../../../store/slices/classesSlice';
-import { useAssignClassesMutation } from '../../../services/leApi/subjectApi';
-import { CATEGORY_OPTIONS } from '../../../services/leApi/classApi';
-import type { Category } from '../../../services/leApi/classApi';
+import { selectClassMap } from '@/store/slices/classesSlice';
+import { useAssignClassesMutation } from '@/services/leApi/subjectApi';
+import { CATEGORY_OPTIONS } from '@/services/leApi/classApi';
+import type { Category } from '@/services/leApi/classApi';
 import './AssignClasses.css';
 
 interface AssignClassesProps {

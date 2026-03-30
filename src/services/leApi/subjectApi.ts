@@ -6,6 +6,14 @@ export interface Subject {
   code?: string;
   schoolId: string;
   classes?: { id: string; name: string }[];
+  staff?: { 
+    id: string; 
+    user: { 
+      firstName: string; 
+      lastName: string; 
+      email?: string;
+    } 
+  }[];
   _count?: {
     classes: number;
     teachers: number;
@@ -52,6 +60,14 @@ export const subjectApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Subject'],
     }),
+    assignTeachers: builder.mutation<Subject, { id: string; teacherIds: string[] }>({
+      query: ({ id, teacherIds }) => ({
+        url: `/subject/${id}/teachers`,
+        method: 'PATCH',
+        body: { teacherIds },
+      }),
+      invalidatesTags: ['Subject'],
+    }),
     deleteSubject: builder.mutation<void, string>({
       query: (id) => ({
         url: `/subject/${id}`,
@@ -67,5 +83,6 @@ export const {
   useGetSubjectByIdQuery,
   useCreateSubjectMutation,
   useAssignClassesMutation,
+  useAssignTeachersMutation,
   useDeleteSubjectMutation,
 } = subjectApi;

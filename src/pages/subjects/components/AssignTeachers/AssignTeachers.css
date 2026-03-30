@@ -1,0 +1,200 @@
+.assign-teachers-container {
+  background: white;
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  margin-top: 0;
+}
+
+.assign-teachers-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.assign-teachers-title {
+  font-size: 1.75rem;
+  font-weight: 900;
+  color: #0f172a;
+  margin: 0;
+  letter-spacing: -0.02em;
+}
+
+.assign-teachers-subtitle {
+  color: #475569;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+.select-all-container {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1.25rem;
+  background: #f1f5f9;
+  border-radius: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 1px solid #e2e8f0;
+  user-select: none;
+}
+
+.select-all-container:hover {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+}
+
+.select-all-text {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.teachers-selection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-bottom: 2.5rem;
+}
+
+.teacher-select-item {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.25rem;
+  border-radius: 1rem;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  cursor: pointer;
+  background: #1e1b4b; /* Dark indigo */
+  color: #c7d2fe;
+  user-select: none;
+  transition: all 0.2s ease;
+}
+
+.teacher-select-item:hover {
+  background: linear-gradient(135deg, #312e81, #1e1b4b);
+  border-color: #6366f1;
+  color: white;
+  transform: translateY(-4px);
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3);
+}
+
+.teacher-select-item.selected {
+  background: white;
+  border-color: #6366f1;
+  color: #1e1b4b;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.teacher-select-item.selected:hover {
+  background: #f5f3ff;
+}
+
+.teacher-info-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.teacher-details {
+  display: flex;
+  flex-direction: column;
+}
+
+.checkbox-visual {
+  width: 20px;
+  height: 20px;
+  border-radius: 0.4rem;
+  border: 2px solid #cbd5e1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: white;
+  color: #0f172a;
+  flex-shrink: 0;
+}
+
+.teacher-select-item.selected .checkbox-visual {
+  border-color: #6366f1;
+  background: #6366f1;
+  color: white;
+}
+
+.teacher-select-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+
+.teacher-select-email {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  font-weight: 500;
+}
+
+.currently-assigned-section {
+  margin-bottom: 3rem;
+  padding-bottom: 2rem;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.assigned-badges-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.assigned-badge {
+  background: #f1f5f9;
+  color: #475569;
+  padding: 0.5rem 1rem;
+  border-radius: 2rem;
+  font-size: 0.85rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.assigned-badge-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #6366f1;
+}
+
+.assign-actions {
+  display: flex;
+  justify-content: flex-end;
+  border-top: 1px solid #f1f5f9;
+  padding-top: 2rem;
+}
+
+@media (max-width: 768px) {
+  .assign-teachers-container {
+    width: auto;
+    margin-left: 0;
+    padding: 2.5rem 1.5rem;
+    border-radius: 1.5rem;
+  }
+
+  .assign-teachers-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+  }
+
+  .select-all-container {
+    width: 100%;
+    justify-content: center;
+    padding: 1rem;
+  }
+
+  .teachers-selection-grid {
+    grid-template-columns: 1fr;
+  }
+}
