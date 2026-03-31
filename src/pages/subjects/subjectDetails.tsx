@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Edit, Users, Presentation } from 'lucide-react';
 import { useGetSubjectByIdQuery } from '../../services/leApi/subjectApi';
-import AssignClasses from './components/AssignClasses/assignClasses';
+import AssignClasses from './components/AssignClasses/AssignClasses';
 import AssignTeachers from './components/AssignTeachers/AssignTeachers';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../components/ui/tabs';
 import './Subjects.css';
@@ -87,38 +87,40 @@ const SubjectDetails = () => {
 
       <div className="subjects-listing-section">
         {subject && (
-          <Tabs defaultValue="classes" className="w-full">
-            <TabsList className="">
-              <TabsTrigger
-                value="classes"
-                className=""
-              >
-                <Presentation size={18} className="mr-2" />
-                Assigned Classes
-              </TabsTrigger>
-              <TabsTrigger
-                value="teachers"
-                className=""
-              >
-                <Users size={18} className="" />
-                Assigned Teachers
-              </TabsTrigger>
-            </TabsList>
+          <div className="subject-tabs-card">
+            <Tabs defaultValue="classes" className="w-full">
+              <TabsList className="subject-tabs-list">
+                <TabsTrigger
+                  value="classes"
+                  className="subject-tabs-trigger"
+                >
+                  <Presentation size={18} className="mr-2" />
+                  Assigned Classes
+                </TabsTrigger>
+                <TabsTrigger
+                  value="teachers"
+                  className="subject-tabs-trigger"
+                >
+                  <Users size={18} className="mr-2" />
+                  Assigned Teachers
+                </TabsTrigger>
+              </TabsList>
 
-            <TabsContent value="classes" className="">
-              <AssignClasses
-                subjectId={subject.id}
-                assignedClassIds={subject.classes?.map((c) => c.id) || []}
-              />
-            </TabsContent>
+              <TabsContent value="classes" className="subject-tabs-content">
+                <AssignClasses
+                  subjectId={subject.id}
+                  assignedClassIds={subject.classes?.map((c) => c.id) || []}
+                />
+              </TabsContent>
 
-            <TabsContent value="teachers" className="">
-              <AssignTeachers
-                subjectId={subject.id}
-                assignedTeacherIds={subject.staff?.map((s) => s.id) || []}
-              />
-            </TabsContent>
-          </Tabs>
+              <TabsContent value="teachers" className="subject-tabs-content">
+                <AssignTeachers
+                  subjectId={subject.id}
+                  assignedTeacherIds={subject.staff?.map((s) => s.id) || []}
+                />
+              </TabsContent>
+            </Tabs>
+          </div>
         )}
       </div>
     </div>

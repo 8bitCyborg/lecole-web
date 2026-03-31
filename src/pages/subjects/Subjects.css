@@ -415,3 +415,64 @@
     min-width: 120px;
   }
 }
+
+/* ── Subject Details: Unified Tabs Card ─────────────────────────────────── */
+
+.subject-tabs-card {
+  background: transparent;
+}
+
+/* Strip that holds the triggers — flush with the card top */
+.subject-tabs-list {
+  height: 3.25rem;
+  background: white;
+  border-radius: 1rem 1rem 0 0;
+  gap: 0.25rem;
+  z-index: 999;
+  /* border: solid 1px #1e40af; */
+  border-bottom: none;
+}
+
+/* Individual trigger */
+.subject-tabs-trigger {
+  height: 100%;
+  border-radius: 0.5rem;
+  padding: 0 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+  background: transparent;
+  gap: 0.5rem;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  box-shadow: none;
+}
+
+.subject-tabs-trigger:hover {
+  color: #0f172a;
+  background: #f8fafc;
+}
+
+/* Active state — light blue background indicator */
+.subject-tabs-trigger[data-state="active"] {
+  color: #1e40af;
+  background: #eff6ff;
+}
+
+/* Content area — child components handle their own padding */
+.subject-tabs-content {
+  margin-top: -0.55rem;
+}
+
+/* Strip inner card chrome so components blend into the outer tab card */
+.subject-tabs-content .assign-classes-container,
+.subject-tabs-content .assign-teachers-container {
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .subject-tabs-list {
+    width: 100%;
+  }
+}
