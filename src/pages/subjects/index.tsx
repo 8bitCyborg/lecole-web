@@ -86,6 +86,7 @@ const SubjectPage = () => {
                   <th>Subject Name</th>
                   <th>Code</th>
                   <th>Classes</th>
+                  <th>Teachers</th>
                   <th style={{ textAlign: 'right' }}>Actions</th>
                 </tr>
               </thead>
@@ -105,6 +106,9 @@ const SubjectPage = () => {
                     </td>
                     <td data-label="Classes">
                       {sub._count?.classes || 0} {sub._count?.classes === 1 ? 'Class' : 'Classes'}
+                    </td>
+                    <td data-label="Teachers">
+                      {sub._count?.staff || 0} {sub._count?.staff === 1 ? 'Teacher' : 'Teachers'}
                     </td>
                     <td data-label="Actions" style={{ textAlign: 'right' }}>
                       <div className="subject-table-actions">

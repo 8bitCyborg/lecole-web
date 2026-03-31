@@ -6,17 +6,17 @@ export interface Subject {
   code?: string;
   schoolId: string;
   classes?: { id: string; name: string }[];
-  staff?: { 
-    id: string; 
-    user: { 
-      firstName: string; 
-      lastName: string; 
+  staff?: {
+    id: string;
+    user: {
+      firstName: string;
+      lastName: string;
       email?: string;
-    } 
+    }
   }[];
   _count?: {
     classes: number;
-    teachers: number;
+    staff: number;
   };
   createdAt: string;
   updatedAt: string;

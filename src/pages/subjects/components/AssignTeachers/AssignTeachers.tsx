@@ -26,21 +26,13 @@ const AssignTeachers: React.FC<AssignTeachersProps> = ({
 
   const allSelected = allTeacherIds.length > 0 && selectedIds.length === allTeacherIds.length;
 
-  const toggleAll = () => {
-    if (allSelected) {
-      setSelectedIds([]);
-    } else {
-      setSelectedIds(allTeacherIds);
-    }
-  };
+  const toggleAll = () =>
+    allSelected ? setSelectedIds([]) : setSelectedIds(allTeacherIds);
 
-  const toggleTeacher = (id: string) => {
+  const toggleTeacher = (id: string) =>
     setSelectedIds(prev =>
-      prev.includes(id)
-        ? prev.filter(item => item !== id)
-        : [...prev, id]
+      prev.includes(id) ? prev.filter(item => item !== id) : [...prev, id]
     );
-  };
 
   const handleSave = async () => {
     setIsUpdating(true);
@@ -53,7 +45,9 @@ const AssignTeachers: React.FC<AssignTeachersProps> = ({
     }
   };
 
-  const hasChanges = JSON.stringify(selectedIds.sort()) !== JSON.stringify(assignedTeacherIds.slice().sort());
+  const hasChanges =
+    JSON.stringify(selectedIds.slice().sort()) !==
+    JSON.stringify(assignedTeacherIds.slice().sort());
 
   // Sort teachers by name for the display list
   const sortedTeachers = Object.entries(allTeacherMap)
@@ -62,69 +56,64 @@ const AssignTeachers: React.FC<AssignTeachersProps> = ({
 
   return (
     <div className="assign-teachers-container">
-      <div className="assign-teachers-header">
-        <div>
-          <h2 className="assign-teachers-title">Staff Assignment</h2>
-          <p className="assign-teachers-subtitle">Assign subject matter experts and instructors to this subject.</p>
+
+      {/* ── Summary bar ──────────────────────────────────────────────── */}
+      <div className="at-summary-bar">
+        <div className="at-summary-text">
+          <h3 className="at-summary-title">Staff Assignment</h3>
+          <p className="at-summary-desc">
+            Use this tab to assign or unassign subject matter experts and instructors to this subject.
+            <br />
+            <b>{assignedTeacherIds.length > 0 && ` Currently assigned to ${assignedTeacherIds.length} staff member${assignedTeacherIds.length === 1 ? '' : 's'}.`}</b>
+          </p>
         </div>
 
-        <div className="select-all-container" onClick={toggleAll}>
-          <div className="checkbox-visual" style={{
-            background: allSelected ? '#3b82f6' : 'white',
-            borderColor: allSelected ? '#3b82f6' : '#cbd5e1',
-            color: allSelected ? 'white' : '#0f172a'
-          }}>
-            {allSelected && <Check size={14} strokeWidth={3} />}
-          </div>
-          <span className="select-all-text">{allSelected ? 'Deselect All' : 'Select All Teachers'}</span>
+        <button className="at-select-all-btn" onClick={toggleAll}>
+          <span className={`at-mini-check ${allSelected ? 'at-mini-check--active' : ''}`}>
+            {allSelected && <Check size={10} strokeWidth={3.5} />}
+          </span>
+          {allSelected ? 'Deselect All Staff' : 'Select All Staff'}
+        </button>
+      </div>
+
+      {/* ── Teachers grid ─────────────────────────────────────────────── */}
+      <div className="at-content">
+        <div className="at-teachers-grid">
+          {sortedTeachers.map(({ id, name, email }) => {
+            const isSelected = selectedIds.includes(id);
+            return (
+              <button
+                key={id}
+                className={`at-card ${isSelected ? 'at-card--selected' : ''}`}
+                onClick={() => toggleTeacher(id)}
+              >
+                <div className="at-card-info">
+                  <span className="at-card-name">{name}</span>
+                  {email && <span className="at-card-email">{email}</span>}
+                </div>
+                <span className={`at-card-check ${isSelected ? 'at-card-check--selected' : ''}`}>
+                  {isSelected && <Check size={12} strokeWidth={3.5} />}
+                </span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      <div className="currently-assigned-section">
-        <h3 className="assign-teachers-title" style={{ fontSize: '1.1rem' }}>Currently Assigned</h3>
-        <div className="assigned-badges-container">
-          {assignedTeacherIds.length === 0 ? (
-            <p style={{ color: '#64748b', fontSize: '0.9rem', fontStyle: 'italic' }}>No teachers currently assigned.</p>
-          ) : (
-            assignedTeacherIds.map(id => (
-              <div key={id} className="assigned-badge">
-                <span className="assigned-badge-dot"></span>
-                {allTeacherMap[id]?.name || 'Loading...'}
-              </div>
-            ))
-          )}
-        </div>
-      </div>
-
-      <div className="teachers-selection-grid">
-        {sortedTeachers.map(({ id, name, email }) => (
-          <div
-            key={id}
-            className={`teacher-select-item ${selectedIds.includes(id) ? 'selected' : ''}`}
-            onClick={() => toggleTeacher(id)}
-          >
-            <div className="teacher-info-wrapper">
-              <div className="checkbox-visual">
-                {selectedIds.includes(id) && <Check size={14} strokeWidth={3} />}
-              </div>
-              <div className="teacher-details">
-                <span className="teacher-select-name">{name}</span>
-                {email && <span className="teacher-select-email">{email}</span>}
-              </div>
-            </div>
-          </div>
-        ))}
-      </div>
-
-      <div className="assign-actions">
+      {/* ── Footer ────────────────────────────────────────────────────── */}
+      <div className="at-footer">
+        {hasChanges && (
+          <span className="at-unsaved-badge">Unsaved changes</span>
+        )}
         <button
-          className="le-button le-button-primary"
+          className="le-button le-button-primary at-save-btn"
           onClick={handleSave}
           disabled={!hasChanges || isUpdating}
         >
-          {isUpdating ? 'Saving...' : 'Save Assignments'}
+          {isUpdating ? 'Saving…' : 'Save Assignments'}
         </button>
       </div>
+
     </div>
   );
 };

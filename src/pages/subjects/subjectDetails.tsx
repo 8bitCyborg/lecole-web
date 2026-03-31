@@ -73,7 +73,7 @@ const SubjectDetails = () => {
               <span className="banner-stat-label">
                 <Users size={14} /> Teachers
               </span>
-              <span className="banner-stat-value">{subject._count.teachers}</span>
+              <span className="banner-stat-value">{subject._count.staff}</span>
             </div>
           </div>
         </div>
