@@ -40,6 +40,7 @@ export interface Arm {
   classMasterId?: string;
   createdAt: string;
   updatedAt: string;
+  class?: { name: string };
 }
 
 export interface CreateArmRequest {
@@ -66,6 +67,13 @@ export const classApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Class'],
     }),
+    deleteClass: builder.mutation<void, string>({
+      query: (id) => ({
+        url: `/class/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['Class'],
+    }),
     createArm: builder.mutation<Arm, CreateArmRequest>({
       query: (armData) => ({
         url: `/class/${armData.classId}/arms`,
@@ -74,19 +82,19 @@ export const classApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Class'],
     }),
+    getSchoolArms: builder.query<Arm[], void>({
+      query: () => ({
+        url: `/class/arms`,
+        method: 'GET',
+      }),
+      providesTags: ['Class'],
+    }),
     getArms: builder.query<Arm[], string>({
       query: (classId) => ({
         url: `/class/${classId}/arms`,
         method: 'GET',
       }),
       providesTags: ['Class'],
-    }),
-    deleteClass: builder.mutation<void, string>({
-      query: (id) => ({
-        url: `/class/${id}`,
-        method: 'DELETE',
-      }),
-      invalidatesTags: ['Class'],
     }),
     deleteArm: builder.mutation<void, { classId: string; armId: string }>({
       query: ({ classId, armId }) => ({
@@ -95,6 +103,14 @@ export const classApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Class'],
     }),
+    assignMasterToArm: builder.mutation<Arm, { armId: string; staffId: string | null }>({
+      query: ({ armId, staffId }) => ({
+        url: `/class/arms/${armId}/master`,
+        method: 'PATCH',
+        body: { staffId },
+      }),
+      invalidatesTags: ['Class', 'Staff'],
+    }),
   }),
 });
 
@@ -102,9 +118,11 @@ export const {
   useGetClassesQuery,
   useCreateClassMutation,
   useCreateArmMutation,
+  useGetSchoolArmsQuery,
   useGetArmsQuery,
   useDeleteClassMutation,
   useDeleteArmMutation,
+  useAssignMasterToArmMutation,
 } = classApi;
 
 

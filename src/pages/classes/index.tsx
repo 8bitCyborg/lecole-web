@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useGetClassesQuery, useDeleteClassMutation } from '../../services/leApi/classApi';
+import { useGetClassesQuery, useGetSchoolArmsQuery, useDeleteClassMutation } from '../../services/leApi/classApi';
 import AddClassForm from './components/AddClassForm';
 import ClassListing from './components/ClassListing';
 import DeleteConfirmationModal from '../../components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
@@ -14,6 +14,12 @@ const ClassPage = () => {
     refetchOnFocus: true,
     refetchOnReconnect: true,
   });
+  const { data: arms = [] } = useGetSchoolArmsQuery(undefined, {
+    refetchOnMountOrArgChange: true,
+    refetchOnFocus: true,
+    refetchOnReconnect: true,
+  });
+
   const [deleteClass] = useDeleteClassMutation();
 
   const handleAddSuccess = () => {

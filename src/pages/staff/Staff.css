@@ -497,21 +497,30 @@
   border: 1px solid #dbeafe;
 }
 
-.class-meta-counts {
+.staff-meta {
   display: flex;
-  gap: 1rem;
-  margin-top: 1.5rem;
+  gap: 2.5rem;
+  margin-top: 2rem;
 }
 
-.class-id-badge {
-  background: rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(4px);
-  padding: 0.4rem 0.8rem;
-  border-radius: 0.75rem;
-  font-size: 0.8rem;
+.staff-meta-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.staff-meta-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.7);
+  padding-bottom: 0.25rem;
+}
+
+.staff-meta-value {
   font-weight: 600;
   color: white;
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  font-size: 1.1rem;
 }
 
 .banner-actions {

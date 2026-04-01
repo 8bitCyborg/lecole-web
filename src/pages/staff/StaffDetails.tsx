@@ -1,13 +1,17 @@
-import React from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Edit, User, Mail, Phone, BookOpen, UserCheck } from 'lucide-react';
+import { ArrowLeft, Edit, Mail, Phone, BookOpen } from 'lucide-react';
 import { useGetStaffMemberQuery } from '../../services/leApi/staffApi';
+import ClassAssignment from './components/ClassAssignment/ClassAssignment';
+
 import './Staff.css';
 
 const StaffDetails = () => {
+
   const { staffId } = useParams<{ staffId: string }>();
   const navigate = useNavigate();
   const { data: staff, isLoading, isError } = useGetStaffMemberQuery(staffId!);
+
+  console.log('staff', staff);
 
   const handleBack = () => {
     navigate('/staff');
@@ -53,18 +57,41 @@ const StaffDetails = () => {
             {staff.title && `${staff.title}. `}{user.firstName} {user.lastName}
           </h1>
           <p className="staff-subtitle">
-            Profile overview for <strong>{user.firstName} {user.lastName}</strong>. Manage contact 
+            Profile overview for <strong>{user.firstName} {user.lastName}</strong>. Manage contact
             information, staff assignments, and track responsibilities within the institution.
           </p>
 
-          <div className="class-meta-counts">
-             {staff.staffId && (
-               <span className="class-id-badge">Staff ID: {staff.staffId}</span>
-             )}
-             <span className="class-id-badge">Designation: {staff.designation}</span>
-             <span className="class-id-badge">{staff.isTeachingStaff ? 'Teaching' : 'Non-Teaching'}</span>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '0rem', margin: '1.25rem 0', color: 'rgba(255, 255, 255, 0.9)' }}>
+            {user.email && (
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.95rem' }}>
+                <Mail size={16} /> {user.email}
+              </span>
+            )}
+            {user.phone && (
+              <span style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.95rem' }}>
+                <Phone size={16} /> {user.phone}
+              </span>
+            )}
+          </div>
+
+          <div className="staff-meta">
+            {staff.staffId && (
+              <div className="staff-meta-item">
+                <span className="staff-meta-label">Staff ID</span>
+                <span className="staff-meta-value">{staff.staffId}</span>
+              </div>
+            )}
+            <div className="staff-meta-item">
+              <span className="staff-meta-label">Designation</span>
+              <span className="staff-meta-value">{staff.designation}</span>
+            </div>
+            <div className="staff-meta-item">
+              <span className="staff-meta-label">Role</span>
+              <span className="staff-meta-value">{staff.isTeachingStaff ? 'Teaching' : 'Non-Teaching'}</span>
+            </div>
           </div>
         </div>
+
         <div className="banner-actions">
           <button className="le-button le-button-primary">
             <Edit size={16} style={{ marginRight: '8px' }} />
@@ -73,62 +100,27 @@ const StaffDetails = () => {
         </div>
       </div>
 
-      <div className="arm-details-grid">
-        {/* Contact Information */}
-        <div className="staff-table-container" style={{ padding: '2rem' }}>
-          <h3 className="section-title" style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '8.5rem' }}>
-             <User size={18} /> Basic Information
-          </h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            <div>
-              <span className="staff-email" style={{ textTransform: 'uppercase', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.05em' }}>Full Name</span>
-              <p style={{ margin: '0.25rem 0 0', fontWeight: 600, fontSize: '1.1rem' }}>{user.firstName} {user.lastName}</p>
-            </div>
-            <div>
-               <span className="staff-email" style={{ textTransform: 'uppercase', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                 <Mail size={14} /> Email Address
-               </span>
-               <p style={{ margin: '0.25rem 0 0', fontWeight: 600, fontSize: '1.1rem' }}>{user.email || 'N/A'}</p>
-            </div>
-            <div>
-               <span className="staff-email" style={{ textTransform: 'uppercase', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                 <Phone size={14} /> Phone Number
-               </span>
-               <p style={{ margin: '0.25rem 0 0', fontWeight: 600, fontSize: '1.1rem' }}>{user.phone}</p>
+      <div className="staff-table-container" style={{ padding: '2rem' }}>
+        <h3 className="section-title" style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <BookOpen size={18} /> Academic Roles
+        </h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          <ClassAssignment staff={staff} />
+
+          <div>
+            <span className="staff-email" style={{ textTransform: 'uppercase', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.05em' }}>Assigned Subjects</span>
+            <div className="class-subjects-list" style={{ marginTop: '0.75rem' }}>
+              {staff.subjects && staff.subjects.length > 0 ? (
+                staff.subjects.map((sub: any) => (
+                  <span key={sub.id} className="assigned-subject-pill">
+                    {sub.name}
+                  </span>
+                ))
+              ) : (
+                <p style={{ color: '#64748b', fontStyle: 'italic', fontSize: '0.9rem', margin: 0 }}>No subjects assigned to this staff member yet.</p>
+              )}
             </div>
           </div>
-        </div>
-
-        {/* Academic Profile */}
-        <div className="staff-table-container" style={{ padding: '2rem' }}>
-           <h3 className="section-title" style={{ marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-             <BookOpen size={18} /> Academic Roles
-           </h3>
-           <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-              <div>
-                <span className="staff-email" style={{ textTransform: 'uppercase', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                  <UserCheck size={14} /> Class Master Assignment
-                </span>
-                <p style={{ margin: '0.25rem 0 0', fontWeight: 600, fontSize: '1.1rem', color: staff.arm ? '#1e40af' : '#64748b' }}>
-                  {staff.arm ? `${staff.arm.name}` : 'No Class Assigned'}
-                </p>
-              </div>
-              
-              <div>
-                <span className="staff-email" style={{ textTransform: 'uppercase', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.05em' }}>Assigned Subjects</span>
-                <div className="class-subjects-list" style={{ marginTop: '0.75rem' }}>
-                  {staff.subjects && staff.subjects.length > 0 ? (
-                    staff.subjects.map((sub: any) => (
-                      <span key={sub.id} className="assigned-subject-pill">
-                        {sub.name}
-                      </span>
-                    ))
-                  ) : (
-                    <p style={{ color: '#64748b', fontStyle: 'italic', fontSize: '0.9rem', margin: 0 }}>No subjects assigned to this staff member yet.</p>
-                  )}
-                </div>
-              </div>
-           </div>
         </div>
       </div>
 

@@ -38,7 +38,7 @@ export interface Staff {
     role: string;
   };
   subjects?: any[];
-  arm?: any;
+  arms?: any[];
   createdAt: string;
   updatedAt: string;
 }
