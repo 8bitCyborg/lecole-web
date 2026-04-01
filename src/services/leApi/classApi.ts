@@ -57,12 +57,12 @@ export const classApi = baseApi.injectEndpoints({
         url: '/class',
         method: 'GET',
       }),
-      // transformResponse: (response: Class[]) => {
-      //   return response.reduce((acc, cls) => {
-      //     acc[cls.id] = cls;
-      //     return acc;
-      //   }, {} as Record<string, Class>);
-      // },
+      transformResponse: (response: Class[]) => {
+        return response.reduce((acc, cls) => {
+          acc[cls.id] = cls;
+          return acc;
+        }, {} as Record<string, Class>);
+      },
       keepUnusedDataFor: 86400, // 24 hours
       providesTags: ['Class'],
     }),

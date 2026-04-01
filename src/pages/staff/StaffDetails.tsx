@@ -13,8 +13,6 @@ const StaffDetails = () => {
   const navigate = useNavigate();
   const { data: staff, isLoading, isError } = useGetStaffMemberQuery(staffId!);
 
-  console.log('staff', staff);
-
   const handleBack = () => {
     navigate(-1);
   };

@@ -604,3 +604,39 @@
   background: #fee2e2;
   color: #ef4444;
 }
+
+.class-category-tag {
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  color: white;
+  padding: 0.35rem 0.8rem;
+  border-radius: 2rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-right: 1.25rem;
+  display: inline-block;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  vertical-align: middle;
+}
+
+.arm-master-tag {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+  color: #1e40af;
+  font-size: 0.8rem;
+  font-weight: 700;
+  background: #f0f7ff;
+  padding: 0.4rem 0.8rem;
+  border-radius: 0.75rem;
+  border: 1px solid #dbeafe;
+  transition: all 0.2s ease;
+}
+
+.class-card:hover .arm-master-tag {
+  background: #dbeafe;
+  border-color: #bfdbfe;
+}

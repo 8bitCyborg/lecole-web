@@ -1,9 +1,10 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2 } from 'lucide-react';
-import { useGetClassesQuery, useGetArmsQuery, useDeleteArmMutation } from '../../services/leApi/classApi';
+import { ArrowLeft, Trash2, User } from 'lucide-react';
+import { useGetClassesQuery, useGetArmsQuery, useDeleteArmMutation, CATEGORY_OPTIONS } from '@/services/leApi/classApi';
 import AddArmForm from './components/AddArmForm';
-import DeleteConfirmationModal from '../../components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
+import { useGetTeachingStaffQuery } from '@/services/leApi/staffApi';
+import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
 import './Classes.css';
 
 const ClassArmsPage = () => {
@@ -14,10 +15,12 @@ const ClassArmsPage = () => {
   const [armToDelete, setArmToDelete] = useState<any>(null);
   const { data: classMap = {} } = useGetClassesQuery();
   const { data: arms = [], isLoading: armsLoading } = useGetArmsQuery(classId || '');
+  const { data: teacherMap = {} } = useGetTeachingStaffQuery();
   const [deleteArm] = useDeleteArmMutation();
 
   // Find current class name
   const currentClass = classMap[classId || ''];
+  const categoryLabel = CATEGORY_OPTIONS.find(opt => opt.value === currentClass?.category)?.label || currentClass?.category;
 
   const handleAddSuccess = () => {
     setShowAddModal(false);
@@ -57,7 +60,8 @@ const ClassArmsPage = () => {
             <span className="class-id-badge">ID: {classId}</span>
           </div>
           <p className="classes-subtitle">
-            Currently managing <strong>{currentClass?._count?.arms || 0} {currentClass?._count?.arms === 1 ? 'arm' : 'arms'}</strong>.
+            {categoryLabel && <span className="class-category-tag">{categoryLabel}</span>}
+            Currently managing <strong>{arms.length} { arms.length === 1 ? 'arm' : 'arms'}</strong>.
             This is the hub for arm-level distribution, student assignments, and class-specific scheduling.
           </p>
         </div>
@@ -128,6 +132,12 @@ const ClassArmsPage = () => {
                         Capacity: {arm.capacity}
                       </span>
                     )}
+                    {arm.classMasterId && teacherMap[arm.classMasterId] && (
+                        <div className="arm-master-tag">
+                            <User size={12} />
+                            <span>{teacherMap[arm.classMasterId].user.firstName} {teacherMap[arm.classMasterId].user.lastName}</span>
+                        </div>
+                    )}
                   </div>
                   <Trash2
                     size={20}
@@ -164,7 +174,7 @@ const ClassArmsPage = () => {
 
       <DeleteConfirmationModal
         isOpen={showDeleteModal}
-        title={`Delete Arm: ${currentClass?.name}${armToDelete?.name}`}
+        title={`Delete Arm: ${currentClass?.name} - ${armToDelete?.name}`}
         message={
           <>
             <p>Are you sure you want to delete this arm? This action cannot be undone.</p>
