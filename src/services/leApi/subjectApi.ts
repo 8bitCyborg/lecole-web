@@ -68,13 +68,14 @@ export const subjectApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Subject'],
     }),
+
     assignTeachers: builder.mutation<Subject, { id: string; teacherIds: string[] }>({
       query: ({ id, teacherIds }) => ({
         url: `/subject/${id}/teachers`,
         method: 'PATCH',
         body: { teacherIds },
       }),
-      invalidatesTags: ['Subject'],
+      invalidatesTags: ['Subject', 'Staff', 'Teachers'],
     }),
 
     deleteSubject: builder.mutation<void, string>({

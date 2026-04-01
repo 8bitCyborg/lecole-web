@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useSelector } from 'react-redux';
 import { Check } from 'lucide-react';
-import { selectClassMap } from '@/store/slices/classesSlice';
-import { useGetSchoolArmsQuery, useAssignMasterToArmMutation, CATEGORY_OPTIONS } from '@/services/leApi/classApi';
+import { useGetSchoolArmsQuery, useAssignMasterToArmMutation, useGetClassesQuery, CATEGORY_OPTIONS } from '@/services/leApi/classApi';
 import type { Category } from '@/services/leApi/classApi';
 import type { Staff } from '@/services/leApi/staffApi';
 import './ClassAssignment.css';
@@ -20,9 +18,11 @@ const CATEGORY_ACCENT: Record<string, string> = {
 };
 
 const ClassAssignment: React.FC<ClassAssignmentProps> = ({ staff }) => {
-  const { data: arms = [], isLoading: armsLoading } = useGetSchoolArmsQuery();
+  const { data: armMap = {}, isLoading: armsLoading } = useGetSchoolArmsQuery();
   const [assignMaster] = useAssignMasterToArmMutation();
-  const classMap = useSelector(selectClassMap);
+  const { data: classMap = {} } = useGetClassesQuery();
+
+  const arms = Object.values(armMap);
 
   const initialAssignedIds = useMemo(() => 
     arms.filter(arm => arm.classMasterId === staff.id).map(arm => arm.id)

@@ -12,12 +12,12 @@ const ClassArmsPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [armToDelete, setArmToDelete] = useState<any>(null);
-  const { data: classes = [] } = useGetClassesQuery();
+  const { data: classMap = {} } = useGetClassesQuery();
   const { data: arms = [], isLoading: armsLoading } = useGetArmsQuery(classId || '');
   const [deleteArm] = useDeleteArmMutation();
 
   // Find current class name
-  const currentClass = classes.find((c: any) => c.id === classId);
+  const currentClass = classMap[classId || ''];
 
   const handleAddSuccess = () => {
     setShowAddModal(false);

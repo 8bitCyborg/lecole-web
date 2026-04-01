@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { Check } from 'lucide-react';
-import { selectTeacherMap } from '@/store/slices/teachersSlice';
+import { useGetTeachingStaffQuery } from '@/services/leApi/staffApi';
 import { useAssignTeachersMutation } from '@/services/leApi/subjectApi';
 import './AssignTeachers.css';
 
@@ -15,7 +14,7 @@ const AssignTeachers: React.FC<AssignTeachersProps> = ({
   assignedTeacherIds,
 }) => {
   const [assignTeachers] = useAssignTeachersMutation();
-  const allTeacherMap = useSelector(selectTeacherMap);
+  const { data: allTeacherMap = {} } = useGetTeachingStaffQuery();
   const allTeacherIds = Object.keys(allTeacherMap);
   const [selectedIds, setSelectedIds] = useState<string[]>(assignedTeacherIds);
   const [isUpdating, setIsUpdating] = useState(false);

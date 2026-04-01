@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { useSelector } from 'react-redux';
 import { Check } from 'lucide-react';
-import { selectClassMap } from '@/store/slices/classesSlice';
 import { useAssignClassesMutation } from '@/services/leApi/subjectApi';
-import { CATEGORY_OPTIONS } from '@/services/leApi/classApi';
+import { useGetClassesQuery, CATEGORY_OPTIONS } from '@/services/leApi/classApi';
 import type { Category } from '@/services/leApi/classApi';
 import './AssignClasses.css';
 
@@ -26,7 +24,7 @@ const AssignClasses: React.FC<AssignClassesProps> = ({
   assignedClassIds,
 }) => {
   const [assignClasses] = useAssignClassesMutation();
-  const allClassMap = useSelector(selectClassMap);
+  const { data: allClassMap = {} } = useGetClassesQuery();
   const allClassIds = Object.keys(allClassMap);
   const [selectedIds, setSelectedIds] = useState<string[]>(assignedClassIds);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -35,12 +33,12 @@ const AssignClasses: React.FC<AssignClassesProps> = ({
     setSelectedIds(assignedClassIds);
   }, [assignedClassIds]);
 
-  const groupedClasses = Object.entries(allClassMap).reduce((acc, [id, details]) => {
+  const groupedClasses = Object.values(allClassMap).reduce((acc, details) => {
     const cat = details.category || 'OTHER';
     if (!acc[cat]) acc[cat] = [];
-    acc[cat].push({ id, ...details });
+    acc[cat].push(details);
     return acc;
-  }, {} as Record<string, { id: string; name: string; category: string }[]>);
+  }, {} as Record<string, any[]>);
 
   const getCategoryLabel = (cat: string) =>
     CATEGORY_OPTIONS.find(opt => opt.value === cat)?.label || cat;

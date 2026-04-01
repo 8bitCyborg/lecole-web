@@ -66,12 +66,22 @@ export const staffApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Staff'],
     }),
-    getTeachingStaff: builder.query<Staff[], void>({
+    getTeachingStaff: builder.query<Record<string, { name: string; email?: string }>, void>({
       query: () => ({
         url: '/staff/teachers',
         method: 'GET',
       }),
-      providesTags: ['Staff'],
+      transformResponse: (response: Staff[]) => {
+        return response.reduce((acc, staff) => {
+          acc[staff.id] = {
+            name: `${staff.user.firstName} ${staff.user.lastName}`,
+            email: staff.user.email,
+          };
+          return acc;
+        }, {} as Record<string, { name: string; email?: string }>);
+      },
+      keepUnusedDataFor: 86400, // 24 hours
+      providesTags: ['Teachers'],
     }),
     getStaffMember: builder.query<Staff, string>({
       query: (id) => ({
@@ -86,14 +96,14 @@ export const staffApi = baseApi.injectEndpoints({
         method: 'POST',
         body: staffData,
       }),
-      invalidatesTags: ['Staff'],
+      invalidatesTags: (result) => (result?.isTeachingStaff ? ['Staff', 'Teachers'] : ['Staff']),
     }),
     deleteStaff: builder.mutation<void, string>({
       query: (id) => ({
         url: `/staff/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Staff'],
+      invalidatesTags: ['Staff', 'Teachers'],
     }),
 
     assignSubjects: builder.mutation<Staff, { id: string; subjectIds: string[] }>({

@@ -52,13 +52,21 @@ export interface CreateArmRequest {
 
 export const classApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getClasses: builder.query<Class[], void>({
+    getClasses: builder.query<Record<string, Class>, void>({
       query: () => ({
         url: '/class',
         method: 'GET',
       }),
+      // transformResponse: (response: Class[]) => {
+      //   return response.reduce((acc, cls) => {
+      //     acc[cls.id] = cls;
+      //     return acc;
+      //   }, {} as Record<string, Class>);
+      // },
+      keepUnusedDataFor: 86400, // 24 hours
       providesTags: ['Class'],
     }),
+
     createClass: builder.mutation<Class, CreateClassRequest>({
       query: (classData) => ({
         url: '/class',
@@ -82,11 +90,19 @@ export const classApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Class'],
     }),
-    getSchoolArms: builder.query<Arm[], void>({
+
+    getSchoolArms: builder.query<Record<string, Arm>, void>({
       query: () => ({
         url: `/class/arms`,
         method: 'GET',
       }),
+      transformResponse: (response: Arm[]) => {
+        return response.reduce((acc, arm) => {
+          acc[arm.id] = arm;
+          return acc;
+        }, {} as Record<string, Arm>);
+      },
+      keepUnusedDataFor: 86400, // 24 hours
       providesTags: ['Class'],
     }),
     getArms: builder.query<Arm[], string>({
@@ -101,15 +117,16 @@ export const classApi = baseApi.injectEndpoints({
         url: `/class/${classId}/arms/${armId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Class'],
+      invalidatesTags: ['Class', 'Teachers'],
     }),
+
     assignMasterToArm: builder.mutation<Arm, { armId: string; staffId: string | null }>({
       query: ({ armId, staffId }) => ({
         url: `/class/arms/${armId}/master`,
         method: 'PATCH',
         body: { staffId },
       }),
-      invalidatesTags: ['Class', 'Staff'],
+      invalidatesTags: ['Class', 'Staff', 'Teachers'],
     }),
   }),
 });

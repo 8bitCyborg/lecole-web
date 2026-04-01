@@ -13,18 +13,12 @@ import storage from 'redux-persist/es/storage'; // defaults to localStorage for 
 import { baseApi } from '../services/leApi';
 import authReducer from './slices/authSlice';
 import schoolReducer from './slices/schoolSlice';
-import classesReducer from './slices/classesSlice';
-import classArmsReducer from './slices/classArmsSlice';
-import teachersReducer from './slices/teachersSlice';
 
 // Combine all our reducers
 const rootReducer = combineReducers({
   [baseApi.reducerPath]: baseApi.reducer,
   auth: authReducer,
   school: schoolReducer,
-  classes: classesReducer,
-  classArms: classArmsReducer,
-  teachers: teachersReducer,
 });
 
 // Configure redux-persist
