@@ -2,6 +2,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Edit, Mail, Phone, BookOpen, Presentation } from 'lucide-react';
 import { useGetStaffMemberQuery } from '../../services/leApi/staffApi';
 import ClassAssignment from './components/ClassAssignment/ClassAssignment';
+import SubjectAssignment from './components/SubjectAssignment/SubjectAssignment';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../components/ui/tabs';
 
 import './Staff.css';
@@ -120,20 +121,7 @@ const StaffDetails = () => {
             </TabsContent>
 
             <TabsContent value="subjects" className="staff-tabs-content">
-              <div className="staff-table-container" style={{ padding: '2rem' }}>
-                <span className="staff-email" style={{ textTransform: 'uppercase', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.05em' }}>Assigned Subjects</span>
-                <div className="class-subjects-list" style={{ marginTop: '0.75rem' }}>
-                  {staff.subjects && staff.subjects.length > 0 ? (
-                    staff.subjects.map((sub: any) => (
-                      <span key={sub.id} className="assigned-subject-pill">
-                        {sub.name}
-                      </span>
-                    ))
-                  ) : (
-                    <p style={{ color: '#64748b', fontStyle: 'italic', fontSize: '0.9rem', margin: 0 }}>No subjects assigned to this staff member yet.</p>
-                  )}
-                </div>
-              </div>
+              <SubjectAssignment staff={staff} />
             </TabsContent>
           </Tabs>
         </div>

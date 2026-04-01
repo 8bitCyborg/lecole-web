@@ -30,11 +30,18 @@ export interface CreateSubjectRequest {
 
 export const subjectApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getSubjects: builder.query<Subject[], void>({
+    getSubjects: builder.query<Record<string, Subject>, void>({
       query: () => ({
         url: '/subject',
         method: 'GET',
       }),
+      transformResponse: (response: Subject[]) => {
+        return response.reduce((acc, sub) => {
+          acc[sub.id] = sub;
+          return acc;
+        }, {} as Record<string, Subject>);
+      },
+      keepUnusedDataFor: 86400, // 24 hours
       providesTags: ['Subject'],
     }),
     getSubjectById: builder.query<Subject & { _count: { classes: number; teachers: number } }, string>({
@@ -52,6 +59,7 @@ export const subjectApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Subject'],
     }),
+
     assignClasses: builder.mutation<Subject, { id: string; classIds: string[] }>({
       query: ({ id, classIds }) => ({
         url: `/subject/${id}/classes`,
@@ -68,6 +76,7 @@ export const subjectApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Subject'],
     }),
+
     deleteSubject: builder.mutation<void, string>({
       query: (id) => ({
         url: `/subject/${id}`,
@@ -75,6 +84,7 @@ export const subjectApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Subject'],
     }),
+
   }),
 });
 

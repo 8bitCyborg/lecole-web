@@ -95,6 +95,15 @@ export const staffApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Staff'],
     }),
+
+    assignSubjects: builder.mutation<Staff, { id: string; subjectIds: string[] }>({
+      query: ({ id, subjectIds }) => ({
+        url: `/staff/${id}/subjects`,
+        method: 'PATCH',
+        body: { subjectIds },
+      }),
+      invalidatesTags: ['Staff', 'Subject'],
+    }),
   }),
 });
 
@@ -104,4 +113,5 @@ export const {
   useGetStaffMemberQuery,
   useCreateStaffMutation,
   useDeleteStaffMutation,
+  useAssignSubjectsMutation,
 } = staffApi;

@@ -1,0 +1,238 @@
+/* ── Container ──────────────────────────────────────────────────── */
+.subject-assignment-container {
+  background: white;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+
+/* ── Summary bar ────────────────────────────────────────────────── */
+.sa-summary-bar {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  padding: 1rem 2.5rem;
+  background: white;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.sa-summary-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.sa-summary-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0;
+}
+
+.sa-summary-desc {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Select-all */
+.sa-select-all-btn {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  border: 1.5px solid #e2e8f0;
+  background: white;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #000;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-family: inherit;
+}
+
+.sa-select-all-btn:hover {
+  border-color: #3b82f6;
+  color: #1e40af;
+  background: #eff6ff;
+}
+
+/* ── Mini checkbox ──────────────────────────────────────────────── */
+.sa-mini-check {
+  width: 15px;
+  height: 15px;
+  border-radius: 4px;
+  border: 1.5px solid #000;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.sa-mini-check--active {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+
+/* ── Content ────────────────────────────────────────────────────── */
+.sa-content {
+  padding: 2.5rem;
+}
+
+.sa-subjects-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+}
+
+/* Base card */
+.sa-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.25rem;
+  border-radius: 1rem;
+  border: 1.5px solid #e2e8f0;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  font-family: inherit;
+  text-align: left;
+  user-select: none;
+  line-height: 1.3;
+}
+
+.sa-card:hover {
+  border-color: #93c5fd;
+  background: #eff6ff;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
+}
+
+.sa-card:active {
+  transform: scale(0.97);
+}
+
+/* Selected card */
+.sa-card--selected {
+  border-color: #3b82f6;
+  background: #eff6ff;
+}
+
+.sa-card--selected:hover {
+  background: #dbeafe;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+}
+
+.sa-card-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.sa-card-name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  color: #0f172a;
+}
+
+.sa-card--selected .sa-card-name {
+  color: #1e40af;
+}
+
+.sa-card-code {
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: #64748b;
+}
+
+/* Card indicator check */
+.sa-card-check {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 1.5px solid #cbd5e1;
+  background: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+
+.sa-card-check--selected {
+  background: #3b82f6;
+  border-color: #3b82f6;
+  color: white;
+}
+
+/* ── Footer ─────────────────────────────────────────────────────── */
+.sa-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.75rem;
+  padding: 1rem 2.5rem;
+  border-top: 1px solid #f1f5f9;
+  background: #fafafa;
+}
+
+.sa-unsaved-badge {
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: #f59e0b;
+  background: #fef9c3;
+  border: 1px solid #fde68a;
+  padding: 0.3rem 0.8rem;
+  border-radius: 9999px;
+  margin-right: auto;
+}
+
+.sa-save-btn {
+  height: 2.75rem !important;
+  font-size: 0.9rem !important;
+  padding-inline: 2rem !important;
+}
+
+.sa-save-btn:disabled {
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+/* ── Responsive ─────────────────────────────────────────────────── */
+@media (max-width: 768px) {
+  .sa-summary-bar {
+    flex-wrap: wrap;
+    padding: 1rem 1.5rem;
+    gap: 0.75rem;
+  }
+
+  .sa-select-all-btn {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+
+  .sa-content {
+    padding: 1.5rem;
+  }
+
+  .sa-subjects-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sa-footer {
+    padding: 1rem 1.5rem;
+    flex-wrap: wrap;
+  }
+
+  .sa-save-btn {
+    width: 100%;
+    margin-left: auto;
+  }
+}
