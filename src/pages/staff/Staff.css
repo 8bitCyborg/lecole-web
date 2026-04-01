@@ -331,7 +331,7 @@
 
 @media (max-width: 1024px) {
   .staff-page-container {
-    padding: 2rem;
+    padding: 0;
   }
 }
 
@@ -543,4 +543,63 @@
   color: #64748b;
   font-weight: 600;
   font-size: 1.1rem;
+}
+
+/* ── Staff Details: Unified Tabs Card ─────────────────────────────────── */
+
+.staff-tabs-card {
+  background: transparent;
+}
+
+/* Strip that holds the triggers — flush with the card top */
+.staff-tabs-list {
+  height: 3.25rem;
+  background: white;
+  border-radius: 1rem 1rem 0 0;
+  gap: 0.25rem;
+  z-index: 999;
+  border-bottom: none;
+}
+
+/* Individual trigger */
+.staff-tabs-trigger {
+  height: 100%;
+  border-radius: 0.5rem;
+  padding: 0 1rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+  background: transparent;
+  gap: 0.5rem;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+  box-shadow: none;
+}
+
+.staff-tabs-trigger:hover {
+  color: #0f172a;
+  background: #f8fafc;
+}
+
+/* Active state — light blue background indicator */
+.staff-tabs-trigger[data-state="active"] {
+  color: #1e40af;
+  background: #eff6ff;
+}
+
+/* Content area — child components handle their own padding */
+.staff-tabs-content {
+  margin-top: -0.55rem;
+}
+
+/* Strip inner card chrome so components blend into the outer tab card */
+.staff-tabs-content .staff-table-container {
+  border-radius: 0;
+  border: none;
+  box-shadow: none;
+}
+
+@media (max-width: 768px) {
+  .staff-tabs-list {
+    width: 100%;
+  }
 }
