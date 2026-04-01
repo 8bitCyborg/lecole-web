@@ -24,7 +24,8 @@ const StaffListing: React.FC<StaffListingProps> = ({ onlyTeaching }) => {
     refetchOnMountOrArgChange: true,
   });
 
-  const { data: staff = [], isLoading } = onlyTeaching ? teachingStaffResult : allStaffResult;
+  const { data: staffData = [], isLoading } = onlyTeaching ? teachingStaffResult : allStaffResult;
+  const staff = Array.isArray(staffData) ? staffData : Object.values(staffData);
   
   const [deleteStaff] = useDeleteStaffMutation();
   const [showDeleteModal, setShowDeleteModal] = useState(false);

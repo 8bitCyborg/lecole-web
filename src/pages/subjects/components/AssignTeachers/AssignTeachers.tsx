@@ -49,8 +49,12 @@ const AssignTeachers: React.FC<AssignTeachersProps> = ({
     JSON.stringify(assignedTeacherIds.slice().sort());
 
   // Sort teachers by name for the display list
-  const sortedTeachers = Object.entries(allTeacherMap)
-    .map(([id, details]) => ({ id, ...details }))
+  const sortedTeachers = Object.values(allTeacherMap)
+    .map((staff) => ({
+      id: staff.id,
+      name: `${staff.user.firstName} ${staff.user.lastName}`,
+      email: staff.user.email,
+    }))
     .sort((a, b) => a.name.localeCompare(b.name));
 
   return (

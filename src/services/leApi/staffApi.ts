@@ -66,19 +66,16 @@ export const staffApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Staff'],
     }),
-    getTeachingStaff: builder.query<Record<string, { name: string; email?: string }>, void>({
+    getTeachingStaff: builder.query<Record<string, Staff>, void>({
       query: () => ({
         url: '/staff/teachers',
         method: 'GET',
       }),
       transformResponse: (response: Staff[]) => {
         return response.reduce((acc, staff) => {
-          acc[staff.id] = {
-            name: `${staff.user.firstName} ${staff.user.lastName}`,
-            email: staff.user.email,
-          };
+          acc[staff.id] = staff;
           return acc;
-        }, {} as Record<string, { name: string; email?: string }>);
+        }, {} as Record<string, Staff>);
       },
       keepUnusedDataFor: 86400, // 24 hours
       providesTags: ['Teachers'],
@@ -90,6 +87,7 @@ export const staffApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Staff'],
     }),
+
     createStaff: builder.mutation<Staff, CreateStaffRequest>({
       query: (staffData) => ({
         url: '/staff',
@@ -112,7 +110,16 @@ export const staffApi = baseApi.injectEndpoints({
         method: 'PATCH',
         body: { subjectIds },
       }),
-      invalidatesTags: ['Staff', 'Subject'],
+      invalidatesTags: ['Staff', 'Subject', 'Teachers'],
+    }),
+
+    assignMasterToArm: builder.mutation<Staff, { id: string; armIds: string[] }>({
+      query: ({ id, armIds }) => ({
+        url: `/staff/${id}/arms`,
+        method: 'PATCH',
+        body: { armIds },
+      }),
+      invalidatesTags: ['Staff', 'Class', 'Teachers'],
     }),
   }),
 });

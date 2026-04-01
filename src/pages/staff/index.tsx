@@ -21,7 +21,8 @@ const StaffPage: React.FC<StaffPageProps> = ({ onlyTeaching }) => {
     refetchOnMountOrArgChange: true,
   });
 
-  const { data: staff = [], isLoading } = onlyTeaching ? teachingStaffResult : allStaffResult;
+  const { data: staffData = [], isLoading } = onlyTeaching ? teachingStaffResult : allStaffResult;
+  const staff = Array.isArray(staffData) ? staffData : Object.values(staffData);
 
   const handleAddSuccess = () => {
     setShowAddModal(false);
@@ -35,7 +36,7 @@ const StaffPage: React.FC<StaffPageProps> = ({ onlyTeaching }) => {
             {onlyTeaching ? 'Teaching Faculty' : 'Our Dedicated Staff'}
           </h1>
           <p className="staff-subtitle">
-            {onlyTeaching 
+            {onlyTeaching
               ? 'Manage and view all registered teaching staff'
               : "Streamline your institutional staff and faculty management in one place."
             }

@@ -17,16 +17,24 @@ const CATEGORY_ACCENT: Record<string, string> = {
   OTHER: 'slate',
 };
 
+const categoryOrder: Category[] = [
+  'EARLY_YEARS',
+  'BASIC',
+  'JUNIOR_SECONDARY',
+  'SENIOR_SECONDARY',
+  'OTHER',
+];
+
 const ClassAssignment: React.FC<ClassAssignmentProps> = ({ staff }) => {
   const { data: armMap = {}, isLoading: armsLoading } = useGetSchoolArmsQuery();
   const [assignMaster] = useAssignMasterToArmMutation();
   const { data: classMap = {} } = useGetClassesQuery();
 
-  const arms = Object.values(armMap);
+  const arms = useMemo(() => Object.values(armMap), [armMap]);
 
-  const initialAssignedIds = useMemo(() => 
+  const initialAssignedIds = useMemo(() =>
     arms.filter(arm => arm.classMasterId === staff.id).map(arm => arm.id)
-  , [arms, staff.id]);
+    , [arms, staff.id]);
 
   const [selectedIds, setSelectedIds] = useState<string[]>(initialAssignedIds);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -36,19 +44,19 @@ const ClassAssignment: React.FC<ClassAssignmentProps> = ({ staff }) => {
   }, [initialAssignedIds]);
 
   // Only show arms that are either assigned to this staff or have no master
-  const filteredArms = useMemo(() => 
+  const filteredArms = useMemo(() =>
     arms.filter(arm => !arm.classMasterId || arm.classMasterId === staff.id)
-  , [arms, staff.id]);
+    , [arms, staff.id]);
 
   // Arms that ARE selected (initial or new)
-  const currentSelectedArms = useMemo(() => 
+  const currentSelectedArms = useMemo(() =>
     filteredArms.filter(arm => selectedIds.includes(arm.id))
-  , [filteredArms, selectedIds]);
+    , [filteredArms, selectedIds]);
 
   // Arms that ARE NOT selected (available)
-  const availableArms = useMemo(() => 
+  const availableArms = useMemo(() =>
     filteredArms.filter(arm => !selectedIds.includes(arm.id))
-  , [filteredArms, selectedIds]);
+    , [filteredArms, selectedIds]);
 
   const groupedAvailableArms = useMemo(() => {
     return availableArms.reduce((acc, arm) => {
@@ -107,17 +115,9 @@ const ClassAssignment: React.FC<ClassAssignmentProps> = ({ staff }) => {
     }
   };
 
-  const hasChanges = 
-    JSON.stringify([...selectedIds].sort()) !== 
+  const hasChanges =
+    JSON.stringify([...selectedIds].sort()) !==
     JSON.stringify([...initialAssignedIds].sort());
-
-  const categoryOrder: Category[] = [
-    'EARLY_YEARS',
-    'BASIC',
-    'JUNIOR_SECONDARY',
-    'SENIOR_SECONDARY',
-    'OTHER',
-  ];
 
   if (armsLoading) return <div className="ca-loading">Loading arms...</div>;
 
@@ -136,7 +136,7 @@ const ClassAssignment: React.FC<ClassAssignmentProps> = ({ staff }) => {
         <div className="ca-summary-text">
           <h3 className="ca-summary-title">Class Master Assignments</h3>
           <p className="ca-summary-desc">
-            Assign this staff member as the manager for specific class arms. 
+            Assign this staff member as the manager for specific class arms.
             <br />
             <b>{initialAssignedIds.length > 0 && ` Currently managing ${initialAssignedIds.length} arm${initialAssignedIds.length === 1 ? '' : 's'}.`}</b>
           </p>
