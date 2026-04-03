@@ -120,6 +120,14 @@ export const classApi = baseApi.injectEndpoints({
       invalidatesTags: ['Class', 'Teachers'],
     }),
 
+    assignSubjectsToClass: builder.mutation<any, { classId: string; subjectIds: string[] }>({
+      query: ({ classId, subjectIds }) => ({
+        url: `/class/${classId}/subjects`,
+        method: 'POST',
+        body: { subjectIds },
+      }),
+      invalidatesTags: ['Class'],
+    }),
     assignMasterToArm: builder.mutation<Arm, { armId: string; staffId: string | null }>({
       query: ({ armId, staffId }) => ({
         url: `/class/arms/${armId}/master`,
@@ -139,6 +147,7 @@ export const {
   useGetArmsQuery,
   useDeleteClassMutation,
   useDeleteArmMutation,
+  useAssignSubjectsToClassMutation,
   useAssignMasterToArmMutation,
 } = classApi;
 

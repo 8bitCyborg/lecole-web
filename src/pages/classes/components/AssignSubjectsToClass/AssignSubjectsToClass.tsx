@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
-import { BookOpen, Edit, Search, Plus, Minus, Save } from 'lucide-react';
+import { BookOpen, Edit, Search, Plus, Minus, Save, Loader2 } from 'lucide-react';
 import { useGetSubjectsQuery } from "@/services/leApi/subjectApi";
+import { useAssignSubjectsToClassMutation } from "@/services/leApi/classApi";
 import './AssignSubjectsToClass.css';
 
 interface Props {
@@ -8,8 +9,9 @@ interface Props {
   assignedSubjects: { id: string; name: string }[];
 }
 
-const AssignSubjectsToClass: React.FC<Props> = ({ assignedSubjects }) => {
+const AssignSubjectsToClass: React.FC<Props> = ({ classId, assignedSubjects }) => {
   const { data: subjectsMap = {}, isLoading } = useGetSubjectsQuery();
+  const [assignSubjects, { isLoading: isSaving }] = useAssignSubjectsToClassMutation();
   const [isEditing, setIsEditing] = useState(false);
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<string[]>([]);
@@ -27,6 +29,15 @@ const AssignSubjectsToClass: React.FC<Props> = ({ assignedSubjects }) => {
 
   const toggle = (id: string) =>
     setSelected(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
+
+  const handleSave = async () => {
+    try {
+      await assignSubjects({ classId, subjectIds: selected }).unwrap();
+      setIsEditing(false);
+    } catch {
+      // error is surfaced by RTK Query; keep the edit mode open
+    }
+  };
 
   const diff = useMemo(() => {
     const original = assignedSubjects.map(s => s.id);
@@ -87,7 +98,7 @@ const AssignSubjectsToClass: React.FC<Props> = ({ assignedSubjects }) => {
           <div className="subjects-edit-grid">
             {filtered.map(s => {
               const isSelected = selected.includes(s.id);
-              const wasAssigned = assignedSubjects.some(os => os.name === s.name);
+              const wasAssigned = assignedSubjects.some(os => os.id === s.id);
               return (
                 <div
                   key={s.id}
@@ -121,9 +132,11 @@ const AssignSubjectsToClass: React.FC<Props> = ({ assignedSubjects }) => {
               {diff === 0 && 'No changes'}
             </div>
             <div className="footer-btns">
-              <button className="le-button le-button-outline" style={{ height: '2.5rem', paddingInline: '1.25rem', fontSize: '0.875rem' }} onClick={() => setIsEditing(false)}>Cancel</button>
-              <button className="le-button le-button-primary" style={{ height: '2.5rem', paddingInline: '1.5rem', fontSize: '0.875rem' }} onClick={() => setIsEditing(false)}>
-                <Save size={14} style={{ marginRight: '0.5rem' }} /> Save
+              <button className="le-button le-button-outline" style={{ height: '2.5rem', paddingInline: '1.25rem', fontSize: '0.875rem' }} onClick={() => setIsEditing(false)} disabled={isSaving}>Cancel</button>
+              <button className="le-button le-button-primary" style={{ height: '2.5rem', paddingInline: '1.5rem', fontSize: '0.875rem' }} onClick={handleSave} disabled={isSaving || diff === 0}>
+                {isSaving
+                  ? <><Loader2 size={14} style={{ marginRight: '0.5rem', animation: 'spin 1s linear infinite' }} /> Saving...</>
+                  : <><Save size={14} style={{ marginRight: '0.5rem' }} /> Save</>}
               </button>
             </div>
           </div>
