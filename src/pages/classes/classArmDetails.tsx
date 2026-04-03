@@ -1,21 +1,30 @@
+import { useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Edit, Users, BarChart3 } from 'lucide-react';
 import ClassMaster from './components/ClassMaster';
+import AddArmForm from './components/AddArmForm/AddArmForm';
+// import { useGetArmsQuery } from '@/services/leApi/classApi';
 import './Classes.css';
 
 const ClassArmDetails = () => {
   const { classId, armId } = useParams();
   const location = useLocation();
   const navigate = useNavigate();
-
-  // Use state data passed from previous page
+  const [showEditModal, setShowEditModal] = useState(false);
   const state = location.state as { className?: string; armName?: string; capacity?: number };
 
   const currentClass = { name: state?.className || 'Class' };
-  const currentArm = { name: state?.armName || '', capacity: state?.capacity };
+  const currentArm = {
+    name: state?.armName || '',
+    capacity: state?.capacity
+  };
 
   const handleBack = () => {
     navigate(`/classes/${classId}`);
+  };
+
+  const handleEditSuccess = () => {
+    setShowEditModal(false);
   };
 
   return (
@@ -29,7 +38,7 @@ const ClassArmDetails = () => {
       </button>
 
       <div className="classes-header-banner">
-        <div className="classes-header-content" style={{ width: '100%', maxWidth: 'none' }}>
+        <div className="classes-header-content">
           <h1 className="classes-title">
             {currentClass?.name}{currentArm?.name}
           </h1>
@@ -59,9 +68,13 @@ const ClassArmDetails = () => {
           </div>
         </div>
 
-        <button className="le-button le-button-primary add-class-btn-header">
+        <button
+          className="le-button le-button-primary add-class-btn-header"
+          onClick={() => setShowEditModal(true)}
+          style={{ zIndex: 10 }}
+        >
           <Edit size={16} style={{ marginRight: '8px' }} />
-          Configure Arm
+          Update Arm
         </button>
       </div>
 
@@ -88,6 +101,31 @@ const ClassArmDetails = () => {
           </div>
         )}
       </div>
+
+      {showEditModal && (
+        <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <button
+              className="modal-close"
+              onClick={() => setShowEditModal(false)}
+              aria-label="Close"
+            >
+              &times;
+            </button>
+            <AddArmForm
+              classId={classId || ''}
+              armId={armId}
+              isEdit={true}
+              initialValues={{
+                name: currentArm.name,
+                capacity: currentArm.capacity,
+              }}
+              onSuccess={handleEditSuccess}
+              onCancel={() => setShowEditModal(false)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };

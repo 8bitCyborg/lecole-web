@@ -84,6 +84,14 @@ export const classApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Class'],
     }),
+    updateArm: builder.mutation<Arm, { classId: string; armId: string; name: string; capacity?: number }>({
+      query: ({ classId, armId, ...armData }) => ({
+        url: `/class/${classId}/arms/${armId}`,
+        method: 'PATCH',
+        body: armData,
+      }),
+      invalidatesTags: ['Class'],
+    }),
 
     getSchoolArms: builder.query<Arm[], void>({
       query: () => ({
@@ -131,6 +139,7 @@ export const {
   useGetClassesQuery,
   useCreateClassMutation,
   useCreateArmMutation,
+  useUpdateArmMutation,
   useGetSchoolArmsQuery,
   useGetArmsQuery,
   useDeleteClassMutation,

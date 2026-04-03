@@ -2,60 +2,90 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useSelector } from 'react-redux';
-import { useCreateArmMutation } from '@/services/leApi/classApi';
+import { useCreateArmMutation, useUpdateArmMutation } from '@/services/leApi/classApi';
 import type { RootState } from '@/store';
 import LeInput from '@/components/ui/LeInput/LeInput';
 import './AddArmForm.css';
 
 interface AddArmFormProps {
   classId: string;
+  armId?: string; // Required for edit
+  initialValues?: {
+    name: string;
+    capacity?: number;
+  };
+  isEdit?: boolean;
   onSuccess?: (values: { name: string; capacity?: number }) => void;
   onCancel?: () => void;
 }
 
 const ArmSchema = Yup.object().shape({
   name: Yup.string().required('Arm name is required').min(1, 'Name is too short'),
-  capacity: Yup.number().positive('Capacity must be positive').optional(),
+  capacity: Yup.number().positive('Capacity must be positive').optional().nullable(),
 });
 
-const AddArmForm: React.FC<AddArmFormProps> = ({ classId, onSuccess, onCancel }) => {
+const AddArmForm: React.FC<AddArmFormProps> = ({
+  classId,
+  armId,
+  initialValues,
+  isEdit = false,
+  onSuccess,
+  onCancel
+}) => {
   const school = useSelector((state: RootState) => state.school.school);
-  const [createArm, { isLoading }] = useCreateArmMutation();
+  const [createArm, { isLoading: isCreating }] = useCreateArmMutation();
+  const [updateArm, { isLoading: isUpdating }] = useUpdateArmMutation();
 
-  const handleAddArm = async (values: { name: string; capacity?: number }) => {
+  const isLoading = isCreating || isUpdating;
+
+  const handleSubmit = async (values: { name: string; capacity?: number | null }) => {
     if (!school?.id || !classId) {
       console.error('Missing schoolId or classId');
       return;
     }
 
     try {
-      await createArm({
-        name: values.name,
-        capacity: values.capacity,
-        classId: classId,
-        schoolId: school.id,
-      }).unwrap();
+      if (isEdit && armId) {
+        await updateArm({
+          classId,
+          armId,
+          name: values.name,
+          capacity: values.capacity || undefined,
+        }).unwrap();
+      } else {
+        await createArm({
+          name: values.name,
+          capacity: values.capacity || undefined,
+          classId: classId,
+          schoolId: school.id,
+        }).unwrap();
+      }
 
-      onSuccess?.(values);
+      onSuccess?.({ name: values.name, capacity: values.capacity || undefined });
     } catch (err: any) {
-      console.error('Failed to create arm:', err);
+      console.error(`Failed to ${isEdit ? 'update' : 'create'} arm:`, err);
     }
   };
 
   const formik = useFormik({
     initialValues: {
-      name: '',
-      capacity: undefined as number | undefined,
+      name: initialValues?.name || '',
+      capacity: initialValues?.capacity || '' as any,
     },
     validationSchema: ArmSchema,
-    onSubmit: handleAddArm,
+    onSubmit: handleSubmit,
+    enableReinitialize: true,
   });
 
   return (
     <div className="add-arm-form-container">
       <div className="form-header">
-        <h2 className="form-title">Create Class Arm</h2>
-        <p className="form-subtitle">Define a new arm or section for this class level.</p>
+        <h2 className="form-title">{isEdit ? 'Update Class Arm' : 'Create Class Arm'}</h2>
+        <p className="form-subtitle">
+          {isEdit
+            ? 'Modify the details for this class arm.'
+            : 'Define a new arm or section for this class level.'}
+        </p>
       </div>
 
       <form onSubmit={formik.handleSubmit} className="add-arm-form">
@@ -65,7 +95,7 @@ const AddArmForm: React.FC<AddArmFormProps> = ({ classId, onSuccess, onCancel })
             label="Arm Name"
             {...formik.getFieldProps('name')}
             error={formik.errors.name as string}
-            touched={formik.touched.name}
+            touched={!!formik.touched.name}
             placeholder="e.g. A, Blue, Gold"
             autoFocus
           />
@@ -76,7 +106,7 @@ const AddArmForm: React.FC<AddArmFormProps> = ({ classId, onSuccess, onCancel })
             type="number"
             {...formik.getFieldProps('capacity')}
             error={formik.errors.capacity as string}
-            touched={formik.touched.capacity}
+            touched={!!formik.touched.capacity}
             placeholder="e.g. 40"
           />
         </div>
@@ -94,7 +124,7 @@ const AddArmForm: React.FC<AddArmFormProps> = ({ classId, onSuccess, onCancel })
             className="le-button le-button-primary submit-btn"
             disabled={!formik.isValid || isLoading}
           >
-            {isLoading ? 'Creating...' : 'Create Arm'}
+            {isLoading ? (isEdit ? 'Updating...' : 'Creating...') : (isEdit ? 'Update Arm' : 'Create Arm')}
           </button>
         </div>
       </form>
