@@ -30,17 +30,11 @@ export interface CreateSubjectRequest {
 
 export const subjectApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getSubjects: builder.query<Record<string, Subject>, void>({
+    getSubjects: builder.query<Subject[], void>({
       query: () => ({
         url: '/subject',
         method: 'GET',
       }),
-      // transformResponse: (response: Subject[]) => {
-      //   return response.reduce((acc, sub) => {
-      //     acc[sub.id] = sub;
-      //     return acc;
-      //   }, {} as Record<string, Subject>);
-      // },
       keepUnusedDataFor: 86400, // 24 hours
       providesTags: ['Subject'],
     }),

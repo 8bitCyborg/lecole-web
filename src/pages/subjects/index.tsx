@@ -10,8 +10,7 @@ const SubjectPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [subjectToDelete, setSubjectToDelete] = useState<any>(null);
-  const { data: subjectMap = {}, isLoading } = useGetSubjectsQuery();
-  const subjects = Object.values(subjectMap);
+  const { data: subjects = [], isLoading } = useGetSubjectsQuery();
   const [deleteSubject] = useDeleteSubjectMutation();
 
   const navigate = useNavigate();

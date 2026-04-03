@@ -21,8 +21,7 @@ const StaffPage: React.FC<StaffPageProps> = ({ onlyTeaching }) => {
     refetchOnMountOrArgChange: true,
   });
 
-  const { data: staffData = [], isLoading } = onlyTeaching ? teachingStaffResult : allStaffResult;
-  const staff = Array.isArray(staffData) ? staffData : Object.values(staffData);
+  const { data: staff = [], isLoading } = onlyTeaching ? teachingStaffResult : allStaffResult;
 
   const handleAddSuccess = () => {
     setShowAddModal(false);

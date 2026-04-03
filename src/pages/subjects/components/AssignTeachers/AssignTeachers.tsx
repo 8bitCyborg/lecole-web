@@ -14,8 +14,8 @@ const AssignTeachers: React.FC<AssignTeachersProps> = ({
   assignedTeacherIds,
 }) => {
   const [assignTeachers] = useAssignTeachersMutation();
-  const { data: allTeacherMap = {} } = useGetTeachingStaffQuery();
-  const allTeacherIds = Object.keys(allTeacherMap);
+  const { data: allTeachers = [] } = useGetTeachingStaffQuery();
+  const allTeacherIds = allTeachers.map(t => t.id);
   const [selectedIds, setSelectedIds] = useState<string[]>(assignedTeacherIds);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -49,7 +49,7 @@ const AssignTeachers: React.FC<AssignTeachersProps> = ({
     JSON.stringify(assignedTeacherIds.slice().sort());
 
   // Sort teachers by name for the display list
-  const sortedTeachers = Object.values(allTeacherMap)
+  const sortedTeachers = [...allTeachers]
     .map((staff) => ({
       id: staff.id,
       name: `${staff.user.firstName} ${staff.user.lastName}`,

@@ -26,11 +26,11 @@ const categoryOrder: Category[] = [
 ];
 
 const ClassAssignment: React.FC<ClassAssignmentProps> = ({ staff }) => {
-  const { data: armMap = {}, isLoading: armsLoading } = useGetSchoolArmsQuery();
+  const { data: arms = [], isLoading: armsLoading } = useGetSchoolArmsQuery();
   const [assignMaster] = useAssignMasterToArmMutation();
-  const { data: classMap = {} } = useGetClassesQuery();
+  const { data: classes = [] } = useGetClassesQuery();
 
-  const arms = useMemo(() => Object.values(armMap), [armMap]);
+  const findClass = (classId: string) => classes.find(c => c.id === classId);
 
   const initialAssignedIds = useMemo(() =>
     arms.filter(arm => arm.classMasterId === staff.id).map(arm => arm.id)
@@ -61,12 +61,12 @@ const ClassAssignment: React.FC<ClassAssignmentProps> = ({ staff }) => {
   const groupedAvailableArms = useMemo(() => {
     return availableArms.reduce((acc, arm) => {
       const classId = arm.classId;
-      const cat = classMap[classId]?.category || 'OTHER';
+      const cat = findClass(classId)?.category || 'OTHER';
       if (!acc[cat]) acc[cat] = [];
       acc[cat].push(arm);
       return acc;
     }, {} as Record<string, typeof arms>);
-  }, [availableArms, classMap]);
+  }, [availableArms, classes]);
 
   const allFilteredArmIds = filteredArms.map(a => a.id);
   const allSelected = allFilteredArmIds.length > 0 && allFilteredArmIds.every(id => selectedIds.includes(id));
@@ -122,7 +122,7 @@ const ClassAssignment: React.FC<ClassAssignmentProps> = ({ staff }) => {
   if (armsLoading) return <div className="ca-loading">Loading arms...</div>;
 
   const getFullArmName = (arm: typeof arms[0]) => {
-    const className = arm.class?.name || classMap[arm.classId]?.name || '';
+    const className = arm.class?.name || findClass(arm.classId)?.name || '';
     return `${className} ${arm.name}`.trim();
   };
 

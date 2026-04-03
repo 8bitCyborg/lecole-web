@@ -12,21 +12,20 @@ interface StaffListingProps {
 
 const StaffListing: React.FC<StaffListingProps> = ({ onlyTeaching }) => {
   const navigate = useNavigate();
-  
+
   // Use either the full staff query or the teaching-only one
   const allStaffResult = useGetStaffQuery(undefined, {
     skip: !!onlyTeaching,
     refetchOnMountOrArgChange: true,
   });
-  
+
   const teachingStaffResult = useGetTeachingStaffQuery(undefined, {
     skip: !onlyTeaching,
     refetchOnMountOrArgChange: true,
   });
 
-  const { data: staffData = [], isLoading } = onlyTeaching ? teachingStaffResult : allStaffResult;
-  const staff = Array.isArray(staffData) ? staffData : Object.values(staffData);
-  
+  const { data: staff = [], isLoading } = onlyTeaching ? teachingStaffResult : allStaffResult;
+
   const [deleteStaff] = useDeleteStaffMutation();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [staffToDelete, setStaffToDelete] = useState<Staff | null>(null);

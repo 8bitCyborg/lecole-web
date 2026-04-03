@@ -14,13 +14,13 @@ const ClassArmsPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [armToDelete, setArmToDelete] = useState<any>(null);
-  const { data: classMap = {} } = useGetClassesQuery();
+  const { data: classes = [] } = useGetClassesQuery();
   const { data: arms = [], isLoading: armsLoading } = useGetArmsQuery(classId || '');
-  const { data: teacherMap = {} } = useGetTeachingStaffQuery();
+  const { data: teachers = [] } = useGetTeachingStaffQuery();
   const [deleteArm] = useDeleteArmMutation();
 
   // Find current class name
-  const currentClass = classMap[classId || ''];
+  const currentClass = classes.find(c => c.id === (classId || ''));
   const categoryLabel = CATEGORY_OPTIONS.find(opt => opt.value === currentClass?.category)?.label || currentClass?.category;
 
   const handleAddSuccess = () => {
@@ -124,12 +124,15 @@ const ClassArmsPage = () => {
                         Capacity: {arm.capacity}
                       </span>
                     )}
-                    {arm.classMasterId && teacherMap[arm.classMasterId] && (
-                      <div className="arm-master-tag">
-                        <User size={12} />
-                        <span>{teacherMap[arm.classMasterId].user.firstName} {teacherMap[arm.classMasterId].user.lastName}</span>
-                      </div>
-                    )}
+                    {arm.classMasterId && (() => {
+                        const master = teachers.find(t => t.id === arm.classMasterId);
+                        return master ? (
+                          <div className="arm-master-tag">
+                            <User size={12} />
+                            <span>{master.user.firstName} {master.user.lastName}</span>
+                          </div>
+                        ) : null;
+                      })()}
                   </div>
                   <Trash2
                     size={20}

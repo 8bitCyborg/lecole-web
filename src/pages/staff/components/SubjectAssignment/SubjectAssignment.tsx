@@ -10,10 +10,8 @@ interface SubjectAssignmentProps {
 }
 
 const SubjectAssignment: React.FC<SubjectAssignmentProps> = ({ staff }) => {
-  const { data: subjectMap = {}, isLoading } = useGetSubjectsQuery();
+  const { data: allSubjects = [], isLoading } = useGetSubjectsQuery();
   const [assignSubjects] = useAssignSubjectsMutation();
-
-  const allSubjects = Object.values(subjectMap);
 
   const initialSubjectIds = useMemo(() =>
     staff.subjects?.map((s: any) => s.id) || []
@@ -82,7 +80,7 @@ const SubjectAssignment: React.FC<SubjectAssignmentProps> = ({ staff }) => {
         <div className="sa-subjects-grid">
           {sortedSubjects.map((sub) => {
             const isSelected = selectedIds.includes(sub.id);
-            const details = subjectMap[sub.id] || { name: sub.name, code: sub.code };
+            const details = sub;
             return (
               <button
                 key={sub.id}

@@ -66,17 +66,11 @@ export const staffApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Staff'],
     }),
-    getTeachingStaff: builder.query<Record<string, Staff>, void>({
+    getTeachingStaff: builder.query<Staff[], void>({
       query: () => ({
         url: '/staff/teachers',
         method: 'GET',
       }),
-      transformResponse: (response: Staff[]) => {
-        return response.reduce((acc, staff) => {
-          acc[staff.id] = staff;
-          return acc;
-        }, {} as Record<string, Staff>);
-      },
       keepUnusedDataFor: 86400, // 24 hours
       providesTags: ['Teachers'],
     }),

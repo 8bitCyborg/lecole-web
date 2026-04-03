@@ -52,17 +52,11 @@ export interface CreateArmRequest {
 
 export const classApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getClasses: builder.query<Record<string, Class>, void>({
+    getClasses: builder.query<Class[], void>({
       query: () => ({
         url: '/class',
         method: 'GET',
       }),
-      transformResponse: (response: Class[]) => {
-        return response.reduce((acc, cls) => {
-          acc[cls.id] = cls;
-          return acc;
-        }, {} as Record<string, Class>);
-      },
       keepUnusedDataFor: 86400, // 24 hours
       providesTags: ['Class'],
     }),
@@ -91,17 +85,11 @@ export const classApi = baseApi.injectEndpoints({
       invalidatesTags: ['Class'],
     }),
 
-    getSchoolArms: builder.query<Record<string, Arm>, void>({
+    getSchoolArms: builder.query<Arm[], void>({
       query: () => ({
         url: `/class/arms`,
         method: 'GET',
       }),
-      transformResponse: (response: Arm[]) => {
-        return response.reduce((acc, arm) => {
-          acc[arm.id] = arm;
-          return acc;
-        }, {} as Record<string, Arm>);
-      },
       keepUnusedDataFor: 86400, // 24 hours
       providesTags: ['Class'],
     }),

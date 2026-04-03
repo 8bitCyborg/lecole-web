@@ -10,13 +10,12 @@ interface Props {
 }
 
 const AssignSubjectsToClass: React.FC<Props> = ({ classId, assignedSubjects }) => {
-  const { data: subjectsMap = {}, isLoading } = useGetSubjectsQuery();
+  const { data: subjects = [], isLoading } = useGetSubjectsQuery();
   const [assignSubjects, { isLoading: isSaving }] = useAssignSubjectsToClassMutation();
   const [isEditing, setIsEditing] = useState(false);
   const [search, setSearch] = useState('');
   const [selected, setSelected] = useState<string[]>([]);
 
-  const subjects = useMemo(() => Object.values(subjectsMap), [subjectsMap]);
   const filtered = subjects.filter(s =>
     s.name.toLowerCase().includes(search.toLowerCase()) ||
     s.code?.toLowerCase().includes(search.toLowerCase())

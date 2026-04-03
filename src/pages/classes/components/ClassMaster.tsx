@@ -9,13 +9,13 @@ interface ClassMasterProps {
 }
 
 const ClassMaster: React.FC<ClassMasterProps> = ({ classId, armId }) => {
-  const { data: teacherMap = {} } = useGetTeachingStaffQuery();
+  const { data: teachers = [] } = useGetTeachingStaffQuery();
   const { data: arms = [] } = useGetArmsQuery(classId);
   const [assignMaster, { isLoading: isUpdating }] = useAssignMasterToArmMutation();
 
   const currentArm = arms.find(a => a.id === armId);
   const currentMasterId = currentArm?.classMasterId;
-  const currentMaster = currentMasterId ? teacherMap[currentMasterId] : null;
+  const currentMaster = currentMasterId ? teachers.find(t => t.id === currentMasterId) : null;
 
   const handleAssign = async (staffId: string | null) => {
     try {
@@ -24,8 +24,6 @@ const ClassMaster: React.FC<ClassMasterProps> = ({ classId, armId }) => {
       console.error('Failed to assign class master:', err);
     }
   };
-
-  const teachers = Object.values(teacherMap);
 
   return (
     <div className="banner-stat-item class-master-pill" style={{ position: 'relative', cursor: 'pointer' }}>
