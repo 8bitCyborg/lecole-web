@@ -2,9 +2,9 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useSelector } from 'react-redux';
-import { useCreateArmMutation } from '../../../services/leApi/classApi';
-import type { RootState } from '../../../store';
-import LeInput from '../../../components/ui/LeInput/LeInput';
+import { useCreateArmMutation } from '@/services/leApi/classApi';
+import type { RootState } from '@/store';
+import LeInput from '@/components/ui/LeInput/LeInput';
 import './AddArmForm.css';
 
 interface AddArmFormProps {

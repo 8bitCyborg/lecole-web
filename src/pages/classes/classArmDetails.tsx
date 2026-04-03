@@ -1,5 +1,6 @@
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, Edit } from 'lucide-react';
+import { ArrowLeft, Edit, Users, BarChart3 } from 'lucide-react';
+import ClassMaster from './components/ClassMaster';
 import './Classes.css';
 
 const ClassArmDetails = () => {
@@ -28,26 +29,40 @@ const ClassArmDetails = () => {
       </button>
 
       <div className="classes-header-banner">
-        <div className="classes-header-content">
+        <div className="classes-header-content" style={{ width: '100%', maxWidth: 'none' }}>
           <h1 className="classes-title">
-            {currentClass?.name} <span className="arm-header-separator">:</span> {currentArm?.name}
+            {currentClass?.name}{currentArm?.name}
           </h1>
-          <div className="classes-meta-info">
-            <span className="class-id-badge">{currentClass?.name}</span>
-            <span className="class-id-badge">{currentArm?.name} Subclass</span>
-            <span className="class-id-badge">ID: {armId}</span>
-          </div>
-          <p className="classes-subtitle">
-            Manage the specifics of this subclass arm. This section allows for detailed student monitoring,
-            teacher assignments, and specialized curriculum tracking for <strong>{currentClass?.name} {currentArm?.name}</strong>.
+
+          <p className="classes-subtitle" style={{ maxWidth: '600px' }}>
+            Manage the specifics of this arm. This section allows for detailed student monitoring,
+            class master assignments, and specialized curriculum tracking for <strong>{currentClass?.name} {currentArm?.name}</strong>.
           </p>
+          <div className="classes-meta-info banner-stats-row">
+            <div className="banner-stat-item">
+              <BarChart3 size={16} className="stat-icon" />
+              <div className="stat-label-group">
+                <span className="stat-label">Capacity</span>
+                <span className="stat-value">{currentArm.capacity || 'Not Set'}</span>
+              </div>
+            </div>
+            <div className="banner-stat-item">
+              <Users size={16} className="stat-icon" />
+              <div className="stat-label-group">
+                <span className="stat-label">Enrolled</span>
+                <span className="stat-value">0 / {currentArm.capacity || '∞'}</span>
+              </div>
+            </div>
+            {classId && armId && (
+              <ClassMaster classId={classId} armId={armId} />
+            )}
+          </div>
         </div>
-        <div className="banner-actions">
-          <button className="le-button le-button-secondary">
-            <Edit size={16} style={{ marginRight: '8px' }} />
-            Configure Arm
-          </button>
-        </div>
+
+        <button className="le-button le-button-primary add-class-btn-header">
+          <Edit size={16} style={{ marginRight: '8px' }} />
+          Configure Arm
+        </button>
       </div>
 
       <div className="classes-listing-section">
@@ -68,33 +83,8 @@ const ClassArmDetails = () => {
         )}
 
         {currentArm.name && (
-          <div className="arm-details-grid">
-            <div className="class-card">
-              <div className="class-card-content">
-                <div className="arm-info">
-                  <h3 className="section-title">Arm Capacity</h3>
-                  <p className="section-value">{currentArm.capacity || 'Not Set'}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="class-card">
-              <div className="class-card-content">
-                <div className="arm-info">
-                  <h3 className="section-title">Students Enrolled</h3>
-                  <p className="section-value">0 / {currentArm.capacity || '∞'}</p>
-                </div>
-              </div>
-            </div>
-
-            <div className="class-card">
-              <div className="class-card-content">
-                <div className="arm-info">
-                  <h3 className="section-title">Assigned Teacher</h3>
-                  <p className="section-value">None Assigned</p>
-                </div>
-              </div>
-            </div>
+          <div className="arm-tabs-placeholder" style={{ padding: '2rem 0', textAlign: 'center', color: 'var(--text-muted)' }}>
+            <p>Students and scheduling tabs content will appear here.</p>
           </div>
         )}
       </div>

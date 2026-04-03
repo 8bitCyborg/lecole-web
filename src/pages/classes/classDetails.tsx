@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Trash2, User } from 'lucide-react';
 import { useGetClassesQuery, useGetArmsQuery, useDeleteArmMutation, CATEGORY_OPTIONS } from '@/services/leApi/classApi';
-import AddArmForm from './components/AddArmForm';
+import AddArmForm from './components/AddArmForm/AddArmForm';
 import AssignSubjectsToClass from './components/AssignSubjectsToClass/AssignSubjectsToClass';
 import { useGetTeachingStaffQuery } from '@/services/leApi/staffApi';
 import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
@@ -58,12 +58,13 @@ const ClassArmsPage = () => {
         <div className="classes-header-content">
           <h1 className="classes-title">{currentClass?.name || 'Class Details'}</h1>
           <div className="classes-meta-info">
-            <span className="class-id-badge">ID: {classId}</span>
+            <span className="class-id-badge">{categoryLabel}</span>
+            {/* {categoryLabel && <span className="class-category-tag">{categoryLabel}</span>} */}
           </div>
+
           <p className="classes-subtitle">
-            {categoryLabel && <span className="class-category-tag">{categoryLabel}</span>}
+            This is the hub for arm-level distribution, student assignments, and class-specific scheduling. <br />
             Currently managing <strong>{arms.length} {arms.length === 1 ? 'arm' : 'arms'}</strong>.
-            This is the hub for arm-level distribution, student assignments, and class-specific scheduling.
           </p>
         </div>
         <button

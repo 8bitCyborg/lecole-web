@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useGetClassesQuery, useDeleteClassMutation } from '../../services/leApi/classApi';
-import AddClassForm from './components/AddClassForm';
+import AddClassForm from './components/AddClassForm/AddClassForm';
 import ClassListing from './components/ClassListing';
 import DeleteConfirmationModal from '../../components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
 import './Classes.css';

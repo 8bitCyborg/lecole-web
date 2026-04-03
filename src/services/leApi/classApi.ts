@@ -126,7 +126,7 @@ export const classApi = baseApi.injectEndpoints({
         method: 'POST',
         body: { subjectIds },
       }),
-      invalidatesTags: ['Class'],
+      invalidatesTags: ['Class', 'Subject'],
     }),
     assignMasterToArm: builder.mutation<Arm, { armId: string; staffId: string | null }>({
       query: ({ armId, staffId }) => ({

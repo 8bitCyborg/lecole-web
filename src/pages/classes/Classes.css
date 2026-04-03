@@ -56,9 +56,8 @@
 
 .add-class-btn-header {
   position: absolute;
-  bottom: 2rem;
-  right: 2rem;
-  /* z-index: 1; */
+  bottom: 4rem;
+  right: 3rem;
   background: white !important;
   color: #1e3a8a !important;
   border: none !important;
@@ -310,6 +309,63 @@
   border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
+.banner-stats-row {
+  display: flex;
+  gap: 2rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.banner-stat-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 0.75rem 1.25rem;
+  border-radius: 1rem;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s ease;
+}
+
+.banner-stat-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.3);
+}
+
+.stat-icon {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.stat-label-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 700;
+}
+
+.stat-value {
+  font-size: 1rem;
+  font-weight: 800;
+  color: white;
+}
+
+.stat-action-chevron {
+  color: rgba(255, 255, 255, 0.4);
+  transition: all 0.3s ease;
+}
+
+.banner-stat-item:hover .stat-action-chevron {
+  color: white;
+  transform: translateY(1px);
+}
+
 .class-name-title {
   font-size: 1.25rem;
   font-weight: 700;
@@ -448,35 +504,7 @@
   font-weight: 300;
 }
 
-.banner-actions {
-  display: flex;
-  gap: 1rem;
-  position: absolute;
-  bottom: 2rem;
-  right: 2rem;
-}
 
-.arm-details-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
-}
-
-.section-title {
-  font-size: 0.9rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-  margin-bottom: 0.5rem;
-}
-
-.section-value {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #1e3a8a;
-  margin: 0;
-}
 
 .classes-table-container {
   background: white;
@@ -639,4 +667,27 @@
 .class-card:hover .arm-master-tag {
   background: #dbeafe;
   border-color: #bfdbfe;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+.animate-spin {
+  animation: spin 1s linear infinite;
+}
+
+.class.stat-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right center;
+  background-size: 1em;
+  padding-right: 1.5rem !important;
+}
+
+.stat-select option {
+  background-color: white;
+  color: #1e3a8a;
 }

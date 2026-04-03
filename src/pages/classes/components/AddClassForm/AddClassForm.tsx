@@ -2,12 +2,12 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useSelector } from 'react-redux';
-import { useCreateClassMutation } from '../../../services/leApi/classApi';
-import type { RootState } from '../../../store';
-import LeInput from '../../../components/ui/LeInput/LeInput';
-import LeDropdown from '../../../components/ui/LeDropdown/LeDropdown';
-import { CATEGORY_OPTIONS } from '../../../services/leApi/classApi';
-import type { Category } from '../../../services/leApi/classApi';
+import { useCreateClassMutation } from '@/services/leApi/classApi';
+import type { RootState } from '@/store';
+import LeInput from '@/components/ui/LeInput/LeInput';
+import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
+import { CATEGORY_OPTIONS } from '@/services/leApi/classApi';
+import type { Category } from '@/services/leApi/classApi';
 import './AddClassForm.css';
 
 interface AddClassFormProps {
