@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Trash2, User } from 'lucide-react';
 import { useGetClassesQuery, useGetArmsQuery, useDeleteArmMutation, CATEGORY_OPTIONS } from '@/services/leApi/classApi';
 import AddArmForm from './components/AddArmForm';
+import AssignSubjectsToClass from './components/AssignSubjectsToClass/AssignSubjectsToClass';
 import { useGetTeachingStaffQuery } from '@/services/leApi/staffApi';
 import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
 import './Classes.css';
@@ -61,7 +62,7 @@ const ClassArmsPage = () => {
           </div>
           <p className="classes-subtitle">
             {categoryLabel && <span className="class-category-tag">{categoryLabel}</span>}
-            Currently managing <strong>{arms.length} { arms.length === 1 ? 'arm' : 'arms'}</strong>.
+            Currently managing <strong>{arms.length} {arms.length === 1 ? 'arm' : 'arms'}</strong>.
             This is the hub for arm-level distribution, student assignments, and class-specific scheduling.
           </p>
         </div>
@@ -73,20 +74,10 @@ const ClassArmsPage = () => {
         </button>
       </div>
 
-      <div className="class-subjects-section">
-        <h2 className="class-name-title" style={{ fontSize: '1.25rem' }}>Assigned Subjects</h2>
-        <div className="class-subjects-list">
-          {!currentClass?.subjects || currentClass.subjects.length === 0 ? (
-            <p style={{ color: '#64748b', fontSize: '0.9rem', fontStyle: 'italic' }}>No subjects currently assigned to this class.</p>
-          ) : (
-            currentClass.subjects.map((sub: any, idx: number) => (
-              <div key={idx} className="assigned-subject-pill">
-                {sub.name}
-              </div>
-            ))
-          )}
-        </div>
-      </div>
+      <AssignSubjectsToClass
+        classId={classId || ''}
+        assignedSubjects={currentClass?.subjects || []}
+      />
 
       <div className="classes-listing-section">
         {armsLoading && <div className="loading-state">Loading Arms...</div>}
@@ -133,10 +124,10 @@ const ClassArmsPage = () => {
                       </span>
                     )}
                     {arm.classMasterId && teacherMap[arm.classMasterId] && (
-                        <div className="arm-master-tag">
-                            <User size={12} />
-                            <span>{teacherMap[arm.classMasterId].user.firstName} {teacherMap[arm.classMasterId].user.lastName}</span>
-                        </div>
+                      <div className="arm-master-tag">
+                        <User size={12} />
+                        <span>{teacherMap[arm.classMasterId].user.firstName} {teacherMap[arm.classMasterId].user.lastName}</span>
+                      </div>
                     )}
                   </div>
                   <Trash2

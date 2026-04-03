@@ -20,7 +20,7 @@ export interface Class {
     arms: number;
     subjects: number;
   };
-  subjects?: { name: string }[];
+  subjects?: { id: string; name: string }[];
   createdAt: string;
   updatedAt: string;
 }

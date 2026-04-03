@@ -35,12 +35,12 @@ export const subjectApi = baseApi.injectEndpoints({
         url: '/subject',
         method: 'GET',
       }),
-      transformResponse: (response: Subject[]) => {
-        return response.reduce((acc, sub) => {
-          acc[sub.id] = sub;
-          return acc;
-        }, {} as Record<string, Subject>);
-      },
+      // transformResponse: (response: Subject[]) => {
+      //   return response.reduce((acc, sub) => {
+      //     acc[sub.id] = sub;
+      //     return acc;
+      //   }, {} as Record<string, Subject>);
+      // },
       keepUnusedDataFor: 86400, // 24 hours
       providesTags: ['Subject'],
     }),
