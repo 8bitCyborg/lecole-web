@@ -2,8 +2,8 @@ import React from 'react';
 import { Users, GraduationCap, Archive } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import ActiveStudents from './activeStudents';
-// import ArchivedStudents from './archivedStudents';
-// import GraduatedStudents from './graduatedStudents';
+import ArchivedStudents from './archivedStudents';
+import GraduatedStudents from './graduatedStudents';
 import './StudentListing.css';
 
 interface StudentListingProps {
@@ -44,13 +44,11 @@ const StudentListing: React.FC<StudentListingProps> = ({ onAddClick }) => {
           </TabsContent>
 
           <TabsContent value="graduated" className="student-tabs-content">
-            {/* <GraduatedStudents /> */}
-            <div className="loading-state">Graduated student records coming soon...</div>
+            <GraduatedStudents />
           </TabsContent>
 
           <TabsContent value="archived" className="student-tabs-content">
-            {/* <ArchivedStudents /> */}
-            <div className="loading-state">Archived student records coming soon...</div>
+            <ArchivedStudents />
           </TabsContent>
         </Tabs>
       </div>

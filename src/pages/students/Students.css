@@ -135,6 +135,7 @@
   padding: 7rem 2rem;
   background: white;
   border-radius: 2rem;
+  border-top-left-radius: 0;
   border: 4px dashed #f1f5f9;
   text-align: center;
 }
@@ -369,7 +370,7 @@
   justify-content: flex-end;
 }
 
-.chevron-action-btn, 
+.chevron-action-btn,
 .delete-action-btn {
   padding: 0.6rem;
   border-radius: 0.75rem;
@@ -399,7 +400,11 @@
   .students-table thead {
     display: none;
   }
-  
+
+  .students-empty-state {
+    border-top-right-radius: 0;
+  }
+
   .students-table tr {
     display: block;
     width: 100%;
@@ -407,7 +412,7 @@
     border-bottom: 2px solid #f1f5f9;
     padding: 1.5rem 0;
   }
-  
+
   .students-table td {
     display: flex;
     justify-content: space-between;
@@ -415,7 +420,7 @@
     border-bottom: none;
     padding: 0.75rem 1.5rem;
   }
-  
+
   .students-table td::before {
     content: attr(data-label);
     font-weight: 700;
@@ -424,7 +429,7 @@
     font-size: 0.75rem;
     letter-spacing: 0.05em;
   }
-  
+
   .student-name-cell {
     justify-content: flex-end;
   }
@@ -500,7 +505,7 @@
     gap: 1.5rem;
     padding: 2rem 1rem;
   }
-  
+
   .pagination-controls {
     width: 100%;
     justify-content: space-between;

@@ -12,6 +12,7 @@ import SubjectDetails from '../pages/subjects/subjectDetails';
 import Staff from '../pages/staff';
 import StaffDetails from '../pages/staff/StaffDetails';
 import Students from '@/pages/students';
+import StudentDetails from '@/pages/students/StudentDetails';
 
 export const publicRouter = createBrowserRouter([
   {
@@ -47,7 +48,16 @@ export const authRouter = createBrowserRouter([
       },
       {
         path: 'students',
-        element: <Students />,
+        children: [
+          {
+            index: true,
+            element: <Students />,
+          },
+          {
+            path: ':studentId',
+            element: <StudentDetails />,
+          },
+        ]
       },
       {
         path: 'staff',
