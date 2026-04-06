@@ -75,7 +75,7 @@ const ActiveStudents: React.FC<ActiveStudentsProps> = ({ onAddClick }) => {
     <div className="students-table-container">
       <table className="students-table">
         <thead>
-          <tr>
+          <tr className="students-table-header">
             <th>Student Name</th>
             <th>Admission No.</th>
             <th>Gender</th>
