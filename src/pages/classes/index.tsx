@@ -9,13 +9,13 @@ const ClassPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [classToDelete, setClassToDelete] = useState<any>(null);
-  const { data: classMap = {} } = useGetClassesQuery(undefined, {
+  const { data: classMap = [] } = useGetClassesQuery(undefined, {
     refetchOnMountOrArgChange: true,
     refetchOnFocus: true,
     refetchOnReconnect: true,
   });
 
-  const classes = Object.values(classMap);
+  const classes = classMap;
 
   const [deleteClass] = useDeleteClassMutation();
 

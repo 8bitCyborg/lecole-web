@@ -1,0 +1,100 @@
+.add-student-form-container {
+  width: 100%;
+}
+
+.form-header {
+  margin-bottom: 2.5rem;
+}
+
+.form-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 0.5rem;
+  letter-spacing: -0.02em;
+}
+
+.form-subtitle {
+  color: #64748b;
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.add-student-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.form-section-divider {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.form-section-divider span {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  white-space: nowrap;
+}
+
+.form-section-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background-color: #f1f5f9;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1.25rem;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.submit-btn {
+  height: 3.5rem !important;
+  padding-inline: 3rem !important;
+  font-weight: 700 !important;
+}
+
+.cancel-btn {
+  height: 3.5rem !important;
+  padding-inline: 2rem !important;
+  color: #64748b !important;
+  background: white !important;
+  border: 1.5px solid #e2e8f0 !important;
+  font-weight: 600 !important;
+}
+
+.cancel-btn:hover {
+  background: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+@media (max-width: 640px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+  }
+  
+  .submit-btn, .cancel-btn {
+    width: 100% !important;
+  }
+}
