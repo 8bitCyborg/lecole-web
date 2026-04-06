@@ -1,18 +1,16 @@
 import { useParams, useNavigate } from 'react-router-dom';
-import { 
-  ArrowLeft, 
-  User, 
-  Mail, 
-  Phone, 
-  Calendar, 
-  BookOpen, 
+import {
+  ArrowLeft,
+  Mail,
+  Calendar,
   Edit,
-  History,
   Fingerprint,
-  Layers
 } from 'lucide-react';
 import { useGetStudentByIdQuery } from '@/services/leApi/studentApi';
-import './StudentDetails.css';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import StudentPersonalDetails from './components/PersonalDetails';
+import StudentFinanceDetails from './components/FinanceDetails';
+import './components/PersonalDetails/styles.css';
 
 const StudentDetails = () => {
   const { studentId } = useParams<{ studentId: string }>();
@@ -44,25 +42,6 @@ const StudentDetails = () => {
       </div>
     );
   }
-
-  const sections = [
-    {
-      title: 'Institutional Enrollment',
-      items: [
-        { label: 'Admission No.', value: student.admissionNumber, icon: <Fingerprint size={24} /> },
-        { label: 'Current Class', value: student.class?.name || 'Unassigned', icon: <BookOpen size={24} /> },
-        { label: 'Arm / Section', value: student.arm?.name || 'Unassigned', icon: <LayersIcon size={24} /> },
-        { label: 'Enrollment Date', value: new Date(student.createdAt).toLocaleDateString(), icon: <History size={24} /> },
-      ]
-    },
-    {
-      title: 'Guardian & Primary Contact',
-      items: [
-        { label: 'Guardian Phone', value: student.guardianPhone || 'N/A', icon: <Phone size={24} /> },
-        { label: 'Guardian Email', value: student.guardianEmail || 'N/A', icon: <Mail size={24} /> },
-      ]
-    }
-  ];
 
   return (
     <div className="student-profile-container">
@@ -129,43 +108,26 @@ const StudentDetails = () => {
         </button>
       </div>
 
-      <div className="student-sections-container">
-        {sections.map((section, sIndex) => (
-          <div key={sIndex} className="detail-section">
-            <h3 className="detail-section-title">{section.title}</h3>
-            <div className="le-profile-grid">
-              {section.items.map((item, index) => (
-                <div key={index} className="le-detail-card">
-                  <div className="le-card-icon">{item.icon}</div>
-                  <div className="le-card-info">
-                    <div className="le-card-label">{item.label}</div>
-                    <div className="le-card-value">{item.value}</div>
-                  </div>
-                </div>
-              ))}
-            </div>
+      <Tabs defaultValue="personal" className="student-tabs">
+        <TabsList className="student-tabs-list">
+          <TabsTrigger value="personal" className="student-tabs-trigger">Personal</TabsTrigger>
+          <TabsTrigger value="finance" className="student-tabs-trigger">Financial</TabsTrigger>
+          <TabsTrigger value="academic" className="student-tabs-trigger">Academic</TabsTrigger>
+        </TabsList>
+        <TabsContent value="personal" className="student-tabs-content">
+          <StudentPersonalDetails student={student} />
+        </TabsContent>
+        <TabsContent value="finance" className="student-tabs-content">
+          <StudentFinanceDetails student={student} />
+        </TabsContent>
+        <TabsContent value="academic" className="student-tabs-content">
+          <div>
+            <p>Coming Soon</p>
           </div>
-        ))}
-      </div>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 };
-
-const LayersIcon = ({ size }: { size: number }) => (
-  <svg
-    width={size}
-    height={size}
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-  >
-    <polygon points="12 2 2 7 12 12 22 7 12 2" />
-    <polyline points="2 17 12 22 22 17" />
-    <polyline points="2 12 12 17 22 12" />
-  </svg>
-);
 
 export default StudentDetails;
