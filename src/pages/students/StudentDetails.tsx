@@ -111,8 +111,8 @@ const StudentDetails = () => {
       <Tabs defaultValue="personal" className="student-tabs">
         <TabsList className="student-tabs-list">
           <TabsTrigger value="personal" className="student-tabs-trigger">Personal</TabsTrigger>
-          <TabsTrigger value="finance" className="student-tabs-trigger">Financial</TabsTrigger>
           <TabsTrigger value="academic" className="student-tabs-trigger">Academic</TabsTrigger>
+          <TabsTrigger value="finance" className="student-tabs-trigger">Financial</TabsTrigger>
         </TabsList>
         <TabsContent value="personal" className="student-tabs-content">
           <StudentPersonalDetails student={student} />
