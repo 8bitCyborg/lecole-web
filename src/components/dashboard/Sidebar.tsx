@@ -65,8 +65,8 @@ const Sidebar: React.FC<SidebarProps> = ({
     const isSubmenuOpen = openSubmenus.includes(item.id || '');
     const hasChildren = item.children && item.children.length > 0;
     const isParentActive = hasChildren && (
-        location.pathname === item.path || 
-        item.children.some((child: any) => location.pathname === child.path)
+      location.pathname === item.path ||
+      item.children.some((child: any) => location.pathname === child.path)
     );
 
     if (hasChildren) {
@@ -81,14 +81,14 @@ const Sidebar: React.FC<SidebarProps> = ({
             {!isCollapsed && (
               <>
                 <span className="nav-label">{item.label}</span>
-                <ChevronDown 
-                  size={14} 
-                  className={`submenu-arrow ${isSubmenuOpen ? 'rotated' : ''}`} 
+                <ChevronDown
+                  size={14}
+                  className={`submenu-arrow ${isSubmenuOpen ? 'rotated' : ''}`}
                 />
               </>
             )}
           </div>
-          
+
           {!isCollapsed && isSubmenuOpen && (
             <div className="nav-submenu">
               {item.children.map((child: any) => (

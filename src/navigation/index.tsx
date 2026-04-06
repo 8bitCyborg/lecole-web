@@ -11,6 +11,7 @@ import Subject from '../pages/subjects';
 import SubjectDetails from '../pages/subjects/subjectDetails';
 import Staff from '../pages/staff';
 import StaffDetails from '../pages/staff/StaffDetails';
+import Students from '@/pages/students';
 
 export const publicRouter = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ export const authRouter = createBrowserRouter([
       {
         path: 'school',
         element: <School />,
+      },
+      {
+        path: 'students',
+        element: <Students />,
       },
       {
         path: 'staff',
