@@ -67,10 +67,6 @@ export const authRouter = createBrowserRouter([
             element: <Staff />,
           },
           {
-            path: 'teachers',
-            element: <Staff onlyTeaching />,
-          },
-          {
             path: ':staffId',
             element: <StaffDetails />,
           },

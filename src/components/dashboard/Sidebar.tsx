@@ -13,7 +13,6 @@ import {
   Presentation,
   University,
   BookOpen,
-  GraduationCap,
   ChevronDown,
 } from 'lucide-react';
 
@@ -46,16 +45,7 @@ const Sidebar: React.FC<SidebarProps> = ({
     { icon: University, label: 'School', path: '/school' },
     { icon: BookOpen, label: 'Subjects', path: '/subjects' },
     { icon: Presentation, label: 'Classes', path: '/classes' },
-    {
-      id: 'staff',
-      icon: UsersRound,
-      label: 'Staff',
-      path: '/staff',
-      children: [
-        { label: 'General Listing', path: '/staff', icon: UsersRound },
-        { label: 'Teaching Staff', path: '/staff/teachers', icon: GraduationCap },
-      ]
-    },
+    { icon: UsersRound, label: 'Staff', path: '/staff' },
     { icon: Users, label: 'Students', path: '/students' },
     { icon: UserCircle, label: 'Profile', path: '/profile' },
     { icon: Settings, label: 'Settings', path: '/settings' },

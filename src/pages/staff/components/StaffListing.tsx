@@ -8,23 +8,16 @@ import '../Staff.css';
 
 interface StaffListingProps {
   onlyTeaching?: boolean;
+  onAddClick?: () => void;
 }
 
-const StaffListing: React.FC<StaffListingProps> = ({ onlyTeaching }) => {
+const StaffListing: React.FC<StaffListingProps> = ({ onlyTeaching, onAddClick }) => {
   const navigate = useNavigate();
 
   // Use either the full staff query or the teaching-only one
-  const allStaffResult = useGetStaffQuery(undefined, {
-    skip: !!onlyTeaching,
+  const { data: staff = [], isLoading } = (onlyTeaching ? useGetTeachingStaffQuery : useGetStaffQuery)(undefined, {
     refetchOnMountOrArgChange: true,
   });
-
-  const teachingStaffResult = useGetTeachingStaffQuery(undefined, {
-    skip: !onlyTeaching,
-    refetchOnMountOrArgChange: true,
-  });
-
-  const { data: staff = [], isLoading } = onlyTeaching ? teachingStaffResult : allStaffResult;
 
   const [deleteStaff] = useDeleteStaffMutation();
   const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -56,7 +49,29 @@ const StaffListing: React.FC<StaffListingProps> = ({ onlyTeaching }) => {
     }
   };
 
-  if (isLoading || staff.length === 0) return null;
+  if (isLoading) {
+    return <div className="loading-state">Loading {onlyTeaching ? 'teachers' : 'staff'}...</div>;
+  }
+
+  if (staff.length === 0) {
+    return (
+      <div className="staff-empty-state">
+        <div className="empty-state-icon">👨‍🏫</div>
+        <h2 className="empty-state-title">No {onlyTeaching ? 'Teaching' : ''} Staff Registered</h2>
+        <p className="empty-state-description">
+          Start building your school's faculty by adding your first {onlyTeaching ? 'teaching' : 'staff'} member.
+        </p>
+        {!onlyTeaching && onAddClick && (
+          <button
+            className="le-button le-button-primary"
+            onClick={onAddClick}
+          >
+            Get Started – Add a Staff Member
+          </button>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="staff-table-container">

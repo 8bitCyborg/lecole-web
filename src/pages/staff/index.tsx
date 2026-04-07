@@ -1,27 +1,12 @@
 import React, { useState } from 'react';
+import { Users, GraduationCap } from 'lucide-react';
 import AddStaffForm from './components/AddStaffForm';
 import StaffListing from './components/StaffListing';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../components/ui/tabs';
 import './Staff.css';
-import { useGetStaffQuery, useGetTeachingStaffQuery } from '../../services/leApi/staffApi';
 
-interface StaffPageProps {
-  onlyTeaching?: boolean;
-}
-
-const StaffPage: React.FC<StaffPageProps> = ({ onlyTeaching }) => {
+const StaffPage: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
-
-  const allStaffResult = useGetStaffQuery(undefined, {
-    skip: !!onlyTeaching,
-    refetchOnMountOrArgChange: true,
-  });
-
-  const teachingStaffResult = useGetTeachingStaffQuery(undefined, {
-    skip: !onlyTeaching,
-    refetchOnMountOrArgChange: true,
-  });
-
-  const { data: staff = [], isLoading } = onlyTeaching ? teachingStaffResult : allStaffResult;
 
   const handleAddSuccess = () => {
     setShowAddModal(false);
@@ -31,14 +16,10 @@ const StaffPage: React.FC<StaffPageProps> = ({ onlyTeaching }) => {
     <div className="staff-page-container">
       <div className="staff-header-banner">
         <div className="staff-header-content">
-          <h1 className="staff-title">
-            {onlyTeaching ? 'Teaching Faculty' : 'Our Dedicated Staff'}
-          </h1>
+          <h1 className="staff-title">Institutional Staff</h1>
           <p className="staff-subtitle">
-            {onlyTeaching
-              ? 'Manage and view all registered teaching staff'
-              : "Streamline your institutional staff and faculty management in one place."
-            }
+            Manage your school's dedicated faculty and administrative personnel. 
+            Keep records up-to-date, manage teaching roles, and oversee institutional staffing.
           </p>
         </div>
         <button
@@ -50,27 +31,28 @@ const StaffPage: React.FC<StaffPageProps> = ({ onlyTeaching }) => {
       </div>
 
       <div className="staff-listing-section">
-        {isLoading && <div className="loading-state">Loading {onlyTeaching ? 'teachers' : 'staff'}...</div>}
+        <div className="staff-tabs-card">
+          <Tabs defaultValue="all" className="w-full">
+            <TabsList className="staff-tabs-list">
+              <TabsTrigger value="all" className="staff-tabs-trigger">
+                <Users size={18} className="mr-2" />
+                All Staff
+              </TabsTrigger>
+              <TabsTrigger value="teaching" className="staff-tabs-trigger">
+                <GraduationCap size={18} className="mr-2" />
+                Teaching Faculty
+              </TabsTrigger>
+            </TabsList>
 
-        {!isLoading && staff.length === 0 && (
-          <div className="staff-empty-state">
-            <div className="empty-state-icon">👨‍🏫</div>
-            <h2 className="empty-state-title">No {onlyTeaching ? 'Teaching' : ''} Staff Registered</h2>
-            <p className="empty-state-description">
-              Start building your school's faculty by adding your first {onlyTeaching ? 'teaching' : 'staff'} member.
-            </p>
-            {!onlyTeaching && (
-              <button
-                className="le-button le-button-primary"
-                onClick={() => setShowAddModal(true)}
-              >
-                Get Started – Add a Staff Member
-              </button>
-            )}
-          </div>
-        )}
+            <TabsContent value="all" className="staff-tabs-content">
+              <StaffListing onlyTeaching={false} onAddClick={() => setShowAddModal(true)} />
+            </TabsContent>
 
-        {!isLoading && staff.length > 0 && <StaffListing onlyTeaching={onlyTeaching} />}
+            <TabsContent value="teaching" className="staff-tabs-content">
+              <StaffListing onlyTeaching={true} />
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
 
       {showAddModal && (
