@@ -109,9 +109,23 @@
   white-space: nowrap;
 }
 
-.status-active { background: rgba(34, 197, 94, 0.15); color: #4ade80; border-color: rgba(34, 197, 94, 0.3); }
-.status-graduated { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); }
-.status-withdrawn { background: rgba(239, 68, 68, 0.15); color: #f87171; border-color: rgba(239, 68, 68, 0.3); }
+.status-active {
+  background: rgba(34, 197, 94, 0.15);
+  color: #4ade80;
+  border-color: rgba(34, 197, 94, 0.3);
+}
+
+.status-graduated {
+  background: rgba(59, 130, 246, 0.15);
+  color: #60a5fa;
+  border-color: rgba(59, 130, 246, 0.3);
+}
+
+.status-withdrawn {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.3);
+}
 
 .student-subtitle {
   font-size: 1.1rem;
@@ -235,18 +249,20 @@
 }
 
 .student-tabs-content {
-  background: white;
-  padding: 2.5rem;
-  border-radius: 0 0 1.5rem 1.5rem;
-  border: 1px solid #f1f5f9;
-  border-top: none;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+  background: transparent;
   animation: slideUp 0.4s ease-out;
 }
 
 @keyframes slideUp {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .detail-section-title {
@@ -319,12 +335,24 @@
   color: #0f172a;
 }
 
-.text-success { color: #16a34a; }
-.text-danger { color: #dc2626; }
+.text-success {
+  color: #16a34a;
+}
+
+.text-danger {
+  color: #dc2626;
+}
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @media (max-width: 1024px) {
@@ -357,17 +385,20 @@
   }
 
   .student-details-name {
-    font-size: 1.75rem; /* Reduced further to prevent overflow */
+    font-size: 1.75rem;
+    /* Reduced further to prevent overflow */
     word-break: break-word;
   }
 
   .student-title-row {
-    flex-wrap: wrap; /* Allow wrapping of badges if name is long */
+    flex-wrap: wrap;
+    /* Allow wrapping of badges if name is long */
     gap: 1rem;
   }
 
   .banner-badge-group {
-    flex-direction: row; /* Keep tags on one line if possible, or wrap */
+    flex-direction: row;
+    /* Keep tags on one line if possible, or wrap */
     flex-wrap: wrap;
     margin-left: 0;
     gap: 0.5rem;
@@ -426,5 +457,62 @@
   .student-tabs-content {
     padding: 1.5rem 1rem !important;
     border-radius: 0 0 0.75rem 0.75rem;
+  }
+}
+
+/* ── Academic Tab Special Styles ─────────────────────────────────── */
+
+.academic-empty-card {
+  border: 2px dashed #e2e8f0 !important;
+  background: #f8fafc !important;
+  padding: 3rem !important;
+  flex-direction: column !important;
+  text-align: center;
+  align-items: center;
+  gap: 1rem;
+  grid-column: span 3;
+}
+
+.empty-academic-icon {
+  margin-right: 0 !important;
+  color: #64748b;
+  background: white;
+  width: 80px;
+  height: 80px;
+  border-radius: 2rem;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+}
+
+.academic-empty-description {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: #64748b;
+  max-width: 450px;
+  line-height: 1.6;
+}
+
+.academic-placement-card {
+  border-left: 4px solid #1e3a8a !important;
+}
+
+.subject-info-card:hover {
+  border-color: #1e3a8a;
+  background: #fdfdfd;
+}
+
+.no-subjects-card {
+  background: #fff7ed !important;
+  border-color: #fdba74 !important;
+  grid-column: span 3;
+}
+
+.no-subjects-card .le-card-icon {
+  color: #ea580c;
+}
+
+@media (max-width: 768px) {
+  .academic-empty-card, .no-subjects-card {
+    grid-column: span 1;
+    padding: 2rem 1rem !important;
   }
 }

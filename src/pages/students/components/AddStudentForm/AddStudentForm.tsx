@@ -12,6 +12,10 @@ import './AddStudentForm.css';
 interface AddStudentFormProps {
   onSuccess?: (values: any) => void;
   onCancel?: () => void;
+  initialValues?: {
+    classId?: string;
+    armId?: string;
+  };
 }
 
 const GENDER_OPTIONS = [
@@ -33,12 +37,12 @@ const StudentSchema = Yup.object().shape({
   password: Yup.string().min(8, 'Password must be at least 8 characters'),
 });
 
-const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel }) => {
+const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, initialValues }) => {
   const school = useSelector((state: RootState) => state.school.school);
   const [createStudent, { isLoading }] = useCreateStudentMutation();
   const { data: classes = [] } = useGetClassesQuery();
 
-  const [selectedClassId, setSelectedClassId] = useState<string>('');
+  const [selectedClassId, setSelectedClassId] = useState<string>(initialValues?.classId || '');
   const { data: arms = [] } = useGetArmsQuery(selectedClassId, { skip: !selectedClassId });
 
   const handleAddStudent = async (values: any) => {
@@ -68,8 +72,8 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel }) 
       dateOfBirth: '',
       guardianPhone: '',
       guardianEmail: '',
-      classId: '',
-      armId: '',
+      classId: initialValues?.classId || '',
+      armId: initialValues?.armId || '',
       password: 'LecoleStudent@123',
     },
     validationSchema: StudentSchema,
@@ -133,7 +137,7 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel }) 
         <div className="form-row">
           <LeInput
             id="email"
-            label="Student Email (Optional)"
+            label="Student Email"
             type="email"
             {...formik.getFieldProps('email')}
             error={formik.errors.email as string}
@@ -158,6 +162,7 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel }) 
             {...formik.getFieldProps('classId')}
             error={formik.errors.classId as string}
             touched={formik.touched.classId}
+            disabled={!!initialValues?.classId}
           />
           <LeDropdown
             id="armId"
@@ -166,7 +171,7 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel }) 
             {...formik.getFieldProps('armId')}
             error={formik.errors.armId as string}
             touched={formik.touched.armId}
-            disabled={!formik.values.classId}
+            disabled={!formik.values.classId || !!initialValues?.armId}
           />
         </div>
 

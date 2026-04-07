@@ -1,4 +1,5 @@
 import { baseApi } from '.';
+import type { Student } from './studentApi';
 
 export type Category = 'EARLY_YEARS' | 'BASIC' | 'JUNIOR_SECONDARY' | 'SENIOR_SECONDARY' | 'OTHER';
 
@@ -74,7 +75,7 @@ export const classApi = baseApi.injectEndpoints({
         url: `/class/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Class'],
+      invalidatesTags: ['Class', 'Student'],
     }),
     createArm: builder.mutation<Arm, CreateArmRequest>({
       query: (armData) => ({
@@ -113,7 +114,7 @@ export const classApi = baseApi.injectEndpoints({
         url: `/class/${classId}/arms/${armId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Class', 'Teachers'],
+      invalidatesTags: ['Class', 'Teachers', 'Student'],
     }),
 
     assignSubjectsToClass: builder.mutation<any, { classId: string; subjectIds: string[] }>({
@@ -122,7 +123,7 @@ export const classApi = baseApi.injectEndpoints({
         method: 'POST',
         body: { subjectIds },
       }),
-      invalidatesTags: ['Class', 'Subject'],
+      invalidatesTags: ['Class', 'Subject', 'Student'],
     }),
     assignMasterToArm: builder.mutation<Arm, { armId: string; staffId: string | null }>({
       query: ({ armId, staffId }) => ({
@@ -131,6 +132,20 @@ export const classApi = baseApi.injectEndpoints({
         body: { staffId },
       }),
       invalidatesTags: ['Class', 'Staff', 'Teachers'],
+    }),
+
+    getStudentsByArm: builder.query<Student[], string>({
+      query: (armId) => ({
+        url: `/class/arms/${armId}/students`,
+        method: 'GET',
+      }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.map(({ id }) => ({ type: 'Student' as const, id })),
+              { type: 'Student', id: 'LIST' },
+            ]
+          : [{ type: 'Student', id: 'LIST' }],
     }),
   }),
 });
@@ -146,6 +161,7 @@ export const {
   useDeleteArmMutation,
   useAssignSubjectsToClassMutation,
   useAssignMasterToArmMutation,
+  useGetStudentsByArmQuery,
 } = classApi;
 
 

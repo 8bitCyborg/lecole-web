@@ -10,6 +10,7 @@ import { useGetStudentByIdQuery } from '@/services/leApi/studentApi';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import StudentPersonalDetails from './components/PersonalDetails';
 import StudentFinanceDetails from './components/FinanceDetails';
+import StudentAcademicDetails from './components/AcademicDetails';
 import './components/PersonalDetails/styles.css';
 
 const StudentDetails = () => {
@@ -18,7 +19,7 @@ const StudentDetails = () => {
   const { data: student, isLoading, isError } = useGetStudentByIdQuery(studentId!);
 
   const handleBack = () => {
-    navigate('/students');
+    navigate(-1);
   };
 
   if (isLoading) {
@@ -30,7 +31,7 @@ const StudentDetails = () => {
       <div className="student-profile-container">
         <button className="back-navigator-btn" onClick={handleBack}>
           <ArrowLeft size={18} />
-          Back to Students
+          Go Back
         </button>
         <div className="students-empty-state">
           <div className="empty-state-icon">⚠️</div>
@@ -47,7 +48,7 @@ const StudentDetails = () => {
     <div className="student-profile-container">
       <button className="back-navigator-btn" onClick={handleBack}>
         <ArrowLeft size={18} />
-        Back to Students
+        Go Back
       </button>
 
       <div className="student-header-banner">
@@ -121,9 +122,7 @@ const StudentDetails = () => {
           <StudentFinanceDetails student={student} />
         </TabsContent>
         <TabsContent value="academic" className="student-tabs-content">
-          <div>
-            <p>Coming Soon</p>
-          </div>
+          <StudentAcademicDetails student={student} />
         </TabsContent>
       </Tabs>
     </div>

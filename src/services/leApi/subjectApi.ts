@@ -60,7 +60,7 @@ export const subjectApi = baseApi.injectEndpoints({
         method: 'PATCH',
         body: { classIds },
       }),
-      invalidatesTags: ['Subject'],
+      invalidatesTags: ['Subject', 'Student'],
     }),
 
     assignTeachers: builder.mutation<Subject, { id: string; teacherIds: string[] }>({
@@ -77,7 +77,7 @@ export const subjectApi = baseApi.injectEndpoints({
         url: `/subject/${id}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Subject'],
+      invalidatesTags: ['Subject', 'Student', 'Class', 'Teachers'],
     }),
 
   }),
