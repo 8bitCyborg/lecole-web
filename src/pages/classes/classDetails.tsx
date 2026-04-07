@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Trash2, User } from 'lucide-react';
+import { ArrowLeft, Trash2, User, ChevronRight, LayoutGrid, BookOpen } from 'lucide-react';
 import { useGetClassesQuery, useGetArmsQuery, useDeleteArmMutation, CATEGORY_OPTIONS } from '@/services/leApi/classApi';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import AddArmForm from './components/AddArmForm/AddArmForm';
 import AssignSubjectsToClass from './components/AssignSubjectsToClass/AssignSubjectsToClass';
 import { useGetTeachingStaffQuery } from '@/services/leApi/staffApi';
@@ -75,76 +76,133 @@ const ClassArmsPage = () => {
         </button>
       </div>
 
-      <AssignSubjectsToClass
-        classId={classId || ''}
-        assignedSubjects={currentClass?.subjects || []}
-      />
-
       <div className="classes-listing-section">
-        {armsLoading && <div className="loading-state">Loading Arms...</div>}
+        <div className="class-tabs-card">
+          <Tabs defaultValue="arms" className="w-full">
+            <TabsList className="class-tabs-list">
+              <TabsTrigger value="arms" className="class-tabs-trigger">
+                <LayoutGrid size={18} />
+                Class Arms
+              </TabsTrigger>
+              <TabsTrigger value="subjects" className="class-tabs-trigger">
+                <BookOpen size={18} />
+                Assigned Subjects
+              </TabsTrigger>
+            </TabsList>
 
-        {!armsLoading && arms.length === 0 && (
-          <div className="classes-empty-state">
-            <div className="empty-state-icon">📂</div>
-            <h2 className="empty-state-title">No Arms Defined Yet</h2>
-            <p className="empty-state-description">
-              Create different arms or sections for this class (e.g., A, B, Gold, Silver) to begin student enrollment at the arm level.
-            </p>
-            <button
-              className="le-button le-button-primary add-class-btn-empty"
-              onClick={() => setShowAddModal(true)}
-            >
-              Create Your First Arm
-            </button>
-          </div>
-        )}
+            <TabsContent value="arms" className="class-tabs-content">
+              {armsLoading && <div className="loading-state">Loading Arms...</div>}
 
-        {!armsLoading && arms.length > 0 && (
-          <div className="classes-grid">
-            {arms.map((arm: any) => (
-              <div
-                key={arm.id}
-                className="class-card"
-                onClick={() => navigate(`/classes/${classId}/arms/${arm.id}`, {
-                  state: {
-                    className: currentClass?.name,
-                    armName: arm.name,
-                    capacity: arm.capacity
-                  }
-                })}
-                style={{ cursor: 'pointer' }}
-              >
-                <div className="class-card-content">
-                  <div className="arm-info">
-                    <h3 className="class-name-title">
-                      {currentClass?.name} <span style={{ color: '#aaa', margin: '0 4px' }}>:</span> {arm.name}
-                    </h3>
-                    {arm.capacity && (
-                      <span className="arm-capacity-badge">
-                        Capacity: {arm.capacity}
-                      </span>
-                    )}
-                    {arm.classMasterId && (() => {
-                        const master = teachers.find(t => t.id === arm.classMasterId);
-                        return master ? (
-                          <div className="arm-master-tag">
-                            <User size={12} />
-                            <span>{master.user.firstName} {master.user.lastName}</span>
-                          </div>
-                        ) : null;
-                      })()}
-                  </div>
-                  <Trash2
-                    size={20}
-                    className="class-card-icon delete-icon"
-                    color="red"
-                    onClick={(e) => handleDeleteClick(e, arm)}
-                  />
+              {!armsLoading && arms.length === 0 && (
+                <div className="classes-empty-state">
+                  <div className="empty-state-icon">📂</div>
+                  <h2 className="empty-state-title">No Arms Defined Yet</h2>
+                  <p className="empty-state-description">
+                    Create different arms or sections for this class (e.g., A, B, Gold, Silver) to begin student enrollment at the arm level.
+                  </p>
+                  <button
+                    className="le-button le-button-primary add-class-btn-empty"
+                    onClick={() => setShowAddModal(true)}
+                  >
+                    Create Your First Arm
+                  </button>
                 </div>
-              </div>
-            ))}
-          </div>
-        )}
+              )}
+
+              {!armsLoading && arms.length > 0 && (
+                <div className="classes-table-container">
+                  <table className="classes-table">
+                    <thead>
+                      <tr>
+                        <th>Arm Name</th>
+                        <th>Students Enrolled</th>
+                        <th>Capacity</th>
+                        <th>Class Master</th>
+                        <th style={{ textAlign: 'right' }}>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {arms.map((arm: any) => {
+                        const master = arm.classMasterId ? teachers.find(t => t.id === arm.classMasterId) : null;
+                        return (
+                          <tr
+                            key={arm.id}
+                            onClick={() => navigate(`/classes/${classId}/arms/${arm.id}`, {
+                              state: {
+                                className: currentClass?.name,
+                                armName: arm.name,
+                                capacity: arm.capacity
+                              }
+                            })}
+                          >
+                            <td data-label="Arm Name">
+                              <div className="class-name-cell">
+                                <span className="class-name-text">
+                                  {currentClass?.name} : {arm.name}
+                                </span>
+                              </div>
+                            </td>
+                            <td data-label="Enrollment">
+                              <span className="admission-no-badge" style={{ background: '#f0fdf4', color: '#166534', border: '1px solid #bbfcce' }}>
+                                {arm._count?.students || 0} Student{arm._count?.students !== 1 ? 's' : ''}
+                              </span>
+                            </td>
+                            <td data-label="Capacity">
+                              {arm.capacity ? (
+                                <span className="arm-capacity-badge">
+                                  Max: {arm.capacity}
+                                </span>
+                              ) : (
+                                <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Open</span>
+                              )}
+                            </td>
+                            <td data-label="Class Master">
+                              {master ? (
+                                <div className="arm-master-tag" style={{ marginTop: 0, display: 'inline-flex' }}>
+                                  <User size={12} />
+                                  <span>{master.user.firstName} {master.user.lastName}</span>
+                                </div>
+                              ) : (
+                                <span style={{ color: '#94a3b8', fontSize: '0.85rem' }}>Unassigned</span>
+                              )}
+                            </td>
+                            <td data-label="Actions" style={{ textAlign: 'right' }}>
+                              <div className="class-table-actions">
+                                <button
+                                  className="chevron-action-btn"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    navigate(`/classes/${classId}/arms/${arm.id}`);
+                                  }}
+                                >
+                                  <ChevronRight size={18} />
+                                </button>
+                                <button
+                                  className="delete-action-btn"
+                                  onClick={(e) => handleDeleteClick(e, arm)}
+                                  title="Delete Arm"
+                                >
+                                  <Trash2 size={18} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="subjects" className="class-tabs-content">
+              <AssignSubjectsToClass
+                classId={classId || ''}
+                assignedSubjects={currentClass?.subjects || []}
+              />
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
 
 

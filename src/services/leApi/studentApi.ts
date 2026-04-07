@@ -69,9 +69,9 @@ export const studentApi = baseApi.injectEndpoints({
       providesTags: (result) =>
         result
           ? [
-              ...result.data.map(({ id }) => ({ type: 'Student' as const, id })),
-              { type: 'Student', id: 'LIST' },
-            ]
+            ...result.data.map(({ id }) => ({ type: 'Student' as const, id })),
+            { type: 'Student', id: 'LIST' },
+          ]
           : [{ type: 'Student', id: 'LIST' }],
     }),
     getArchivedStudents: builder.query<PaginatedResponse<Student>, { page?: number; limit?: number } | void>({
@@ -84,9 +84,9 @@ export const studentApi = baseApi.injectEndpoints({
       providesTags: (result) =>
         result
           ? [
-              ...result.data.map(({ id }) => ({ type: 'Student' as const, id })),
-              { type: 'Student', id: 'ARCHIVED' },
-            ]
+            ...result.data.map(({ id }) => ({ type: 'Student' as const, id })),
+            { type: 'Student', id: 'ARCHIVED' },
+          ]
           : [{ type: 'Student', id: 'ARCHIVED' }],
     }),
     getGraduatedStudents: builder.query<PaginatedResponse<Student>, { page?: number; limit?: number } | void>({
@@ -99,9 +99,9 @@ export const studentApi = baseApi.injectEndpoints({
       providesTags: (result) =>
         result
           ? [
-              ...result.data.map(({ id }) => ({ type: 'Student' as const, id })),
-              { type: 'Student', id: 'GRADUATED' },
-            ]
+            ...result.data.map(({ id }) => ({ type: 'Student' as const, id })),
+            { type: 'Student', id: 'GRADUATED' },
+          ]
           : [{ type: 'Student', id: 'GRADUATED' }],
     }),
     getStudentById: builder.query<Student, string>({
@@ -118,7 +118,7 @@ export const studentApi = baseApi.injectEndpoints({
         method: 'POST',
         body: studentData,
       }),
-      invalidatesTags: [{ type: 'Student', id: 'LIST' }],
+      invalidatesTags: [{ type: 'Student', id: 'LIST' }, { type: 'Class' }],
     }),
     updateStudent: builder.mutation<Student, { id: string } & Partial<CreateStudentRequest>>({
       query: ({ id, ...studentData }) => ({
@@ -129,6 +129,7 @@ export const studentApi = baseApi.injectEndpoints({
       invalidatesTags: (_result, _error, { id }) => [
         { type: 'Student', id },
         { type: 'Student', id: 'LIST' },
+        { type: 'Class' },
       ],
     }),
     withdrawStudent: builder.mutation<void, string>({
@@ -140,6 +141,7 @@ export const studentApi = baseApi.injectEndpoints({
         { type: 'Student', id },
         { type: 'Student', id: 'LIST' },
         { type: 'Student', id: 'ARCHIVED' },
+        { type: 'Class' },
       ],
     }),
   }),
