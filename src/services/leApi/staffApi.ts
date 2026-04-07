@@ -66,14 +66,6 @@ export const staffApi = baseApi.injectEndpoints({
       }),
       providesTags: ['Staff'],
     }),
-    getTeachingStaff: builder.query<Staff[], void>({
-      query: () => ({
-        url: '/staff/teachers',
-        method: 'GET',
-      }),
-      keepUnusedDataFor: 86400, // 24 hours
-      providesTags: ['Teachers'],
-    }),
     getStaffMember: builder.query<Staff, string>({
       query: (id) => ({
         url: `/staff/${id}`,
@@ -120,7 +112,6 @@ export const staffApi = baseApi.injectEndpoints({
 
 export const {
   useGetStaffQuery,
-  useGetTeachingStaffQuery,
   useGetStaffMemberQuery,
   useCreateStaffMutation,
   useDeleteStaffMutation,

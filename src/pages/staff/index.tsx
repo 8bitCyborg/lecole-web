@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Users, GraduationCap } from 'lucide-react';
+import { Users, GraduationCap, Briefcase } from 'lucide-react';
 import AddStaffForm from './components/AddStaffForm';
 import StaffListing from './components/StaffListing';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../components/ui/tabs';
@@ -18,7 +18,7 @@ const StaffPage: React.FC = () => {
         <div className="staff-header-content">
           <h1 className="staff-title">Institutional Staff</h1>
           <p className="staff-subtitle">
-            Manage your school's dedicated faculty and administrative personnel. 
+            Manage your school's dedicated faculty and administrative personnel.
             Keep records up-to-date, manage teaching roles, and oversee institutional staffing.
           </p>
         </div>
@@ -40,16 +40,24 @@ const StaffPage: React.FC = () => {
               </TabsTrigger>
               <TabsTrigger value="teaching" className="staff-tabs-trigger">
                 <GraduationCap size={18} className="mr-2" />
-                Teaching Faculty
+                Teaching Staff
+              </TabsTrigger>
+              <TabsTrigger value="non-teaching" className="staff-tabs-trigger">
+                <Briefcase size={18} className="mr-2" />
+                Non-Teaching
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="all" className="staff-tabs-content">
-              <StaffListing onlyTeaching={false} onAddClick={() => setShowAddModal(true)} />
+              <StaffListing filter="all" onAddClick={() => setShowAddModal(true)} />
             </TabsContent>
 
             <TabsContent value="teaching" className="staff-tabs-content">
-              <StaffListing onlyTeaching={true} />
+              <StaffListing filter="teaching" />
+            </TabsContent>
+
+            <TabsContent value="non-teaching" className="staff-tabs-content">
+              <StaffListing filter="non-teaching" />
             </TabsContent>
           </Tabs>
         </div>

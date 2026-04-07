@@ -1,22 +1,29 @@
 import React, { useState } from 'react';
 import { Trash2, ChevronRight, UserCheck, UserX } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import { useDeleteStaffMutation, useGetStaffQuery, useGetTeachingStaffQuery } from '../../../services/leApi/staffApi';
+import { useDeleteStaffMutation, useGetStaffQuery } from '../../../services/leApi/staffApi';
 import type { Staff } from '../../../services/leApi/staffApi';
 import DeleteConfirmationModal from '../../../components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
 import '../Staff.css';
 
 interface StaffListingProps {
-  onlyTeaching?: boolean;
+  filter: 'all' | 'teaching' | 'non-teaching';
   onAddClick?: () => void;
 }
 
-const StaffListing: React.FC<StaffListingProps> = ({ onlyTeaching, onAddClick }) => {
+const StaffListing: React.FC<StaffListingProps> = ({ filter, onAddClick }) => {
   const navigate = useNavigate();
 
-  // Use either the full staff query or the teaching-only one
-  const { data: staff = [], isLoading } = (onlyTeaching ? useGetTeachingStaffQuery : useGetStaffQuery)(undefined, {
+  // Always fetch all staff and filter on the frontend as requested
+  const { data: allStaff = [], isLoading } = useGetStaffQuery(undefined, {
     refetchOnMountOrArgChange: true,
+  });
+
+  // Apply filtering based on the 'filter' prop
+  const staff = allStaff.filter((m) => {
+    if (filter === 'teaching') return m.isTeachingStaff;
+    if (filter === 'non-teaching') return !m.isTeachingStaff;
+    return true; // 'all'
   });
 
   const [deleteStaff] = useDeleteStaffMutation();
@@ -49,19 +56,27 @@ const StaffListing: React.FC<StaffListingProps> = ({ onlyTeaching, onAddClick })
     }
   };
 
+  const getFilterLabel = () => {
+    if (filter === 'teaching') return 'teaching staff';
+    if (filter === 'non-teaching') return 'non-teaching staff';
+    return 'staff';
+  };
+
   if (isLoading) {
-    return <div className="loading-state">Loading {onlyTeaching ? 'teachers' : 'staff'}...</div>;
+    return <div className="loading-state">Loading {getFilterLabel()}...</div>;
   }
 
   if (staff.length === 0) {
     return (
       <div className="staff-empty-state">
-        <div className="empty-state-icon">👨‍🏫</div>
-        <h2 className="empty-state-title">No {onlyTeaching ? 'Teaching' : ''} Staff Registered</h2>
+        <div className="empty-state-icon">
+          {filter === 'non-teaching' ? '💼' : '👨‍🏫'}
+        </div>
+        <h2 className="empty-state-title">No {filter === 'all' ? '' : filter === 'teaching' ? 'Teaching' : 'Non-Teaching'} Staff Registered</h2>
         <p className="empty-state-description">
-          Start building your school's faculty by adding your first {onlyTeaching ? 'teaching' : 'staff'} member.
+          Start building your school's faculty by adding your first {getFilterLabel()} member.
         </p>
-        {!onlyTeaching && onAddClick && (
+        {filter === 'all' && onAddClick && (
           <button
             className="le-button le-button-primary"
             onClick={onAddClick}

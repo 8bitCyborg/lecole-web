@@ -1,6 +1,6 @@
 import React from 'react';
 import { UserCheck, Loader2, ChevronDown } from 'lucide-react';
-import { useGetTeachingStaffQuery } from '@/services/leApi/staffApi';
+import { useGetStaffQuery } from '@/services/leApi/staffApi';
 import { useAssignMasterToArmMutation, useGetArmsQuery } from '@/services/leApi/classApi';
 
 interface ClassMasterProps {
@@ -9,7 +9,8 @@ interface ClassMasterProps {
 }
 
 const ClassMaster: React.FC<ClassMasterProps> = ({ classId, armId }) => {
-  const { data: teachers = [] } = useGetTeachingStaffQuery();
+  const { data: allStaff = [] } = useGetStaffQuery();
+  const teachers = allStaff.filter(s => s.isTeachingStaff);
   const { data: arms = [] } = useGetArmsQuery(classId);
   const [assignMaster, { isLoading: isUpdating }] = useAssignMasterToArmMutation();
 

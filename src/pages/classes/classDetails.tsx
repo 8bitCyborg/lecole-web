@@ -5,7 +5,7 @@ import { useGetClassesQuery, useGetArmsQuery, useDeleteArmMutation, CATEGORY_OPT
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import AddArmForm from './components/AddArmForm/AddArmForm';
 import AssignSubjectsToClass from './components/AssignSubjectsToClass/AssignSubjectsToClass';
-import { useGetTeachingStaffQuery } from '@/services/leApi/staffApi';
+import { useGetStaffQuery } from '@/services/leApi/staffApi';
 import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
 import './Classes.css';
 
@@ -17,7 +17,8 @@ const ClassArmsPage = () => {
   const [armToDelete, setArmToDelete] = useState<any>(null);
   const { data: classes = [] } = useGetClassesQuery();
   const { data: arms = [], isLoading: armsLoading } = useGetArmsQuery(classId || '');
-  const { data: teachers = [] } = useGetTeachingStaffQuery();
+  const { data: allStaff = [] } = useGetStaffQuery();
+  const teachers = allStaff.filter(s => s.isTeachingStaff);
   const [deleteArm] = useDeleteArmMutation();
 
   // Find current class name
