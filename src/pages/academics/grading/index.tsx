@@ -4,11 +4,12 @@ import {
   ArrowLeft,
   BarChart3,
   Download,
-  Search,
   TrendingUp,
   TrendingDown,
-  Minus,
+  Settings
 } from 'lucide-react';
+import GradeListing from './components/gradelisting';
+import GradeModuleForm from './components/GradingModule/gradeModuleForm';
 import '../Academics.css';
 
 /* ── Dummy Data ──────────────────────────────────────────────────────── */
@@ -17,7 +18,7 @@ const CLASSES = ['All Classes', 'JSS 1A', 'JSS 1B', 'JSS 1C', 'JSS 2A', 'JSS 2B'
 const SUBJECTS = ['All Subjects', 'Mathematics', 'English Language', 'Basic Science', 'Social Studies', 'Civic Education', 'French'];
 const TERMS = ['First Term 2025/26', 'Second Term 2024/25', 'Third Term 2024/25'];
 
-interface GradeRow {
+export interface GradeRow {
   id: string;
   student: string;
   initials: string;
@@ -53,34 +54,13 @@ const summaryStats = [
   { label: 'F (0–44%)', count: 1, color: '#e11d48', bg: '#fff1f2' },
 ];
 
-function gradeClass(g: string) {
-  return `grade-badge grade-${g.toLowerCase()}`;
-}
 
-function TrendIcon({ trend }: { trend: 'up' | 'down' | 'flat' }) {
-  if (trend === 'up') return <TrendingUp size={14} style={{ color: '#16a34a' }} />;
-  if (trend === 'down') return <TrendingDown size={14} style={{ color: '#e11d48' }} />;
-  return <Minus size={14} style={{ color: '#94a3b8' }} />;
-}
 
 /* ── Component ───────────────────────────────────────────────────────── */
 
 const GradingPage = () => {
   const navigate = useNavigate();
-  const [selectedClass, setSelectedClass] = useState('All Classes');
-  const [selectedSubject, setSelectedSubject] = useState('All Subjects');
-  const [selectedTerm, setSelectedTerm] = useState(TERMS[0]);
-  const [search, setSearch] = useState('');
-
-  const filtered = gradesData.filter((row) => {
-    const matchClass = selectedClass === 'All Classes' || row.class === selectedClass;
-    const matchSubject = selectedSubject === 'All Subjects' || row.subject === selectedSubject;
-    const matchSearch =
-      search === '' ||
-      row.student.toLowerCase().includes(search.toLowerCase()) ||
-      row.admission.toLowerCase().includes(search.toLowerCase());
-    return matchClass && matchSubject && matchSearch;
-  });
+  const [showGradeForm, setShowGradeForm] = useState(false);
 
   return (
     <div className="academics-page-container">
@@ -89,47 +69,67 @@ const GradingPage = () => {
         Back to Academics
       </button>
 
-      {/* ── Header Banner ── */}
-      <div className="academics-header-banner">
-        <div className="academics-header-content">
-          <h1 className="academics-title">Grading</h1>
-          <p className="academics-subtitle">
-            Review, manage, and publish student grades across all subjects and class arms.
-            Filter by class, subject, or term to get a focused view of academic performance.
-          </p>
+      {/* ── Sliding Header Wrapper ── */}
+      <div className="grading-header-wrapper">
+        <div className={`grading-header-slider ${showGradeForm ? 'is-editing' : ''}`}>
+          {/* Slide 1: Main Banner */}
+          <div className="grading-header-slide">
+            <div className="academics-header-banner">
+              <button
+                className="settings-trigger-btn"
+                title="Grading Configuration"
+                onClick={() => setShowGradeForm(true)}
+              >
+                <Settings size={20} />
+              </button>
 
-          <div className="academics-header-stats">
-            {summaryStats.map((s) => (
-              <div className="acad-stat-pill" key={s.label}>
-                <div
-                  style={{
-                    width: 10,
-                    height: 10,
-                    borderRadius: '50%',
-                    background: s.color,
-                    flexShrink: 0,
-                  }}
-                />
-                <div className="acad-stat-pill-labels">
-                  <span className="acad-pill-label">{s.label}</span>
-                  <span className="acad-pill-value">{s.count} students</span>
+              <div className="academics-header-content">
+                <h1 className="academics-title">Grading</h1>
+                <p className="academics-subtitle">
+                  Review, manage, and publish student grades across all subjects and class arms.
+                  Filter by class, subject, or term to get a focused view of academic performance.
+                </p>
+
+                <div className="academics-header-stats">
+                  {summaryStats.map((s) => (
+                    <div className="acad-stat-pill" key={s.label}>
+                      <div
+                        style={{
+                          width: 10,
+                          height: 10,
+                          borderRadius: '50%',
+                          background: s.color,
+                          flexShrink: 0,
+                        }}
+                      />
+                      <div className="acad-stat-pill-labels">
+                        <span className="acad-pill-label">{s.label}</span>
+                        <span className="acad-pill-value">{s.count} students</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            ))}
+
+              <button
+                className="le-button le-button-primary academics-header-cta"
+                style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
+              >
+                <Download size={16} />
+                Export Report
+              </button>
+            </div>
+          </div>
+
+          {/* Slide 2: Grading Form */}
+          <div className="grading-header-slide">
+            <GradeModuleForm onClose={() => setShowGradeForm(false)} />
           </div>
         </div>
-
-        <button
-          className="le-button le-button-primary academics-header-cta"
-          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-        >
-          <Download size={16} />
-          Export Report
-        </button>
       </div>
 
       {/* ── KPI Cards ── */}
-      <div className="academics-kpi-row">
+      {/* <div className="academics-kpi-row">
         <div className="acad-kpi-card">
           <div className="acad-kpi-icon-wrap acad-kpi-icon-blue">
             <BarChart3 size={22} />
@@ -170,156 +170,14 @@ const GradingPage = () => {
             <span className="acad-kpi-sub">9 of 10 above 45%</span>
           </div>
         </div>
-      </div>
+      </div> */}
 
-      <div className="grading-controls">
-        <select
-          className="grading-select"
-          value={selectedTerm}
-          onChange={(e) => setSelectedTerm(e.target.value)}
-        >
-          {TERMS.map((t) => (
-            <option key={t}>{t}</option>
-          ))}
-        </select>
-
-        <select
-          className="grading-select"
-          value={selectedClass}
-          onChange={(e) => setSelectedClass(e.target.value)}
-        >
-          {CLASSES.map((c) => (
-            <option key={c}>{c}</option>
-          ))}
-        </select>
-
-        <select
-          className="grading-select"
-          value={selectedSubject}
-          onChange={(e) => setSelectedSubject(e.target.value)}
-        >
-          {SUBJECTS.map((s) => (
-            <option key={s}>{s}</option>
-          ))}
-        </select>
-
-        <div style={{ position: 'relative', flex: 1, minWidth: 200 }}>
-          <Search
-            size={15}
-            style={{
-              position: 'absolute',
-              left: '0.85rem',
-              top: '50%',
-              transform: 'translateY(-50%)',
-              color: '#94a3b8',
-              pointerEvents: 'none',
-            }}
-          />
-          <input
-            className="grading-search"
-            style={{ paddingLeft: '2.25rem', width: '100%', boxSizing: 'border-box' }}
-            placeholder="Search student or admission no…"
-            value={search}
-            onChange={(e) => setSearch(e.target.value)}
-          />
-        </div>
-      </div>
-
-      <div className="grading-table-container">
-        <table className="grading-table">
-          <thead>
-            <tr>
-              <th>Student</th>
-              <th>Admission No.</th>
-              <th>Class</th>
-              <th>Subject</th>
-              <th style={{ textAlign: 'center' }}>CA 1</th>
-              <th style={{ textAlign: 'center' }}>CA 2</th>
-              <th style={{ textAlign: 'center' }}>Exam</th>
-              <th style={{ textAlign: 'center' }}>Total</th>
-              <th style={{ textAlign: 'center' }}>Grade</th>
-              <th style={{ textAlign: 'center' }}>Trend</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filtered.length === 0 ? (
-              <tr>
-                <td colSpan={10} style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8' }}>
-                  No results match your filters.
-                </td>
-              </tr>
-            ) : (
-              filtered.map((row) => (
-                <tr key={row.id} onClick={() => navigate(`/students/${row.id}`)}>
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-                      <div
-                        style={{
-                          width: 32,
-                          height: 32,
-                          borderRadius: '50%',
-                          background: 'linear-gradient(135deg, #1e3a8a, #3b82f6)',
-                          color: 'white',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          fontSize: '0.72rem',
-                          fontWeight: 800,
-                          flexShrink: 0,
-                        }}
-                      >
-                        {row.initials}
-                      </div>
-                      <span style={{ fontWeight: 600, color: '#1e293b' }}>{row.student}</span>
-                    </div>
-                  </td>
-                  <td>
-                    <span
-                      style={{
-                        fontFamily: 'monospace',
-                        fontSize: '0.78rem',
-                        background: '#f1f5f9',
-                        padding: '0.2rem 0.5rem',
-                        borderRadius: '0.4rem',
-                        color: '#475569',
-                      }}
-                    >
-                      {row.admission}
-                    </span>
-                  </td>
-                  <td style={{ color: '#64748b', fontWeight: 600 }}>{row.class}</td>
-                  <td>{row.subject}</td>
-                  <td style={{ textAlign: 'center', fontWeight: 700 }}>{row.ca1}</td>
-                  <td style={{ textAlign: 'center', fontWeight: 700 }}>{row.ca2}</td>
-                  <td style={{ textAlign: 'center', fontWeight: 700 }}>{row.exam}</td>
-                  <td style={{ textAlign: 'center' }}>
-                    <strong style={{ fontSize: '0.95rem', color: '#1e293b' }}>{row.total}</strong>
-                    <span style={{ color: '#94a3b8', fontSize: '0.75rem' }}>/100</span>
-                  </td>
-                  <td style={{ textAlign: 'center' }}>
-                    <span className={gradeClass(row.grade)}>{row.grade}</span>
-                  </td>
-                  <td style={{ textAlign: 'center' }}>
-                    <TrendIcon trend={row.trend} />
-                  </td>
-                </tr>
-              ))
-            )}
-          </tbody>
-        </table>
-      </div>
-
-      <div
-        style={{
-          marginTop: '1rem',
-          fontSize: '0.8rem',
-          color: '#94a3b8',
-          textAlign: 'right',
-          paddingBottom: '3rem',
-        }}
-      >
-        Showing {filtered.length} of {gradesData.length} records
-      </div>
+      <GradeListing
+        gradesData={gradesData}
+        terms={TERMS}
+        classes={CLASSES}
+        subjects={SUBJECTS}
+      />
     </div>
   );
 };

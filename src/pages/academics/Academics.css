@@ -71,7 +71,6 @@
   border-radius: 1rem;
   padding: 4rem;
   color: white;
-  margin-bottom: 3rem;
   box-shadow: 0 20px 50px -12px rgba(30, 58, 138, 0.3);
   position: relative;
   overflow: hidden;
@@ -118,7 +117,8 @@
 /* ── Banner Quick Stats ───────────────────────────────────────────────── */
 
 .academics-header-stats {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 1.5rem;
   margin-top: 2rem;
   flex-wrap: wrap;
@@ -220,10 +220,25 @@
   flex-shrink: 0;
 }
 
-.acad-kpi-icon-blue  { background: #eff6ff; color: #2563eb; }
-.acad-kpi-icon-green { background: #f0fdf4; color: #16a34a; }
-.acad-kpi-icon-amber { background: #fffbeb; color: #d97706; }
-.acad-kpi-icon-rose  { background: #fff1f2; color: #e11d48; }
+.acad-kpi-icon-blue {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.acad-kpi-icon-green {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.acad-kpi-icon-amber {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+.acad-kpi-icon-rose {
+  background: #fff1f2;
+  color: #e11d48;
+}
 
 .acad-kpi-info {
   display: flex;
@@ -382,11 +397,30 @@
   text-align: center;
 }
 
-.grade-a  { background: #f0fdf4; color: #16a34a; }
-.grade-b  { background: #eff6ff; color: #2563eb; }
-.grade-c  { background: #fffbeb; color: #d97706; }
-.grade-d  { background: #fff7ed; color: #ea580c; }
-.grade-f  { background: #fff1f2; color: #e11d48; }
+.grade-a {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.grade-b {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.grade-c {
+  background: #fffbeb;
+  color: #d97706;
+}
+
+.grade-d {
+  background: #fff7ed;
+  color: #ea580c;
+}
+
+.grade-f {
+  background: #fff1f2;
+  color: #e11d48;
+}
 
 /* ── Score bar ────────────────────────────────────────────────────────── */
 
@@ -410,10 +444,21 @@
   transition: width 0.6s ease;
 }
 
-.score-bar-fill.high   { background: #22c55e; }
-.score-bar-fill.mid    { background: #3b82f6; }
-.score-bar-fill.low    { background: #f59e0b; }
-.score-bar-fill.fail   { background: #ef4444; }
+.score-bar-fill.high {
+  background: #22c55e;
+}
+
+.score-bar-fill.mid {
+  background: #3b82f6;
+}
+
+.score-bar-fill.low {
+  background: #f59e0b;
+}
+
+.score-bar-fill.fail {
+  background: #ef4444;
+}
 
 .score-bar-text {
   font-size: 0.78rem;
@@ -435,10 +480,25 @@
   font-weight: 700;
 }
 
-.assess-status.upcoming  { background: #eff6ff; color: #2563eb; }
-.assess-status.ongoing   { background: #f0fdf4; color: #16a34a; }
-.assess-status.completed { background: #f8fafc; color: #64748b; }
-.assess-status.overdue   { background: #fff1f2; color: #e11d48; }
+.assess-status.upcoming {
+  background: #eff6ff;
+  color: #2563eb;
+}
+
+.assess-status.ongoing {
+  background: #f0fdf4;
+  color: #16a34a;
+}
+
+.assess-status.completed {
+  background: #f8fafc;
+  color: #64748b;
+}
+
+.assess-status.overdue {
+  background: #fff1f2;
+  color: #e11d48;
+}
 
 /* ── Performance Chart Bar ────────────────────────────────────────────── */
 
@@ -495,10 +555,21 @@
   transition: height 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-.perf-bar-inner.blue   { background: linear-gradient(to top, #1e3a8a, #3b82f6); }
-.perf-bar-inner.green  { background: linear-gradient(to top, #14532d, #22c55e); }
-.perf-bar-inner.amber  { background: linear-gradient(to top, #92400e, #f59e0b); }
-.perf-bar-inner.rose   { background: linear-gradient(to top, #9f1239, #f43f5e); }
+.perf-bar-inner.blue {
+  background: linear-gradient(to top, #1e3a8a, #3b82f6);
+}
+
+.perf-bar-inner.green {
+  background: linear-gradient(to top, #14532d, #22c55e);
+}
+
+.perf-bar-inner.amber {
+  background: linear-gradient(to top, #92400e, #f59e0b);
+}
+
+.perf-bar-inner.rose {
+  background: linear-gradient(to top, #9f1239, #f43f5e);
+}
 
 .perf-bar-label {
   font-size: 0.7rem;
@@ -829,6 +900,14 @@
 }
 
 @media (max-width: 768px) {
+  .academics-header-stats {
+    /* display: grid; */
+    grid-template-columns: repeat(1, 1fr);
+    /* gap: 1.5rem;
+    margin-top: 2rem; */
+    /* flex-wrap: wrap; */
+  }
+
   .academics-header-banner {
     flex-direction: column;
     align-items: flex-start;
@@ -859,4 +938,331 @@
     right: auto;
     align-self: flex-start;
   }
+}
+
+.academics-kpi-row {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.grading-header-wrapper {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 1rem;
+  margin-bottom: 2em;
+}
+
+.grading-header-slider {
+  display: flex;
+  width: 200%;
+  transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.grading-header-slider.is-editing {
+  transform: translateX(-50%);
+}
+
+.grading-header-slide {
+  flex: 0 0 50%;
+  width: 50%;
+}
+
+.academics-header-banner {
+  background: linear-gradient(135deg, #1e3a8a, #000);
+  padding: 4rem;
+  color: white;
+  box-shadow: 0 20px 50px -12px rgba(30, 58, 138, 0.3);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Modification to existing .gradom-card to match banner */
+.gradom-form-view {
+  background: linear-gradient(135deg, #f8fafc, #fff) !important;
+  padding: 3rem 4rem !important;
+  color: #0f172a !important;
+  box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.1) !important;
+  position: relative;
+  overflow: hidden;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  border: 1px solid #e2e8f0;
+}
+
+@media (max-width: 768px) {
+  .gradom-form-view {
+    padding: 1.5rem 1rem !important;
+    min-height: auto;
+  }
+
+  .gradom-card-header {
+    margin-bottom: 1rem !important;
+  }
+
+  .gradom-card-title {
+    font-size: 1.25rem;
+  }
+
+  .gradom-form-row {
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+
+  .gradom-form-group.mobile-row-1 {
+    flex: 1 1 calc(70% - 1rem);
+  }
+
+  .gradom-form-group.mobile-row-1-small {
+    flex: 1 1 calc(30% - 1rem);
+    min-width: 80px;
+  }
+
+  .gradom-form-group.mobile-row-2 {
+    flex: 1 1 calc(50% - 1rem);
+  }
+
+  .gradom-actions.mobile-full {
+    width: 100%;
+    margin-top: 1rem !important;
+  }
+
+  .gradom-submit {
+    width: 100%;
+    min-width: unset !important;
+  }
+}
+
+
+/* ── GradingModule Form Styles ─────────────────────────────────────────── */
+
+.gradom-overlay {
+  display: none;
+  /* Disabling overlay mode */
+}
+
+
+.gradom-card {
+  background: white;
+  width: 100%;
+  max-width: 550px;
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  box-shadow: 0 40px 100px -20px rgba(30, 58, 138, 0.4);
+  position: relative;
+  animation: scaleIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.9);
+    opacity: 0;
+  }
+
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.gradom-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 2rem;
+}
+
+.gradom-card-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #1e3a8a;
+  margin: 0;
+}
+
+.gradom-card-subtitle {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin-top: 0.4rem;
+}
+
+.gradom-close-btn {
+  background: #f1f5f9;
+  border: none;
+  padding: 0.6rem;
+  border-radius: 50%;
+  cursor: pointer;
+  color: #64748b;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gradom-close-btn:hover {
+  background: #fff1f2;
+  color: #e11d48;
+  transform: rotate(90deg);
+}
+
+.gradom-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.gradom-form-row {
+  display: flex;
+  gap: 1.25rem;
+}
+
+.gradom-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  flex: 1;
+}
+
+.gradom-form-group label {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+}
+
+.gradom-input,
+.gradom-select-field {
+  width: 100%;
+  padding: 0.85rem 1.1rem;
+  border-radius: 0.9rem;
+  border: 1.5px solid #e2e8f0;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.95rem;
+  color: #0f172a;
+  outline: none;
+  transition: all 0.2s ease;
+  background: #f8fafc;
+}
+
+.gradom-input:focus,
+.gradom-select-field:focus {
+  border-color: #2563eb;
+  background: white;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+}
+
+.gradom-input.error {
+  border-color: #ef4444;
+  background: #fff1f2;
+}
+
+.gradom-err-text {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #ef4444;
+  margin-top: 0.2rem;
+}
+
+.gradom-info-box {
+  display: flex;
+  align-items: center;
+  gap: 0.85rem;
+  background: #eff6ff;
+  border: 1px solid #dbeafe;
+  padding: 1.1rem 1.4rem;
+  border-radius: 1.1rem;
+}
+
+.gradom-info-box p {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #1e40af;
+  margin: 0;
+  line-height: 1.4;
+}
+
+.gradom-info-box svg {
+  color: #2563eb;
+  flex-shrink: 0;
+}
+
+.gradom-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.gradom-cancel {
+  flex: 1;
+  padding: 1rem;
+  border-radius: 0.9rem;
+  border: 1.5px solid #e2e8f0;
+  background: white;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gradom-cancel:hover {
+  background: #f8fafc;
+  color: #0f172a;
+  border-color: #cbd5e1;
+}
+
+.gradom-submit {
+  flex: 2;
+  padding: 1rem;
+  border-radius: 0.9rem;
+  border: none;
+  background: #1e3a8a;
+  color: white;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  transition: all 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+  box-shadow: 0 10px 20px -5px rgba(30, 58, 138, 0.3);
+}
+
+.gradom-submit:hover:not(:disabled) {
+  background: #000;
+  transform: translateY(-4px);
+  box-shadow: 0 15px 30px -10px rgba(0, 0, 0, 0.4);
+}
+
+.gradom-submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.settings-trigger-btn {
+  position: absolute;
+  top: 1.5rem;
+  right: 1.5rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  z-index: 20;
+}
+
+.settings-trigger-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: rotate(90deg);
+  border-color: rgba(255, 255, 255, 0.4);
 }

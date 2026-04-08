@@ -1,40 +1,14 @@
-import { Search, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-/* ── Types ───────────────────────────────────────────────────────────── */
-
-export interface GradeRow {
-  id: string;
-  student: string;
-  initials: string;
-  admission: string;
-  class: string;
-  subject: string;
-  ca1: number;
-  ca2: number;
-  exam: number;
-  total: number;
-  grade: string;
-  trend: 'up' | 'down' | 'flat';
-}
+import { Search, TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import type { GradeRow } from '../index';
 
 interface GradeListingProps {
-  rows: GradeRow[];
-  totalCount: number;
+  gradesData: GradeRow[];
+  terms: string[];
   classes: string[];
   subjects: string[];
-  terms: string[];
-  selectedClass: string;
-  selectedSubject: string;
-  selectedTerm: string;
-  search: string;
-  onClassChange: (value: string) => void;
-  onSubjectChange: (value: string) => void;
-  onTermChange: (value: string) => void;
-  onSearchChange: (value: string) => void;
 }
-
-/* ── Helpers ─────────────────────────────────────────────────────────── */
 
 function gradeClass(g: string) {
   return `grade-badge grade-${g.toLowerCase()}`;
@@ -46,33 +20,30 @@ function TrendIcon({ trend }: { trend: 'up' | 'down' | 'flat' }) {
   return <Minus size={14} style={{ color: '#94a3b8' }} />;
 }
 
-/* ── Component ───────────────────────────────────────────────────────── */
-
-const GradeListing = ({
-  rows,
-  totalCount,
-  classes,
-  subjects,
-  terms,
-  selectedClass,
-  selectedSubject,
-  selectedTerm,
-  search,
-  onClassChange,
-  onSubjectChange,
-  onTermChange,
-  onSearchChange,
-}: GradeListingProps) => {
+const GradeListing = ({ gradesData, terms, classes, subjects }: GradeListingProps) => {
   const navigate = useNavigate();
+  const [selectedTerm, setSelectedTerm] = useState(terms[0]);
+  const [selectedClass, setSelectedClass] = useState('All Classes');
+  const [selectedSubject, setSelectedSubject] = useState('All Subjects');
+  const [search, setSearch] = useState('');
+
+  const filtered = gradesData.filter((row) => {
+    const matchClass = selectedClass === 'All Classes' || row.class === selectedClass;
+    const matchSubject = selectedSubject === 'All Subjects' || row.subject === selectedSubject;
+    const matchSearch =
+      search === '' ||
+      row.student.toLowerCase().includes(search.toLowerCase()) ||
+      row.admission.toLowerCase().includes(search.toLowerCase());
+    return matchClass && matchSubject && matchSearch;
+  });
 
   return (
     <>
-      {/* ── Filters ── */}
       <div className="grading-controls">
         <select
           className="grading-select"
           value={selectedTerm}
-          onChange={(e) => onTermChange(e.target.value)}
+          onChange={(e) => setSelectedTerm(e.target.value)}
         >
           {terms.map((t) => (
             <option key={t}>{t}</option>
@@ -82,7 +53,7 @@ const GradeListing = ({
         <select
           className="grading-select"
           value={selectedClass}
-          onChange={(e) => onClassChange(e.target.value)}
+          onChange={(e) => setSelectedClass(e.target.value)}
         >
           {classes.map((c) => (
             <option key={c}>{c}</option>
@@ -92,7 +63,7 @@ const GradeListing = ({
         <select
           className="grading-select"
           value={selectedSubject}
-          onChange={(e) => onSubjectChange(e.target.value)}
+          onChange={(e) => setSelectedSubject(e.target.value)}
         >
           {subjects.map((s) => (
             <option key={s}>{s}</option>
@@ -116,12 +87,11 @@ const GradeListing = ({
             style={{ paddingLeft: '2.25rem', width: '100%', boxSizing: 'border-box' }}
             placeholder="Search student or admission no…"
             value={search}
-            onChange={(e) => onSearchChange(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
           />
         </div>
       </div>
 
-      {/* ── Table ── */}
       <div className="grading-table-container">
         <table className="grading-table">
           <thead>
@@ -139,14 +109,14 @@ const GradeListing = ({
             </tr>
           </thead>
           <tbody>
-            {rows.length === 0 ? (
+            {filtered.length === 0 ? (
               <tr>
                 <td colSpan={10} style={{ textAlign: 'center', padding: '3rem', color: '#94a3b8' }}>
                   No results match your filters.
                 </td>
               </tr>
             ) : (
-              rows.map((row) => (
+              filtered.map((row) => (
                 <tr key={row.id} onClick={() => navigate(`/students/${row.id}`)}>
                   <td>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
@@ -206,7 +176,6 @@ const GradeListing = ({
         </table>
       </div>
 
-      {/* ── Footer count ── */}
       <div
         style={{
           marginTop: '1rem',
@@ -216,7 +185,7 @@ const GradeListing = ({
           paddingBottom: '3rem',
         }}
       >
-        Showing {rows.length} of {totalCount} records
+        Showing {filtered.length} of {gradesData.length} records
       </div>
     </>
   );
