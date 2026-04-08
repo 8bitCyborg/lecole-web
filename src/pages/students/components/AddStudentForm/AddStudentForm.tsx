@@ -2,16 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useSelector } from 'react-redux';
-import LeInput from '../../../../components/ui/LeInput/LeInput';
-import LeDropdown from '../../../../components/ui/LeDropdown/LeDropdown';
-import { useCreateStudentMutation } from '../../../../services/leApi/studentApi';
-import { useGetClassesQuery, useGetArmsQuery } from '../../../../services/leApi/classApi';
+import LeInput from '@/components/ui/LeInput/LeInput';
+import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
+import { useCreateStudentMutation, useUpdateStudentMutation } from '@/services/leApi/studentApi';
+import type { Student } from '@/services/leApi/studentApi';
+import { useGetClassesQuery, useGetArmsQuery } from '@/services/leApi/classApi';
 import type { RootState } from '@/store';
 import './AddStudentForm.css';
 
 interface AddStudentFormProps {
   onSuccess?: (values: any) => void;
   onCancel?: () => void;
+  /** When provided, the form operates in edit mode — pre-filling fields and calling PATCH instead of POST. */
+  student?: Student;
   initialValues?: {
     classId?: string;
     armId?: string;
@@ -29,58 +32,86 @@ const StudentSchema = Yup.object().shape({
   email: Yup.string().email('Invalid email address'),
   gender: Yup.string().oneOf(['MALE', 'FEMALE'], 'Invalid gender').required('Gender is required'),
   admissionNumber: Yup.string().required('Admission number is required').min(3, 'Admission number is too short'),
-  dateOfBirth: Yup.date(),
-  guardianPhone: Yup.string().matches(/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s\./0-9]*$/, 'Invalid phone number'),
+  dateOfBirth: Yup.date().nullable(),
+  guardianPhone: Yup.string().matches(/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s./0-9]*$/, 'Invalid phone number'),
   guardianEmail: Yup.string().email('Invalid email address'),
   classId: Yup.string(),
   armId: Yup.string(),
   password: Yup.string().min(8, 'Password must be at least 8 characters'),
 });
 
-const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, initialValues }) => {
+/** Formats an ISO date string to YYYY-MM-DD for the date input */
+const toDateInputValue = (iso?: string) => {
+  if (!iso) return '';
+  return iso.split('T')[0];
+};
+
+const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, student, initialValues }) => {
+  const isEditMode = !!student;
+
   const school = useSelector((state: RootState) => state.school.school);
-  const [createStudent, { isLoading }] = useCreateStudentMutation();
+  const [createStudent, { isLoading: isCreating }] = useCreateStudentMutation();
+  const [updateStudent, { isLoading: isUpdating }] = useUpdateStudentMutation();
+  const isLoading = isCreating || isUpdating;
+
   const { data: classes = [] } = useGetClassesQuery();
 
-  const [selectedClassId, setSelectedClassId] = useState<string>(initialValues?.classId || '');
+  const [selectedClassId, setSelectedClassId] = useState<string>(
+    student?.classId || initialValues?.classId || ''
+  );
   const { data: arms = [] } = useGetArmsQuery(selectedClassId, { skip: !selectedClassId });
 
-  const handleAddStudent = async (values: any) => {
-    if (!school?.id) {
-      console.error('No school ID found');
-      return;
-    }
-
+  const handleSubmit = async (values: any) => {
     try {
-      await createStudent({
-        ...values,
-        schoolId: school.id,
-      }).unwrap();
+      if (isEditMode) {
+        await updateStudent({
+          id: student!.id,
+          firstName: values.firstName,
+          lastName: values.lastName,
+          email: values.email || undefined,
+          gender: values.gender,
+          admissionNumber: values.admissionNumber,
+          dateOfBirth: values.dateOfBirth || undefined,
+          guardianPhone: values.guardianPhone || undefined,
+          guardianEmail: values.guardianEmail || undefined,
+          classId: values.classId || undefined,
+          armId: values.armId || undefined,
+        }).unwrap();
+      } else {
+        if (!school?.id) {
+          console.error('No school ID found');
+          return;
+        }
+        await createStudent({
+          ...values,
+          schoolId: school.id,
+        }).unwrap();
+      }
       onSuccess?.(values);
     } catch (err: any) {
-      console.error('Failed to create student:', err);
+      console.error(`Failed to ${isEditMode ? 'update' : 'create'} student:`, err);
     }
   };
 
   const formik = useFormik({
     initialValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      gender: '',
-      admissionNumber: '',
-      dateOfBirth: '',
-      guardianPhone: '',
-      guardianEmail: '',
-      classId: initialValues?.classId || '',
-      armId: initialValues?.armId || '',
-      password: 'LecoleStudent@123',
+      firstName: student?.user.firstName || '',
+      lastName: student?.user.lastName || '',
+      email: student?.user.email || '',
+      gender: student?.gender || '',
+      admissionNumber: student?.admissionNumber || '',
+      dateOfBirth: toDateInputValue(student?.dateOfBirth),
+      guardianPhone: student?.guardianPhone || '',
+      guardianEmail: student?.guardianEmail || '',
+      classId: student?.classId || initialValues?.classId || '',
+      armId: student?.armId || initialValues?.armId || '',
+      ...(!isEditMode && { password: 'LecoleStudent@123' }),
     },
     validationSchema: StudentSchema,
-    onSubmit: handleAddStudent,
+    onSubmit: handleSubmit,
+    enableReinitialize: true,
   });
 
-  // Update selected class for fetching arms
   useEffect(() => {
     setSelectedClassId(formik.values.classId);
     if (formik.values.classId !== selectedClassId) {
@@ -91,8 +122,16 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, in
   return (
     <div className="add-student-form-container">
       <div className="form-header">
-        <h2 className="form-title">Enroll New Student</h2>
-        <p className="form-subtitle">Add a new student to your school's enrollment.</p>
+        <h2 className="form-title">
+          {isEditMode
+            ? `Edit Student Record`
+            : 'Enroll New Student'}
+        </h2>
+        <p className="form-subtitle">
+          {isEditMode
+            ? `Update the details for ${student!.user.firstName} ${student!.user.lastName}.`
+            : "Add a new student to your school's enrollment."}
+        </p>
       </div>
 
       <form onSubmit={formik.handleSubmit} className="add-student-form">
@@ -212,7 +251,9 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, in
             className="le-button le-button-primary submit-btn"
             disabled={!formik.isValid || formik.isSubmitting || isLoading}
           >
-            {formik.isSubmitting ? 'Enrolling...' : 'Enroll Student'}
+            {isLoading
+              ? (isEditMode ? 'Saving...' : 'Enrolling...')
+              : (isEditMode ? 'Save Changes' : 'Enroll Student')}
           </button>
         </div>
       </form>

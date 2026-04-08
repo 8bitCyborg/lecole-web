@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import {
   ArrowLeft,
@@ -11,15 +12,23 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import StudentPersonalDetails from './components/PersonalDetails';
 import StudentFinanceDetails from './components/FinanceDetails';
 import StudentAcademicDetails from './components/AcademicDetails';
+import AddStudentForm from './components/AddStudentForm/AddStudentForm';
 import './components/PersonalDetails/styles.css';
+import './Students.css';
 
 const StudentDetails = () => {
   const { studentId } = useParams<{ studentId: string }>();
   const navigate = useNavigate();
   const { data: student, isLoading, isError } = useGetStudentByIdQuery(studentId!);
 
+  const [showEditModal, setShowEditModal] = useState(false);
+
   const handleBack = () => {
     navigate(-1);
+  };
+
+  const handleEditSuccess = () => {
+    setShowEditModal(false);
   };
 
   if (isLoading) {
@@ -103,7 +112,10 @@ const StudentDetails = () => {
           </div>
         </div>
 
-        <button className="le-button le-button-primary profile-edit-btn">
+        <button
+          className="le-button le-button-primary profile-edit-btn"
+          onClick={() => setShowEditModal(true)}
+        >
           <Edit size={16} style={{ marginRight: '8px' }} />
           Edit Profile
         </button>
@@ -125,6 +137,26 @@ const StudentDetails = () => {
           <StudentAcademicDetails student={student} />
         </TabsContent>
       </Tabs>
+
+      {/* Edit Profile Modal */}
+      {showEditModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <button
+              className="modal-close"
+              onClick={() => setShowEditModal(false)}
+              aria-label="Close"
+            >
+              &times;
+            </button>
+            <AddStudentForm
+              student={student}
+              onSuccess={handleEditSuccess}
+              onCancel={() => setShowEditModal(false)}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
