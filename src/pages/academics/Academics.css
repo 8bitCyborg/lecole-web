@@ -1,5 +1,17 @@
 /* ── Shared utilities (self-contained, no cross-module import needed) ─── */
 
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+
 .back-navigator-btn {
   display: flex;
   align-items: center;
@@ -658,108 +670,6 @@
 
 /* ── Grading Page ─────────────────────────────────────────────────────── */
 
-.grading-controls {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  align-items: center;
-}
-
-.grading-select {
-  padding: 0.55rem 1rem;
-  border-radius: 0.65rem;
-  border: 1.5px solid #e2e8f0;
-  font-size: 0.875rem;
-  font-family: 'Outfit', sans-serif;
-  font-weight: 600;
-  color: #334155;
-  background: white;
-  cursor: pointer;
-  outline: none;
-  transition: border-color 0.2s ease;
-  appearance: none;
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 0.75rem center;
-  padding-right: 2.25rem;
-  min-width: 160px;
-}
-
-.grading-select:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.grading-search {
-  padding: 0.55rem 1rem;
-  border-radius: 0.65rem;
-  border: 1.5px solid #e2e8f0;
-  font-size: 0.875rem;
-  font-family: 'Outfit', sans-serif;
-  color: #334155;
-  background: white;
-  outline: none;
-  transition: border-color 0.2s ease;
-  flex: 1;
-  min-width: 200px;
-}
-
-.grading-search:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-.grading-table-container {
-  background: white;
-  border-radius: 1rem;
-  border: 1px solid #e2e8f0;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
-}
-
-.grading-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-}
-
-.grading-table th {
-  background: #f8f9fa;
-  padding: 10px 20px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #64748b;
-  letter-spacing: 0.05em;
-  border-bottom: 2px solid #e2e8f0;
-}
-
-.grading-table td {
-  padding: 10px 20px;
-  font-size: 0.875rem;
-  font-family: 'Outfit', sans-serif;
-  color: #334155;
-  border-bottom: 1px solid #f1f5f9;
-  vertical-align: middle;
-}
-
-.grading-table tr:last-child td {
-  border-bottom: none;
-}
-
-.grading-table tbody tr {
-  transition: all 0.15s ease;
-}
-
-.grading-table tbody tr:nth-child(even) {
-  background: #f8fbff;
-}
-
-.grading-table tbody tr:hover {
-  background: #eff6ff !important;
-  box-shadow: inset 4px 0 0 #1e3a8a;
-}
 
 /* ── Assessments Page ─────────────────────────────────────────────────── */
 
@@ -949,7 +859,7 @@
   width: 100%;
   overflow: hidden;
   border-radius: 1rem;
-  margin-bottom: 2em;
+  /* margin-bottom: 2em; */
 }
 
 .grading-header-slider {
@@ -1036,12 +946,266 @@
   }
 }
 
+.gradom-management-view {
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+  min-height: 280px;
+  border-radius: 1rem;
+}
 
-/* ── GradingModule Form Styles ─────────────────────────────────────────── */
+/* Vertical slider container (Height 200% for 2 slides) */
+.gradom-vertical-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  border: solid 2px black;
+  overflow: hidden;
+  height: 30rem;
+  transition: transform 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
 
-.gradom-overlay {
-  display: none;
-  /* Disabling overlay mode */
+/* Showing the List fully */
+.gradom-vertical-container.view-list {
+  transform: translateY(-50%);
+}
+
+/* Showing the Form (Slides DOWN from top) */
+/* Desktop: Pre-calculated to show 80% of Form and 20% of List */
+.gradom-vertical-container.view-form {
+  transform: translateY(-0%);
+}
+
+@media (max-width: 768px) {
+  .gradom-vertical-container.view-form {
+    transform: translateY(0%);
+  }
+}
+
+.gradom-view-slide {
+  flex: 0 0 50%;
+  width: 100%;
+  border: solid 1px red;
+}
+
+.slide-down-anim {
+  animation: slideDown 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+/* slide-up: Used for the Banner/Form exiting or entering from the bottom */
+.slide-up-anim {
+  animation: slideUp 0.4s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.gradom-list-container {
+  background: linear-gradient(135deg, #f8fafc, #fff);
+  padding: 3rem 4rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 1rem;
+  min-height: 280px;
+}
+
+
+@media (max-width: 768px) {
+  .gradom-list-container {
+    padding: 1.5rem 1rem;
+  }
+}
+
+.gradom-header-actions {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+}
+
+.gradom-add-btn {
+  background: #1e3a8a;
+  color: white;
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 0.75rem;
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  position: absolute;
+  bottom: 2rem;
+  right: 2rem;
+}
+
+.gradom-add-btn:hover {
+  background: #000;
+  transform: translateY(-2px);
+}
+
+.gradom-loading {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  min-height: 151px;
+  color: #64748b;
+  font-weight: 600;
+}
+
+.gradom-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.25rem;
+  margin-top: 2rem;
+}
+
+.gradom-item {
+  background: white;
+  border: 1.5px solid #f1f5f9;
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gradom-item:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 10px 25px -10px rgba(59, 130, 246, 0.15);
+  transform: translateY(-4px);
+}
+
+.gradom-item.locked {
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.gradom-item-cat {
+  font-size: 0.65rem;
+  font-weight: 800;
+  color: #3b82f6;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  background: #eff6ff;
+  padding: 0.2rem 0.6rem;
+  border-radius: 2rem;
+  display: inline-block;
+  margin-bottom: 0.75rem;
+}
+
+.gradom-item-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin: 0 0 0.5rem 0;
+}
+
+.gradom-item-meta {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.gradom-weight-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #059669;
+  background: #ecfdf5;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.gradom-subject-pill {
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: #6366f1;
+  background: #eef2ff;
+  padding: 0.2rem 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.gradom-item-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.gradom-icon-action {
+  width: 32px;
+  height: 32px;
+  border-radius: 0.6rem;
+  border: 1.5px solid #f1f5f9;
+  background: white;
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.gradom-icon-action:hover {
+  background: #f8fafc;
+  color: #1e293b;
+  border-color: #cbd5e1;
+}
+
+.gradom-icon-action.locked {
+  color: #f59e0b;
+  border-color: #fef3c7;
+  background: #fffbeb;
+}
+
+.gradom-icon-action.edit:hover {
+  color: #2563eb;
+  border-color: #dbeafe;
+  background: #eff6ff;
+}
+
+.gradom-icon-action.delete:hover {
+  color: #e11d48;
+  border-color: #ffe4e6;
+  background: #fff1f2;
+}
+
+.gradom-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  padding: 4rem 2rem;
+  text-align: center;
+  color: #94a3b8;
+}
+
+.gradom-empty p {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
 }
 
 
@@ -1245,17 +1409,16 @@
 
 .settings-trigger-btn {
   position: absolute;
-  top: 1.5rem;
-  right: 1.5rem;
-  width: 40px;
-  height: 40px;
+  right: 2rem;
+  width: 4rem;
+  height: 4rem;
   border-radius: 0.75rem;
   background: rgba(255, 255, 255, 0.1);
   border: 1px solid rgba(255, 255, 255, 0.15);
   display: flex;
   align-items: center;
   justify-content: center;
-  color: white;
+  /* color: white; */
   cursor: pointer;
   transition: all 0.2s ease;
   z-index: 20;

@@ -8,7 +8,7 @@ export interface GradingModule {
   term?: string;
   session?: string;
   name: string;
-  weight: number;
+  percentage: number;
   category: ModuleCategory;
   sequence: number;
   isLocked: boolean;
@@ -19,7 +19,7 @@ export interface GradingModule {
 
 export interface CreateGradingModuleRequest {
   name: string;
-  weight: number;
+  percentage: number;
   category?: ModuleCategory;
   sequence?: number;
   isLocked?: boolean;
