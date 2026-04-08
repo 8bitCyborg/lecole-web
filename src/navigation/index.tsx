@@ -13,6 +13,9 @@ import Staff from '../pages/staff';
 import StaffDetails from '../pages/staff/StaffDetails';
 import Students from '@/pages/students';
 import StudentDetails from '@/pages/students/StudentDetails';
+import AcademicsDashboard from '@/pages/academics';
+import GradingPage from '@/pages/academics/grading';
+import AssessmentsPage from '@/pages/academics/assessments';
 
 export const publicRouter = createBrowserRouter([
   {
@@ -104,6 +107,23 @@ export const authRouter = createBrowserRouter([
                 element: <ClassArmDetails />,
               },
             ],
+          },
+        ]
+      },
+      {
+        path: 'academics',
+        children: [
+          {
+            index: true,
+            element: <AcademicsDashboard />,
+          },
+          {
+            path: 'grading',
+            element: <GradingPage />,
+          },
+          {
+            path: 'assessments',
+            element: <AssessmentsPage />,
           },
         ]
       },

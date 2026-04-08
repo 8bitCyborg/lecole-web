@@ -14,6 +14,9 @@ import {
   University,
   BookOpen,
   ChevronDown,
+  GraduationCap,
+  BarChart3,
+  ClipboardList,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -32,7 +35,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   logoutLoading
 }) => {
   const location = useLocation();
-  const [openSubmenus, setOpenSubmenus] = useState<string[]>(['staff']);
+  const [openSubmenus, setOpenSubmenus] = useState<string[]>(['staff', 'academics']);
 
   const toggleSubmenu = (id: string) => {
     setOpenSubmenus(prev =>
@@ -47,7 +50,17 @@ const Sidebar: React.FC<SidebarProps> = ({
     { icon: Presentation, label: 'Classes', path: '/classes' },
     { icon: UsersRound, label: 'Staff', path: '/staff' },
     { icon: Users, label: 'Students', path: '/students' },
-    { icon: Users, label: 'Grading', path: '/grading' },
+    {
+      icon: GraduationCap,
+      label: 'Academics',
+      path: '/academics',
+      id: 'academics',
+      children: [
+        { icon: LayoutDashboard, label: 'Overview',     path: '/academics' },
+        { icon: BarChart3,       label: 'Grading',     path: '/academics/grading' },
+        { icon: ClipboardList,   label: 'Assessments', path: '/academics/assessments' },
+      ],
+    },
     { icon: Users, label: 'Attendance', path: '/attendance' },
     { icon: UserCircle, label: 'Profile', path: '/profile' },
     { icon: Settings, label: 'Settings', path: '/settings' },
