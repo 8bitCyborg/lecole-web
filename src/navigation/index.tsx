@@ -6,7 +6,7 @@ import DashboardLayout from '../components/dashboard/DashboardLayout';
 import School from '../pages/school';
 import Class from '../pages/classes';
 import ClassArms from '../pages/classes/classDetails';
-import ClassArmDetails from '../pages/classes/classArmDetails';
+import ClassArmDetails from '../pages/classes/arms';
 import Subject from '../pages/subjects';
 import SubjectDetails from '../pages/subjects/subjectDetails';
 import Staff from '../pages/staff';
