@@ -17,9 +17,6 @@ import {
 } from '@/services/leApi/gradingApi';
 import type { GradingModule } from '@/services/leApi/gradingApi';
 import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
-import { DndContext, closestCenter } from '@dnd-kit/core';
-import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
 import './styles.css';
 
 interface GradeModuleListingProps {
