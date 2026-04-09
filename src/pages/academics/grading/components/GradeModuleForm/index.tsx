@@ -22,11 +22,11 @@ const CATEGORY_OPTIONS = [
   { value: 'OTHER', label: 'Other / Misc' },
 ];
 
-const GradeModuleForm: React.FC<GradeModuleFormProps> = ({ 
-  module, 
-  currentTotalPercentage, 
-  onSuccess, 
-  onCancel 
+const GradeModuleForm: React.FC<GradeModuleFormProps> = ({
+  module,
+  currentTotalPercentage,
+  onSuccess,
+  onCancel
 }) => {
   const isEditMode = !!module;
   const basePercentage = isEditMode ? (currentTotalPercentage - (module?.percentage || 0)) : currentTotalPercentage;
@@ -107,7 +107,7 @@ const GradeModuleForm: React.FC<GradeModuleFormProps> = ({
           error={formik.errors.name as string}
           touched={formik.touched.name}
           placeholder="e.g. First Test"
-          disabled={module?.isLocked}
+        // disabled={module?.isLocked}
         />
 
         <div className="grading-input-row">
@@ -121,7 +121,7 @@ const GradeModuleForm: React.FC<GradeModuleFormProps> = ({
             placeholder={`Max ${maxAllowed}`}
             min="0"
             max={100}
-            disabled={module?.isLocked}
+          // disabled={module?.isLocked}
           />
 
           <LeDropdown
@@ -131,7 +131,7 @@ const GradeModuleForm: React.FC<GradeModuleFormProps> = ({
             {...formik.getFieldProps('category')}
             error={formik.errors.category as string}
             touched={formik.touched.category}
-            disabled={module?.isLocked}
+          // disabled={module?.isLocked}
           />
         </div>
 
@@ -143,7 +143,7 @@ const GradeModuleForm: React.FC<GradeModuleFormProps> = ({
           error={formik.errors.sequence as string}
           touched={formik.touched.sequence}
           placeholder="1"
-          disabled={module?.isLocked}
+        // disabled={module?.isLocked}
         />
 
         <div className="grading-form-actions">

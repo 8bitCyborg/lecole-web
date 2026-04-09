@@ -17,6 +17,9 @@ import {
 } from '@/services/leApi/gradingApi';
 import type { GradingModule } from '@/services/leApi/gradingApi';
 import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
+import { DndContext, closestCenter } from '@dnd-kit/core';
+import { SortableContext, sortableKeyboardCoordinates, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import './styles.css';
 
 interface GradeModuleListingProps {
@@ -112,153 +115,168 @@ const GradeModuleListing: React.FC<GradeModuleListingProps> = ({ onEdit, onAdd, 
   return (
     <div className="grading-compact-listing">
       <div className="compact-listing-header">
-        <div
-          className={`custom-checkbox-listing ${selectedIds.length === modules.length && modules.length > 0 ? 'checked' : ''}`}
-          onClick={handleSelectAll}
-        >
-          {selectedIds.length === modules.length && modules.length > 0 && <CheckCircle2 size={12} />}
-        </div>
-
-        {selectedIds.length > 0 ? (
-          <div className="mass-actions-bar">
-            <span className="selected-count" style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem' }}>
-              {selectedIds.length} Selected
-            </span>
-            <button 
-              className="btn-mass-lock primary"
-              onClick={(e) => handleToggleLock(selectedIds, true, e)}
-              disabled={isLocking}
-            >
-              <Lock size={14} /> Lock All
-            </button>
-            <button 
-              className="btn-mass-lock outline"
-              onClick={(e) => handleToggleLock(selectedIds, false, e)}
-              disabled={isLocking}
-            >
-              <Unlock size={14} /> Unlock
-            </button>
+        <div className="compact-listing-header-left">
+          <div
+            className={`custom-checkbox-listing ${selectedIds.length === modules.length && modules.length > 0 ? 'checked' : ''}`}
+            onClick={handleSelectAll}
+          >
+            {selectedIds.length === modules.length && modules.length > 0 && <CheckCircle2 size={12} />}
           </div>
-        ) : (
-          <div className="contribution-summary">
-            <div className="summary-content">
-              <p className="summary-title">
-                Grading Structure Overview
-              </p>
-              <div className="summary-stats">
-                <div className="stat-group">
-                  <span className="stat-label-mini">Allocated</span>
-                  <span className="stat-value-mini">{totalPercentage}%</span>
-                </div>
-                <div className="stat-group">
-                  <span className="stat-label-mini">Remaining</span>
-                  <span className={`stat-value-mini ${totalPercentage > 100 ? 'error' : 'success'}`}>
-                    {Math.max(0, 100 - totalPercentage)}%
-                  </span>
-                </div>
-              </div>
-            </div>
-            
-            <div className="summary-actions">
-              {isAtMaxAllocation && (
-                <div className="max-allocation-warning">
-                  <Info size={12} />
-                  Max Capacity Reached
-                </div>
-              )}
+
+          {selectedIds.length > 0 && (
+            <div className="mass-actions-bar">
+              <span className="selected-count" style={{ fontSize: '0.75rem', padding: '0.35rem 0.75rem' }}>
+                {selectedIds.length} Selected
+              </span>
               <button
-                className="le-button le-button-primary btn-add-module-compact"
-                onClick={onAdd}
-                disabled={isAtMaxAllocation}
+                className="btn-mass-lock primary"
+                onClick={(e) => handleToggleLock(selectedIds, true, e)}
+                disabled={isLocking}
               >
-                <Plus size={16} />
-                Add Grade Module
+                <Lock size={14} /> Lock All
+              </button>
+              <button
+                className="btn-mass-lock outline"
+                onClick={(e) => handleToggleLock(selectedIds, false, e)}
+                disabled={isLocking}
+              >
+                <Unlock size={14} /> Unlock
               </button>
             </div>
-          </div>
-        )}
-      </div>
+          )}
 
-      <div className="compact-table-head">
-        <div className="table-head-label"></div>
-        <div className="table-head-label">Module Name</div>
-        <div className="table-head-label">Contribution</div>
-        <div className="table-head-label">Category</div>
-        <div className="table-head-label">Security</div>
-        <div className="table-head-label" style={{ textAlign: 'right' }}>Actions</div>
-      </div>
-
-      <div className="compact-table-body">
-        {modules.slice().sort((a, b) => (a.sequence || 0) - (b.sequence || 0)).map((module) => {
-          const isSelected = selectedIds.includes(module.id);
-          return (
-            <div
-              key={module.id}
-              className={`compact-table-row ${isSelected ? 'selected' : ''} ${module.isLocked ? 'locked' : ''}`}
-              onClick={(e) => handleSelect(module.id, e)}
-            >
-              <div className="card-selection-overlay">
-                <div
-                  className={`custom-checkbox-listing ${isSelected ? 'checked' : ''}`}
-                  onClick={(e) => handleSelect(module.id, e)}
-                >
-                  {isSelected && <CheckCircle2 size={12} />}
+          {selectedIds.length === 0 && (
+            <div className="contribution-summary">
+              <div className="summary-content">
+                <p className="summary-title">
+                  Grading Structure Overview
+                </p>
+                <div className="summary-stats">
+                  <div className="stat-group">
+                    <span className="stat-label-mini">Allocated</span>
+                    <span className="stat-value-mini success">{totalPercentage}%</span>
+                  </div>
+                  <div className="stat-group">
+                    <span className="stat-label-mini">Remaining</span>
+                    <span className={`stat-value-mini ${totalPercentage > 100 && 'error'}`} style={{ color: 'white' }}>
+                      {Math.max(0, 100 - totalPercentage)}%
+                    </span>
+                  </div>
                 </div>
-              </div>
-
-              <div className="row-cell cell-name">{module.name}</div>
-
-              <div className="row-cell cell-percentage">
-                <span className="percentage-val" style={{ fontSize: '0.9rem', width: '2rem' }}>{module.percentage}%</span>
-                <div className="progress-track" style={{ flex: 1, height: '4px', maxWidth: '80px' }}>
-                  <div
-                    className={`progress-fill ${module.isLocked ? 'locked' : ''}`}
-                    style={{ width: `${module.percentage}%` }}
-                  />
-                </div>
-              </div>
-
-              <div className="row-cell">
-                <span className={`mini-pill pill-${module.category.toLowerCase()}`}>
-                  {module.category}
-                </span>
-              </div>
-
-              <div className="row-cell">
-                <div className={`status-lock-pill ${module.isLocked ? 'locked' : 'open'}`}>
-                  {module.isLocked ? <ShieldCheck size={12} /> : <ShieldAlert size={12} />}
-                  {module.isLocked ? 'Locked' : 'Open'}
-                </div>
-              </div>
-
-              <div className="compact-actions">
-                <button
-                  className="mini-action-btn btn-edit"
-                  onClick={(e) => { e.stopPropagation(); onEdit(module); }}
-                  title="Edit Module"
-                >
-                  <Edit3 size={15} />
-                </button>
-                <button
-                  className="mini-action-btn btn-lock"
-                  onClick={(e) => handleToggleLock([module.id], !module.isLocked, e)}
-                  title={module.isLocked ? "Unlock Module" : "Lock Module"}
-                >
-                  {module.isLocked ? <Unlock size={15} /> : <Lock size={15} />}
-                </button>
-                <button
-                  className="mini-action-btn btn-delete"
-                  onClick={(e) => handleDeleteClick(module, e)}
-                  disabled={module.isLocked}
-                  title="Delete Module"
-                >
-                  <Trash2 size={15} />
-                </button>
               </div>
             </div>
-          );
-        })}
+          )}
+        </div>
+
+        <div className="summary-actions">
+          {isAtMaxAllocation && (
+            <div className="max-allocation-warning">
+              <Info size={12} />
+              Max Capacity Reached
+            </div>
+          )}
+          <button
+            className="le-button le-button-primary btn-add-module-compact"
+            onClick={onAdd}
+            disabled={isAtMaxAllocation}
+          >
+            <Plus size={16} />
+            Add Grade Module
+          </button>
+        </div>
       </div>
+
+      <table className="compact-table">
+        <thead className="compact-table-head">
+          <tr>
+            <th className="table-head-label"></th>
+            <th className="table-head-label">Module Name</th>
+            <th className="table-head-label">Contribution</th>
+            <th className="table-head-label">Category</th>
+            <th className="table-head-label">Security</th>
+            <th className="table-head-label" style={{ textAlign: 'right' }}>Actions</th>
+          </tr>
+        </thead>
+        <tbody className="compact-table-body">
+          {modules.slice().sort((a, b) => (a.sequence || 0) - (b.sequence || 0)).map((module) => {
+            const isSelected = selectedIds.includes(module.id);
+            return (
+              <tr
+                key={module.id}
+                className={`compact-table-row ${isSelected ? 'selected' : ''} ${module.isLocked ? 'locked' : ''}`}
+              // onClick={(e) => handleSelect(module.id, e)}
+              >
+                <td className="card-selection-overlay">
+                  <div
+                    className={`custom-checkbox-listing ${isSelected ? 'checked' : ''}`}
+                    onClick={(e) => handleSelect(module.id, e)}
+                  >
+                    {isSelected && <CheckCircle2 size={12} />}
+                  </div>
+                </td>
+
+                <td className="row-cell cell-name" data-label="Module Name">
+                  <div className="cell-content">{module.name}</div>
+                </td>
+
+                <td className="row-cell cell-percentage" data-label="Contribution">
+                  <div className="cell-content">
+                    <span className="percentage-val" style={{ fontSize: '0.9rem' }}>{module.percentage}%</span>
+                  </div>
+                </td>
+
+                <td className="row-cell" data-label="Category">
+                  <div className="cell-content">
+                    <span className={`mini-pill pill-${module.category.toLowerCase()}`}>
+                      {module.category}
+                    </span>
+                  </div>
+                </td>
+
+                <td className="row-cell" data-label="Security">
+                  <div className="cell-content">
+                    <div className={`status-lock-pill ${module.isLocked ? 'locked' : 'open'}`}>
+                      {module.isLocked ? <ShieldCheck size={12} /> : <ShieldAlert size={12} />}
+                      {module.isLocked ? (
+                        <span className="status-text">Locked</span>
+                      ) : (
+                        <span className="status-text">Open</span>
+                      )}
+                    </div>
+                  </div>
+                </td>
+
+                <td className="compact-actions" data-label="Actions">
+                  <div className="actions-wrapper">
+                    <button
+                      className="mini-action-btn btn-edit"
+                      onClick={(e) => { e.stopPropagation(); onEdit(module); }}
+                      title="Edit Module"
+                    >
+                      <Edit3 size={15} />
+                    </button>
+                    <button
+                      className="mini-action-btn btn-lock"
+                      onClick={(e) => handleToggleLock([module.id], !module.isLocked, e)}
+                      title={module.isLocked ? "Unlock Module" : "Lock Module"}
+                    >
+                      {module.isLocked ? <Unlock size={15} /> : <Lock size={15} />}
+                    </button>
+                    <button
+                      className="mini-action-btn btn-delete"
+                      onClick={(e) => handleDeleteClick(module, e)}
+                      disabled={module.isLocked}
+                      title="Delete Module"
+                    >
+                      <Trash2 size={15} />
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
 
       <DeleteConfirmationModal
         isOpen={showDeleteModal}

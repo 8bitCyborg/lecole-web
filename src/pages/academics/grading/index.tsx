@@ -40,21 +40,21 @@ const Grading = () => {
         <div className="grading-tabs-card">
           <Tabs defaultValue="config" className="w-full">
             <TabsList className="grading-tabs-list">
-              <TabsTrigger value="config" className="grading-tabs-trigger">
-                <Settings size={18} />
-                Module Configuration
-              </TabsTrigger>
               <TabsTrigger value="records" className="grading-tabs-trigger">
                 <ClipboardList size={18} />
-                Assessment Records
+                Records
+              </TabsTrigger>
+              <TabsTrigger value="config" className="grading-tabs-trigger">
+                <Settings size={18} />
+                Configuration
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="config" className="grading-tabs-content">
-              <GradeModuleListing 
-                onEdit={handleEdit} 
+              <GradeModuleListing
+                onEdit={handleEdit}
                 onAdd={() => setShowModal(true)}
-                totalPercentage={currentTotalPercentage} 
+                totalPercentage={currentTotalPercentage}
               />
             </TabsContent>
 
@@ -81,11 +81,11 @@ const Grading = () => {
             >
               &times;
             </button>
-            <GradeModuleForm 
+            <GradeModuleForm
               module={activeModule}
               currentTotalPercentage={currentTotalPercentage}
-              onSuccess={handleCloseModal} 
-              onCancel={handleCloseModal} 
+              onSuccess={handleCloseModal}
+              onCancel={handleCloseModal}
             />
           </div>
         </div>
