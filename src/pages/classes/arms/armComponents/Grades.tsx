@@ -1,26 +1,39 @@
 import { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Edit2, Save, Lock } from 'lucide-react';
+import { ChevronLeft, ChevronRight, Edit2, Save, Lock, Loader2, AlertCircle, XCircle } from 'lucide-react';
+import { useAppSelector } from '@/store/hooks';
+import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
 import {
   useGetStudentsByArmQuery,
   useGetClassQuery
 } from '@/services/leApi/classApi';
-import { useGetGradingModulesQuery } from '@/services/leApi/gradingApi';
+import {
+  useGetGradingModulesQuery,
+  useGetGradesByArmQuery,
+  useUpsertGradesMutation
+} from '@/services/leApi/gradingApi';
 import '../styles.css';
 
 const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
 
+  const { school } = useAppSelector((state) => state.school);
   const { data: students = [], isLoading: isLoadingStudents } = useGetStudentsByArmQuery(armId!);
   const { data: classData, isLoading: isLoadingClass } = useGetClassQuery(classId);
-  const { data: modules = [], isLoading, error } = useGetGradingModulesQuery();
+  const { data: modules = [], isLoading: isLoadingModules } = useGetGradingModulesQuery();
+  const { data: existingGrades = [], isLoading: isLoadingGrades } = useGetGradesByArmQuery(armId!);
+
+  const [upsertGrades, { isLoading: isSaving }] = useUpsertGradesMutation();
 
   const subjects = classData?.subjects || [];
-
-  console.log('modules', modules);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showScrollLeft, setShowScrollLeft] = useState(false);
   const [showScrollRight, setShowScrollRight] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+  const [showDiscardModal, setShowDiscardModal] = useState(false);
+
+  // Local state for pending changes: `${studentId}|${subjectId}|${moduleId}` -> score
+  const [pendingChanges, setPendingChanges] = useState<Record<string, string>>({});
 
   const checkScroll = () => {
     if (scrollRef.current) {
@@ -44,13 +57,99 @@ const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
     }
   };
 
+  const hasUnsavedChanges = Object.keys(pendingChanges).length > 0;
+
+  const handleToggleEdit = () => {
+    if (isEditing && hasUnsavedChanges) {
+      setShowDiscardModal(true);
+    } else {
+      setIsEditing(!isEditing);
+      setSaveError(null);
+    }
+  };
+
+  const handleConfirmDiscard = () => {
+    setPendingChanges({});
+    setIsEditing(false);
+    setShowDiscardModal(false);
+    setSaveError(null);
+  };
+
+  const handleGradeChange = (studentId: string, subjectId: string, moduleId: string, value: string) => {
+    // Only allow numbers and decimal point
+    if (value !== '' && !/^\d*\.?\d*$/.test(value)) return;
+
+    // Limit to max 99
+    const numericValue = parseFloat(value);
+    if (!isNaN(numericValue) && numericValue > 99) return;
+
+    const key = `${studentId}|${subjectId}|${moduleId}`;
+    setPendingChanges(prev => ({
+      ...prev,
+      [key]: value
+    }));
+  };
+
+  const handleSave = async () => {
+    if (!hasUnsavedChanges || !school) return;
+    setSaveError(null);
+
+    const scores = Object.entries(pendingChanges).map(([key, value]) => {
+      const [studentId, subjectId, gradingModuleId] = key.split('|');
+      const score = value === '' ? 0 : parseFloat(value);
+      return {
+        studentId,
+        subjectId,
+        gradingModuleId,
+        score: isFinite(score) ? score : 0
+      };
+    });
+
+    const payload = {
+      context: {
+        schoolId: school.id,
+        classId,
+        armId,
+        term: school.currentTerm,
+        session: school.currentSession
+      },
+      scores
+    };
+
+    console.log('Batch Save Payload:', payload);
+
+    try {
+      await upsertGrades(payload).unwrap();
+      setPendingChanges({});
+      setIsEditing(false);
+    } catch (err: any) {
+      console.error('Failed to save grades:', err);
+      setSaveError(err.data?.message || 'Failed to save academic records. Please verify connectivity and try again.');
+    }
+  };
+
+  const getGradeValue = (studentId: string, subjectId: string, moduleId: string) => {
+    const key = `${studentId}|${subjectId}|${moduleId}`;
+    if (pendingChanges[key] !== undefined) {
+      return pendingChanges[key];
+    }
+
+    const grade = existingGrades.find(
+      g => g.studentId === studentId &&
+        g.subjectId === subjectId &&
+        g.gradingModuleId === moduleId
+    );
+
+    return grade ? grade.score.toString() : "";
+  };
+
   useEffect(() => {
     checkScroll();
     window.addEventListener('resize', checkScroll);
     return () => window.removeEventListener('resize', checkScroll);
   }, [students, subjects, modules]);
 
-  if (isLoadingStudents || isLoadingClass || isLoading) {
+  if (isLoadingStudents || isLoadingClass || isLoadingModules || isLoadingGrades) {
     return (
       <div className="arms-empty-state" style={{ background: 'white' }}>
         <div className="loading-dense">Synchronizing academic data...</div>
@@ -119,6 +218,8 @@ const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
                   modules.length > 0 ? (
                     modules.map((module: any, mIndex: number) => {
                       const isLocked = module.isLocked;
+                      const value = getGradeValue(student.id, subject.id, module.id);
+
                       return (
                         <td
                           key={`${subject.id}-${module.id}`}
@@ -128,22 +229,22 @@ const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
                             <input
                               type="text"
                               className="grade-input"
-                              defaultValue=""
+                              value={value}
+                              onChange={(e) => handleGradeChange(student.id, subject.id, module.id, e.target.value)}
                               placeholder="-"
-                              maxLength={2}
-                              inputMode='numeric'
-                              pattern='[0-9]*'
+                              maxLength={5}
+                              inputMode='decimal'
                               onKeyDown={(e) => {
                                 if (e.key === 'Enter') {
                                   e.preventDefault();
-                                  setIsEditing(false);
+                                  handleSave();
                                 }
                               }}
                             />
                           ) : (
                             <div className="grade-display">
                               {isLocked && <Lock size={9} className="lock-icon-mini" />}
-                              <span>-</span>
+                              <span>{value || '-'}</span>
                             </div>
                           )}
                         </td>
@@ -197,14 +298,52 @@ const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
         )}
 
         <button
-          className={`edit-toggle-button right ${isEditing ? 'active' : ''}`}
-          onClick={() => setIsEditing(!isEditing)}
-          title={isEditing ? "Save Changes" : "Edit Broadsheet"}
+          className={`edit-toggle-button right ${isEditing ? 'active' : ''} ${isSaving ? 'disabled' : ''}`}
+          onClick={handleToggleEdit}
+          disabled={isSaving}
+          title={isEditing ? "Exit Edit Mode" : "Edit Broadsheet"}
         >
-          {isEditing ? <Save size={18} /> : <Edit2 size={18} />}
+          {isEditing ? (hasUnsavedChanges ? <AlertCircle size={18} /> : <Edit2 size={18} />) : <Edit2 size={18} />}
         </button>
 
+        {isEditing && hasUnsavedChanges && (
+          <button
+            className="edit-toggle-button right save-button"
+            onClick={handleSave}
+            disabled={isSaving}
+            title="Save Changes"
+            style={{ marginRight: '8px' }}
+          >
+            {isSaving ? <Loader2 size={18} className="spin" /> : <Save size={18} />}
+          </button>
+        )}
+
       </div>
+
+      {isSaving && (
+        <div className="grades-loading-overlay">
+          <div className="loading-spinner-container">
+            <Loader2 className="spin" size={32} />
+            <p>Saving grades...</p>
+          </div>
+        </div>
+      )}
+
+      {saveError && (
+        <div className="grades-error-banner">
+          <XCircle size={14} />
+          <span>{saveError}</span>
+          <button className="error-clear-btn" onClick={() => setSaveError(null)}>Dismiss</button>
+        </div>
+      )}
+
+      <DeleteConfirmationModal
+        isOpen={showDiscardModal}
+        title="Discard Changes"
+        message="You have unsaved scores on this broadsheet. Moving out of edit mode will lose these changes. Are you sure?"
+        onConfirm={handleConfirmDiscard}
+        onCancel={() => setShowDiscardModal(false)}
+      />
     </div>
   );
 };

@@ -31,6 +31,37 @@ export interface ToggleLockRequest {
   lock: boolean;
 }
 
+export interface Grade {
+  id: string;
+  score: number;
+  studentId: string;
+  subjectId: string;
+  gradingModuleId: string;
+  classId: string;
+  armId?: string;
+  term: string;
+  session: string;
+  schoolId: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UpsertGradesRequest {
+  context: {
+    schoolId: string;
+    classId: string;
+    armId: string;
+    term: string;
+    session: string;
+  };
+  scores: {
+    studentId: string;
+    subjectId: string;
+    gradingModuleId: string;
+    score: number | null;
+  }[];
+}
+
 export const gradingApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getGradingModules: builder.query<GradingModule[], { session?: string; term?: string } | void>({
@@ -91,6 +122,56 @@ export const gradingApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'Grading', id: 'LIST' }],
     }),
+    getGradesByArm: builder.query<Grade[], string>({
+      query: (armId) => ({
+        url: `/grading/arms/${armId}/grades`,
+        method: 'GET',
+      }),
+      providesTags: (result, _error, armId) =>
+        result
+          ? [
+            ...result.map(({ id }) => ({ type: 'Grading' as const, id })),
+            { type: 'Grading', id: `ARM-${armId}` },
+          ]
+          : [{ type: 'Grading', id: `ARM-${armId}` }],
+    }),
+    upsertGrades: builder.mutation<{ count: number }, UpsertGradesRequest>({
+      query: (data) => ({
+        url: '/grading/batch-upsert',
+        method: 'POST',
+        body: data,
+      }),
+      async onQueryStarted({ context, scores }, { dispatch, queryFulfilled }) {
+        const patchResult = dispatch(
+          gradingApi.util.updateQueryData('getGradesByArm', context.armId, (draft) => {
+            scores.forEach((newGrade) => {
+              const existingIndex = draft.findIndex(
+                (g) =>
+                  g.studentId === newGrade.studentId &&
+                  g.subjectId === newGrade.subjectId &&
+                  g.gradingModuleId === newGrade.gradingModuleId
+              );
+
+              if (existingIndex !== -1) {
+                draft[existingIndex].score = newGrade.score ?? 0;
+              } else {
+                // If it doesn't exist, we'd need more data (id, etc.) 
+                // but for optimistic UI, we can just push a partial or wait for refetch
+                // Usually, we just update what we have.
+              }
+            });
+          })
+        );
+        try {
+          await queryFulfilled;
+        } catch {
+          patchResult.undo();
+        }
+      },
+      invalidatesTags: (_result, _error, { context }) => [
+        { type: 'Grading', id: `ARM-${context.armId}` },
+      ],
+    }),
   }),
 });
 
@@ -101,4 +182,6 @@ export const {
   useUpdateGradingModuleMutation,
   useToggleLockModulesMutation,
   useDeleteGradingModuleMutation,
+  useGetGradesByArmQuery,
+  useUpsertGradesMutation,
 } = gradingApi;
