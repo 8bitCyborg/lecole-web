@@ -1,5 +1,14 @@
 import { useState, useRef, useEffect } from 'react';
-import { ChevronLeft, ChevronRight, Edit2, Save, Lock, Loader2, AlertCircle, XCircle } from 'lucide-react';
+import {
+  ChevronLeft,
+  ChevronRight,
+  Edit2,
+  Save,
+  Lock,
+  Loader2,
+  AlertCircle,
+  XCircle,
+} from 'lucide-react';
 import { useAppSelector } from '@/store/hooks';
 import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
 import {
@@ -228,18 +237,14 @@ const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
                           {isEditing && !isLocked ? (
                             <input
                               type="text"
+                              name="grade-input"
+                              id={`grade-input-${student.id}-${subject.id}-${module.id}`}
                               className="grade-input"
                               value={value}
                               onChange={(e) => handleGradeChange(student.id, subject.id, module.id, e.target.value)}
-                              placeholder="-"
-                              maxLength={5}
+                              placeholder=""
+                              maxLength={2}
                               inputMode='decimal'
-                              onKeyDown={(e) => {
-                                if (e.key === 'Enter') {
-                                  e.preventDefault();
-                                  handleSave();
-                                }
-                              }}
                             />
                           ) : (
                             <div className="grade-display">
@@ -284,12 +289,10 @@ const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
         </button>
       )}
 
-
-      <div className='right'>
-
+      <div className="grades-actions-group">
         {showScrollRight && (
           <button
-            className="scroll-indicator-minimal right"
+            className="scroll-indicator-minimal"
             onClick={() => handleScroll('right')}
             title="Scroll Right"
           >
@@ -297,28 +300,27 @@ const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
           </button>
         )}
 
-        <button
-          className={`edit-toggle-button right ${isEditing ? 'active' : ''} ${isSaving ? 'disabled' : ''}`}
-          onClick={handleToggleEdit}
-          disabled={isSaving}
-          title={isEditing ? "Exit Edit Mode" : "Edit Broadsheet"}
-        >
-          {isEditing ? (hasUnsavedChanges ? <AlertCircle size={18} /> : <Edit2 size={18} />) : <Edit2 size={18} />}
-        </button>
-
         {isEditing && hasUnsavedChanges && (
           <button
-            className="edit-toggle-button right save-button"
+            className="edit-toggle-button save-button"
             onClick={handleSave}
             disabled={isSaving}
             title="Save Changes"
-            style={{ marginRight: '8px' }}
           >
             {isSaving ? <Loader2 size={18} className="spin" /> : <Save size={18} />}
           </button>
         )}
 
+        <button
+          className={`edit-toggle-button ${isEditing ? 'active' : ''} ${isSaving ? 'disabled' : ''}`}
+          onClick={handleToggleEdit}
+          disabled={isSaving}
+          title={isEditing ? "Exit Edit Mode" : "Edit Broadsheet"}
+        >
+          {isEditing ? <XCircle size={18} color="#ef4444" /> : <Edit2 size={18} />}
+        </button>
       </div>
+
 
       {isSaving && (
         <div className="grades-loading-overlay">

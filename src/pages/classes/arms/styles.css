@@ -180,15 +180,17 @@
 
 /* Module Sub-Header Cells (Bottom Row) */
 .module-sub-header {
-  font-size: 0.6rem !important;
+  font-size: 0.65rem !important;
   color: rgba(255, 255, 255, 0.8) !important;
   text-align: center !important;
-  padding: 0 !important;
-  width: 55px !important;
-  min-width: 55px !important;
-  max-width: 55px !important;
+  padding: 0 0.5rem !important;
+  width: 80px !important;
+  min-width: 80px !important;
+  max-width: 80px !important;
   border-right: 1px solid rgba(255, 255, 255, 0.1) !important;
   white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
   letter-spacing: 0;
 }
 
@@ -244,10 +246,17 @@
   text-align: center;
 }
 
+.grade-input {
+  border-bottom: solid 1px green;
+  width: 100%;
+  height: 80%;
+  padding: 5px;
+}
+
 .grades-table td.module-grade-cell {
-  width: 55px;
-  min-width: 55px;
-  max-width: 55px;
+  width: 80px;
+  min-width: 80px;
+  max-width: 80px;
   font-weight: 600;
   color: #475569;
   font-size: 0.75rem;
@@ -287,8 +296,6 @@ th.subject-group-last {
 }
 
 .scroll-indicator-minimal {
-  position: absolute;
-  top: 12px;
   width: 28px;
   height: 28px;
   background: rgba(255, 255, 255, 0.95);
@@ -307,6 +314,12 @@ th.subject-group-last {
   padding: 0;
 }
 
+.scroll-indicator-minimal.left {
+  position: absolute;
+  top: 12px;
+  left: 170px; /* Offset from sticky student col */
+}
+
 .scroll-indicator-minimal:hover {
   background: white;
   color: #2563eb;
@@ -318,15 +331,18 @@ th.subject-group-last {
   transform: scale(0.95);
 }
 
-.scroll-indicator-minimal.right {
-  right: 3.5rem;
+.grades-actions-group {
+  position: absolute;
+  top: 11px;
+  right: 1rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  z-index: 100;
 }
 
 .edit-toggle-button {
-  position: absolute;
-  top: 11px;
-  /* Slightly adjusted to align with header height */
-  right: 1rem;
   width: 30px;
   height: 30px;
   background: #1e3a8a;
@@ -336,7 +352,6 @@ th.subject-group-last {
   align-items: center;
   justify-content: center;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-  z-index: 50;
   border: 1px solid rgba(255, 255, 255, 0.1);
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -358,7 +373,6 @@ th.subject-group-last {
 .edit-toggle-button.save-button {
   background: #10b981;
   color: white;
-  right: 3.5rem;
 }
 
 .edit-toggle-button.save-button:hover {
@@ -439,13 +453,25 @@ th.subject-group-last {
 }
 
 @keyframes slideUp {
-  from { transform: translateY(100%); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+  from {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes fadeIn {
