@@ -264,7 +264,7 @@ const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
                 <tr>
                   <th className="sticky-col" rowSpan={modules.length > 0 ? 2 : 1}></th>
                   {subjects.map((subject: any) => (
-                    <th key={subject.id} colSpan={modules.length || 1}>
+                    <th key={subject.id} colSpan={modules.length > 0 ? modules.length + 1 : 1}>
                       <div className="rotate-label">{subject.name}</div>
                     </th>
                   ))}
@@ -272,14 +272,22 @@ const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
                 {modules.length > 0 && (
                   <tr>
                     {subjects.map((subject: any) => (
-                      modules.map((module: any, mIndex: number) => (
+                      [
+                        ...modules.map((module: any) => (
+                          <th
+                            key={`${subject.id}-${module.id}`}
+                            className="module-sub-header"
+                          >
+                            {module.name}
+                          </th>
+                        )),
                         <th
-                          key={`${subject.id}-${module.id}`}
-                          className={`module-sub-header ${mIndex === modules.length - 1 ? 'subject-group-last' : ''}`}
+                          key={`${subject.id}-total`}
+                          className="module-sub-header subject-group-last total-sub-header"
                         >
-                          {module.name}
+                          Total
                         </th>
-                      ))
+                      ]
                     ))}
                   </tr>
                 )}
@@ -294,39 +302,55 @@ const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
                         </span>
                       </div>
                     </td>
-                    {subjects.map((subject: any) => (
-                      modules.length > 0 ? (
-                        modules.map((module: any, mIndex: number) => {
-                          const isLocked = module.isLocked;
-                          const value = getGradeValue(student.id, subject.id, module.id);
+                    {subjects.map((subject: any) => {
+                      if (modules.length > 0) {
+                        const subjectTotal = modules.reduce((sum: number, module: any) => {
+                          const val = parseFloat(getGradeValue(student.id, subject.id, module.id));
+                          return sum + (isNaN(val) ? 0 : val);
+                        }, 0);
 
-                          return (
-                            <td
-                              key={`${subject.id}-${module.id}`}
-                              className={`module-grade-cell ${mIndex === modules.length - 1 ? 'subject-group-last' : ''} ${isEditing ? 'editing' : ''} ${isLocked ? 'locked' : ''}`}
-                            >
-                              {isEditing && !isLocked ? (
-                                <input
-                                  type="text"
-                                  name="grade-input"
-                                  id={`grade-input-${student.id}-${subject.id}-${module.id}`}
-                                  className="grade-input"
-                                  value={value}
-                                  onChange={(e) => handleGradeChange(student.id, subject.id, module.id, e.target.value)}
-                                  placeholder=""
-                                  maxLength={2}
-                                  inputMode='decimal'
-                                />
-                              ) : (
-                                <div className="grade-display">
-                                  {isLocked && <Lock size={9} className="lock-icon-mini" />}
-                                  <span>{value || '-'}</span>
-                                </div>
-                              )}
-                            </td>
-                          );
-                        })
-                      ) : (
+                        return [
+                          ...modules.map((module: any) => {
+                            const isLocked = module.isLocked;
+                            const value = getGradeValue(student.id, subject.id, module.id);
+                            return (
+                              <td
+                                key={`${subject.id}-${module.id}`}
+                                className={`module-grade-cell ${isEditing ? 'editing' : ''} ${isLocked ? 'locked' : ''}`}
+                              >
+                                {isEditing && !isLocked ? (
+                                  <input
+                                    type="text"
+                                    name="grade-input"
+                                    id={`grade-input-${student.id}-${subject.id}-${module.id}`}
+                                    className="grade-input"
+                                    value={value}
+                                    onChange={(e) => handleGradeChange(student.id, subject.id, module.id, e.target.value)}
+                                    placeholder=""
+                                    maxLength={2}
+                                    inputMode='decimal'
+                                  />
+                                ) : (
+                                  <div className="grade-display">
+                                    {isLocked && <Lock size={9} className="lock-icon-mini" />}
+                                    <span>{value || '-'}</span>
+                                  </div>
+                                )}
+                              </td>
+                            );
+                          }),
+                          <td
+                            key={`${subject.id}-total`}
+                            className="module-grade-cell subject-group-last total-cell"
+                          >
+                            <div className="grade-display">
+                              <span>{subjectTotal > 0 ? subjectTotal : '-'}</span>
+                            </div>
+                          </td>
+                        ];
+                      }
+
+                      return (
                         <td
                           key={subject.id}
                           className={`module-grade-cell subject-group-last ${isEditing ? 'editing' : ''}`}
@@ -342,8 +366,8 @@ const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
                             '-'
                           )}
                         </td>
-                      )
-                    ))}
+                      );
+                    })}
                   </tr>
                 ))}
               </tbody>

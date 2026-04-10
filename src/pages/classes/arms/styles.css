@@ -295,6 +295,25 @@ th.subject-group-last {
   border-right: 0.5px solid rgba(255, 255, 255, 0.9);
 }
 
+/* ── Total column ─────────────────────────────────────────────────────────── */
+.total-sub-header {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-weight: 900 !important;
+  letter-spacing: 0.02em !important;
+}
+
+.total-cell {
+  background: #eff6ff !important;
+  color: #1e3a8a !important;
+  font-weight: 700 !important;
+  font-size: 0.78rem !important;
+}
+
+.grades-table tr:hover .total-cell {
+  background: #dbeafe !important;
+}
+
 .scroll-indicator-minimal {
   position: absolute;
   top: 12px;
@@ -377,8 +396,15 @@ th.subject-group-last {
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.65; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.65;
+  }
 }
 
 /* ── Toolbar buttons ─────────────────────────────────────────────────────── */
