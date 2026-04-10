@@ -126,7 +126,7 @@ const ClassArmDetails = () => {
                 </TabsTrigger>
                 <TabsTrigger value="assessments" className="arms-tabs-trigger">
                   <BarChart3 size={18} />
-                  Grades
+                  Broadsheet
                 </TabsTrigger>
               </TabsList>
 

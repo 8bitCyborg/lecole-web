@@ -105,6 +105,13 @@ const GradeModuleListing: React.FC<GradeModuleListingProps> = ({ onEdit, onAdd, 
         <div className="empty-state-icon">📊</div>
         <h3 className="empty-state-title">No Active Modules</h3>
         <p className="empty-state-description">Your school's grading structure is currently empty. Define your first module to begin tracking student performance.</p>
+        <button
+          className="le-button le-button-primary btn-add-module-compact"
+          onClick={onAdd}
+        >
+          <Plus size={16} />
+          Create Module
+        </button>
       </div>
     );
   }

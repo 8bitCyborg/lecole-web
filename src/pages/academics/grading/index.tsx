@@ -42,7 +42,7 @@ const Grading = () => {
             <TabsList className="grading-tabs-list">
               <TabsTrigger value="records" className="grading-tabs-trigger">
                 <ClipboardList size={18} />
-                Records
+                Broadsheets
               </TabsTrigger>
               <TabsTrigger value="config" className="grading-tabs-trigger">
                 <Settings size={18} />
@@ -61,9 +61,9 @@ const Grading = () => {
             <TabsContent value="records" className="grading-tabs-content">
               <div className="academics-empty-state" style={{ background: 'white', borderRadius: '0 0 1rem 1rem', marginTop: 0 }}>
                 <div className="empty-state-icon">📝</div>
-                <h3 className="empty-state-title">Assessment Records Pending</h3>
+                <h3 className="empty-state-title">Assessment Broadsheets Pending</h3>
                 <p className="empty-state-description">
-                  The grade entry interface is currently under development. Once your modules are configured, you'll be able to input scores directly from this tab.
+                  The grade entry interface is currently under development. Once your modules are configured, you'll be able to see and input scores directly from this tab.
                 </p>
               </div>
             </TabsContent>
