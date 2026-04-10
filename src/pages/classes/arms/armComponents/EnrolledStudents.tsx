@@ -14,7 +14,6 @@ const EnrolledStudents = ({ currentArmName }: EnrolledStudentsProps) => {
 
   const { data: students = [], isLoading } = useGetStudentsByArmQuery(armId!);
 
-
   if (!currentArmName) return null;
 
   return (

@@ -108,3 +108,126 @@
     width: 100%;
   }
 }
+
+/* ── Grades Table Styles ────────────────────────────────────────────────── */
+
+.grades-container {
+  background: white;
+  border-radius: 0 1rem 1rem 1rem;
+  border: 1px solid #e2e8f0;
+  overflow: hidden;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+}
+
+.grades-table-wrapper {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.grades-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: 'Outfit', sans-serif;
+  table-layout: fixed;
+}
+
+/* Header Row - Rectangular along X Axis (Wide and Short) */
+.grades-table thead tr {
+  height: 60px; /* Shorter header */
+  background: linear-gradient(135deg, #1e3a8a, #000);
+}
+
+.grades-table th {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.7rem;
+  vertical-align: middle;
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.3);
+  padding: 0 1rem;
+}
+
+/* Wide Header Cells */
+.grades-table th:not(.sticky-col) {
+  width: 110px; /* Wide for X-axis rectangular feel */
+  min-width: 110px;
+  max-width: 110px;
+  position: relative;
+}
+
+.rotate-label {
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.grades-table .sticky-col {
+  position: sticky;
+  left: 0;
+  background: white;
+  z-index: 20;
+  text-align: left;
+  border-right: 3px solid #e2e8f0;
+  width: 100px; /* Narrower student column */
+  min-width: 100px;
+  max-width: 100px;
+  padding-left: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.grades-table th.sticky-col {
+  background: linear-gradient(135deg, #1e3a8a, #111) !important;
+  z-index: 21;
+}
+
+/* Row Styling: Alternating White and Light Blue */
+.grades-table tbody tr:nth-child(odd) {
+  background: white;
+}
+
+.grades-table tbody tr:nth-child(even) {
+  background: #f0f7ff;
+}
+
+.grades-table td {
+  height: 40px;
+  padding: 0 0.5rem;
+  font-size: 0.85rem;
+  border-bottom: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.grades-table td:not(.sticky-col) {
+  width: 110px;
+  min-width: 110px;
+  max-width: 110px;
+}
+
+.grades-table tr:hover td {
+  background: #dbeafe !important;
+}
+
+.grades-table tr:hover td.sticky-col {
+  background: #dbeafe !important;
+}
+
+.student-info-cell {
+  display: flex;
+  align-items: center;
+}
+
+.student-name-mini {
+  font-weight: 700;
+  color: #1e3a8a;
+  font-size: 0.8rem;
+}

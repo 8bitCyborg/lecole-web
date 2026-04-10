@@ -1,12 +1,14 @@
 import { useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Edit, Users, BarChart3, Plus } from 'lucide-react';
-import ClassMaster from '@/pages/classes/arms/armComponents/ClassMaster';
-import AddArmForm from '@/pages/classes/classComponents/AddArmForm/AddArmForm';
-import EnrolledStudents from '@/pages/classes/arms/armComponents/EnrolledStudents';
-import AddStudentForm from '@/pages/students/components/AddStudentForm/AddStudentForm';
 import { useGetStudentsByArmQuery } from '@/services/leApi/classApi';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import ClassMaster from '@/pages/classes/arms/armComponents/ClassMaster';
+import AddArmForm from '@/pages/classes/classComponents/AddArmForm/AddArmForm';
+import AddStudentForm from '@/pages/students/components/AddStudentForm/AddStudentForm';
+import EnrolledStudents from '@/pages/classes/arms/armComponents/EnrolledStudents';
+import Grades from './armComponents/Grades';
+
 import '../Classes.css';
 import './styles.css';
 
@@ -124,7 +126,7 @@ const ClassArmDetails = () => {
                 </TabsTrigger>
                 <TabsTrigger value="assessments" className="arms-tabs-trigger">
                   <BarChart3 size={18} />
-                  Assessments
+                  Grades
                 </TabsTrigger>
               </TabsList>
 
@@ -133,13 +135,7 @@ const ClassArmDetails = () => {
               </TabsContent>
 
               <TabsContent value="assessments" className="arms-tabs-content">
-                <div className="arms-empty-state" style={{ background: 'white', borderTopLeftRadius: 0 }}>
-                  <div className="empty-state-icon">📊</div>
-                  <h3 className="empty-state-title">Assessments Pending</h3>
-                  <p className="empty-state-description">
-                    The assessment management interface for this arm is currently under development. Soon you'll be able to track grades and performance here.
-                  </p>
-                </div>
+                <Grades classId={classId || ''} armId={armId || ''} />
               </TabsContent>
             </Tabs>
           </div>

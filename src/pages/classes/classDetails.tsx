@@ -21,7 +21,10 @@ const ClassArmsPage = () => {
   const teachers = allStaff.filter(s => s.isTeachingStaff);
   const [deleteArm] = useDeleteArmMutation();
 
+  console.log('arms', arms);
+
   // Find current class name
+  // TODO: Optimize
   const currentClass = classes.find(c => c.id === (classId || ''));
   const categoryLabel = CATEGORY_OPTIONS.find(opt => opt.value === currentClass?.category)?.label || currentClass?.category;
 

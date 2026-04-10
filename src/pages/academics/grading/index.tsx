@@ -38,7 +38,7 @@ const Grading = () => {
 
       <div className="grading-content-section">
         <div className="grading-tabs-card">
-          <Tabs defaultValue="config" className="w-full">
+          <Tabs defaultValue="records" className="w-full">
             <TabsList className="grading-tabs-list">
               <TabsTrigger value="records" className="grading-tabs-trigger">
                 <ClipboardList size={18} />

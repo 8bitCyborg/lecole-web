@@ -61,7 +61,13 @@ export const classApi = baseApi.injectEndpoints({
       keepUnusedDataFor: 86400, // 24 hours
       providesTags: ['Class'],
     }),
-
+    getClass: builder.query<Class, string>({
+      query: (id) => ({
+        url: `/class/${id}`,
+        method: 'GET',
+      }),
+      providesTags: ['Class'],
+    }),
     createClass: builder.mutation<Class, CreateClassRequest>({
       query: (classData) => ({
         url: '/class',
@@ -77,6 +83,7 @@ export const classApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['Class', 'Student'],
     }),
+
     createArm: builder.mutation<Arm, CreateArmRequest>({
       query: (armData) => ({
         url: `/class/${armData.classId}/arms`,
@@ -142,9 +149,9 @@ export const classApi = baseApi.injectEndpoints({
       providesTags: (result) =>
         result
           ? [
-              ...result.map(({ id }) => ({ type: 'Student' as const, id })),
-              { type: 'Student', id: 'LIST' },
-            ]
+            ...result.map(({ id }) => ({ type: 'Student' as const, id })),
+            { type: 'Student', id: 'LIST' },
+          ]
           : [{ type: 'Student', id: 'LIST' }],
     }),
   }),
@@ -152,6 +159,7 @@ export const classApi = baseApi.injectEndpoints({
 
 export const {
   useGetClassesQuery,
+  useGetClassQuery,
   useCreateClassMutation,
   useCreateArmMutation,
   useUpdateArmMutation,
