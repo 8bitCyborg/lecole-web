@@ -6,8 +6,9 @@ import {
   Save,
   Lock,
   Loader2,
-  AlertCircle,
   XCircle,
+  Maximize2,
+  Minimize2,
 } from 'lucide-react';
 import { useAppSelector } from '@/store/hooks';
 import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
@@ -40,6 +41,7 @@ const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [showDiscardModal, setShowDiscardModal] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   // Local state for pending changes: `${studentId}|${subjectId}|${moduleId}` -> score
   const [pendingChanges, setPendingChanges] = useState<Record<string, string>>({});
@@ -181,163 +183,191 @@ const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
   }
 
   return (
-    <div className="grades-container">
-      <div
-        className="grades-table-wrapper"
-        ref={scrollRef}
-        onScroll={checkScroll}
-      >
-        <table className="grades-table">
-          {/* ... table content ... */}
-          <thead>
-            <tr>
-              <th className="sticky-col" rowSpan={modules.length > 0 ? 2 : 1}></th>
-              {subjects.map((subject: any) => (
-                <th key={subject.id} colSpan={modules.length || 1}>
-                  <div className="rotate-label">{subject.name}</div>
-                </th>
-              ))}
-            </tr>
-            {modules.length > 0 && (
-              <tr>
-                {subjects.map((subject: any) => (
-                  modules.map((module: any, mIndex: number) => (
-                    <th
-                      key={`${subject.id}-${module.id}`}
-                      className={`module-sub-header ${mIndex === modules.length - 1 ? 'subject-group-last' : ''}`}
-                    >
-                      {module.name}
-                    </th>
-                  ))
-                ))}
-              </tr>
+    <>
+      {isFullScreen && <div className="fullscreen-backdrop" onClick={() => setIsFullScreen(false)} />}
+      <div className={`grades-wrapper ${isFullScreen ? 'full-screen' : ''}`}>
+
+        {/* ── Toolbar ── */}
+        <div className="grades-toolbar">
+          <div className="grades-toolbar-left">
+            <span className="grades-toolbar-title">
+              {isEditing ? (
+                hasUnsavedChanges
+                  ? <span className="toolbar-badge unsaved">● Unsaved changes</span>
+                  : <span className="toolbar-badge editing">Editing</span>
+              ) : (
+                <span className="toolbar-badge">Broadsheet</span>
+              )}
+            </span>
+          </div>
+          <div className="grades-toolbar-right">
+            {showScrollLeft && (
+              <button
+                className="toolbar-btn icon-only"
+                onClick={() => handleScroll('left')}
+                title="Scroll Left"
+              >
+                <ChevronLeft size={16} />
+              </button>
             )}
-          </thead>
-          <tbody>
-            {students.map((student: any) => (
-              <tr key={student.id}>
-                <td className="sticky-col">
-                  <div className="student-info-cell">
-                    <span className="student-name-mini">
-                      {student.user.firstName} {student.user.lastName}
-                    </span>
-                  </div>
-                </td>
-                {subjects.map((subject: any) => (
-                  modules.length > 0 ? (
-                    modules.map((module: any, mIndex: number) => {
-                      const isLocked = module.isLocked;
-                      const value = getGradeValue(student.id, subject.id, module.id);
 
-                      return (
-                        <td
-                          key={`${subject.id}-${module.id}`}
-                          className={`module-grade-cell ${mIndex === modules.length - 1 ? 'subject-group-last' : ''} ${isEditing ? 'editing' : ''} ${isLocked ? 'locked' : ''}`}
-                        >
-                          {isEditing && !isLocked ? (
-                            <input
-                              type="text"
-                              name="grade-input"
-                              id={`grade-input-${student.id}-${subject.id}-${module.id}`}
-                              className="grade-input"
-                              value={value}
-                              onChange={(e) => handleGradeChange(student.id, subject.id, module.id, e.target.value)}
-                              placeholder=""
-                              maxLength={2}
-                              inputMode='decimal'
-                            />
-                          ) : (
-                            <div className="grade-display">
-                              {isLocked && <Lock size={9} className="lock-icon-mini" />}
-                              <span>{value || '-'}</span>
-                            </div>
-                          )}
-                        </td>
-                      );
-                    })
-                  ) : (
-                    <td
-                      key={subject.id}
-                      className={`module-grade-cell subject-group-last ${isEditing ? 'editing' : ''}`}
-                    >
-                      {isEditing ? (
-                        <input
-                          type="text"
-                          className="grade-input"
-                          defaultValue="-"
-                          placeholder="-"
-                        />
-                      ) : (
-                        "-"
-                      )}
-                    </td>
-                  )
-                ))}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            {showScrollRight && (
+              <button
+                className="toolbar-btn"
+                onClick={() => handleScroll('right')}
+                title="Scroll Right"
+              >
+                <ChevronRight size={16} />
+              </button>
+            )}
 
-      {showScrollLeft && (
-        <button
-          className="scroll-indicator-minimal left"
-          onClick={() => handleScroll('left')}
-          title="Scroll Left"
-        >
-          <ChevronLeft size={16} />
-        </button>
-      )}
+            {isEditing && hasUnsavedChanges && (
+              <button
+                className="toolbar-btn save"
+                onClick={handleSave}
+                disabled={isSaving}
+                title="Save Changes"
+              >
+                {isSaving ? <Loader2 size={15} className="spin" /> : <Save size={15} />}
+                <span>{isSaving ? 'Saving…' : 'Save'}</span>
+              </button>
+            )}
 
-      <div className="grades-actions-group">
-        {showScrollRight && (
-          <button
-            className="scroll-indicator-minimal"
-            onClick={() => handleScroll('right')}
-            title="Scroll Right"
-          >
-            <ChevronRight size={16} />
-          </button>
-        )}
+            <button
+              className={`toolbar-btn icon-only ${isEditing ? 'active' : ''} ${isSaving ? 'disabled' : ''}`}
+              onClick={handleToggleEdit}
+              disabled={isSaving}
+              title={isEditing ? 'Exit Edit Mode' : 'Edit Broadsheet'}
+            >
+              {isEditing ? <XCircle size={16} /> : <Edit2 size={16} />}
+            </button>
 
-        {isEditing && hasUnsavedChanges && (
-          <button
-            className="edit-toggle-button save-button"
-            onClick={handleSave}
-            disabled={isSaving}
-            title="Save Changes"
-          >
-            {isSaving ? <Loader2 size={18} className="spin" /> : <Save size={18} />}
-          </button>
-        )}
-
-        <button
-          className={`edit-toggle-button ${isEditing ? 'active' : ''} ${isSaving ? 'disabled' : ''}`}
-          onClick={handleToggleEdit}
-          disabled={isSaving}
-          title={isEditing ? "Exit Edit Mode" : "Edit Broadsheet"}
-        >
-          {isEditing ? <XCircle size={18} color="#ef4444" /> : <Edit2 size={18} />}
-        </button>
-      </div>
-
-
-      {isSaving && (
-        <div className="grades-loading-overlay">
-          <div className="loading-spinner-container">
-            <Loader2 className="spin" size={32} />
-            <p>Saving grades...</p>
+            <button
+              className="toolbar-btn icon-only"
+              onClick={() => setIsFullScreen(!isFullScreen)}
+              title={isFullScreen ? 'Exit Full Screen' : 'Enter Full Screen'}
+            >
+              {isFullScreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+            </button>
           </div>
         </div>
-      )}
 
-      {saveError && (
-        <div className="grades-error-banner">
-          <XCircle size={14} />
-          <span>{saveError}</span>
-          <button className="error-clear-btn" onClick={() => setSaveError(null)}>Dismiss</button>
+        {/* ── Table ── */}
+        <div className="grades-container">
+          <div
+            className="grades-table-wrapper"
+            ref={scrollRef}
+            onScroll={checkScroll}
+          >
+            <table className="grades-table">
+              <thead>
+                <tr>
+                  <th className="sticky-col" rowSpan={modules.length > 0 ? 2 : 1}></th>
+                  {subjects.map((subject: any) => (
+                    <th key={subject.id} colSpan={modules.length || 1}>
+                      <div className="rotate-label">{subject.name}</div>
+                    </th>
+                  ))}
+                </tr>
+                {modules.length > 0 && (
+                  <tr>
+                    {subjects.map((subject: any) => (
+                      modules.map((module: any, mIndex: number) => (
+                        <th
+                          key={`${subject.id}-${module.id}`}
+                          className={`module-sub-header ${mIndex === modules.length - 1 ? 'subject-group-last' : ''}`}
+                        >
+                          {module.name}
+                        </th>
+                      ))
+                    ))}
+                  </tr>
+                )}
+              </thead>
+              <tbody>
+                {students.map((student: any) => (
+                  <tr key={student.id}>
+                    <td className="sticky-col">
+                      <div className="student-info-cell">
+                        <span className="student-name-mini">
+                          {student.user.firstName} {student.user.lastName}
+                        </span>
+                      </div>
+                    </td>
+                    {subjects.map((subject: any) => (
+                      modules.length > 0 ? (
+                        modules.map((module: any, mIndex: number) => {
+                          const isLocked = module.isLocked;
+                          const value = getGradeValue(student.id, subject.id, module.id);
+
+                          return (
+                            <td
+                              key={`${subject.id}-${module.id}`}
+                              className={`module-grade-cell ${mIndex === modules.length - 1 ? 'subject-group-last' : ''} ${isEditing ? 'editing' : ''} ${isLocked ? 'locked' : ''}`}
+                            >
+                              {isEditing && !isLocked ? (
+                                <input
+                                  type="text"
+                                  name="grade-input"
+                                  id={`grade-input-${student.id}-${subject.id}-${module.id}`}
+                                  className="grade-input"
+                                  value={value}
+                                  onChange={(e) => handleGradeChange(student.id, subject.id, module.id, e.target.value)}
+                                  placeholder=""
+                                  maxLength={2}
+                                  inputMode='decimal'
+                                />
+                              ) : (
+                                <div className="grade-display">
+                                  {isLocked && <Lock size={9} className="lock-icon-mini" />}
+                                  <span>{value || '-'}</span>
+                                </div>
+                              )}
+                            </td>
+                          );
+                        })
+                      ) : (
+                        <td
+                          key={subject.id}
+                          className={`module-grade-cell subject-group-last ${isEditing ? 'editing' : ''}`}
+                        >
+                          {isEditing ? (
+                            <input
+                              type="text"
+                              className="grade-input"
+                              defaultValue="-"
+                              placeholder="-"
+                            />
+                          ) : (
+                            '-'
+                          )}
+                        </td>
+                      )
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {isSaving && (
+            <div className="grades-loading-overlay">
+              <div className="loading-spinner-container">
+                <Loader2 className="spin" size={32} />
+                <p>Saving grades…</p>
+              </div>
+            </div>
+          )}
+
+          {saveError && (
+            <div className="grades-error-banner">
+              <XCircle size={14} />
+              <span>{saveError}</span>
+              <button className="error-clear-btn" onClick={() => setSaveError(null)}>Dismiss</button>
+            </div>
+          )}
         </div>
-      )}
+      </div>
 
       <DeleteConfirmationModal
         isOpen={showDiscardModal}
@@ -346,7 +376,7 @@ const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
         onConfirm={handleConfirmDiscard}
         onCancel={() => setShowDiscardModal(false)}
       />
-    </div>
+    </>
   );
 };
 
