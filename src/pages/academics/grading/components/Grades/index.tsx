@@ -231,8 +231,9 @@ const Grades = ({ classId, armId, isEmbedded }: { classId: string, armId: string
             )}
 
             <button
-              className={`toolbar-btn icon-only ${isEditing ? 'active' : ''} ${isSaving ? 'disabled' : ''}`}
+              className={`toolbar-btn icon-only ${isSaving ? 'disabled' : ''}`}
               onClick={handleToggleEdit}
+              style={isEditing ? { border: 'solid 1px #f00' } : {}}
               disabled={isSaving}
               title={isEditing ? 'Exit Edit Mode' : 'Edit Broadsheet'}
             >
@@ -241,6 +242,7 @@ const Grades = ({ classId, armId, isEmbedded }: { classId: string, armId: string
 
             <button
               className="toolbar-btn icon-only"
+              style={!isFullScreen ? { border: 'solid 1px #fff', background: 'green', color: '#fff' } : { border: 'solid 1px #0f0', color: '#0f0' }}
               onClick={() => setIsFullScreen(!isFullScreen)}
               title={isFullScreen ? 'Exit Full Screen' : 'Enter Full Screen'}
             >
@@ -258,15 +260,15 @@ const Grades = ({ classId, armId, isEmbedded }: { classId: string, armId: string
           >
             <table className="grades-table">
               <thead>
-                <tr>
+                <tr style={{ position: 'sticky', top: 0, background: '#000', zIndex: 99 }}>
                   <th
                     className="sticky-col"
                     rowSpan={modules.length > 0 ? 2 : 1}
-                    style={{ zIndex: 0, position: 'sticky' }}
+                    style={{ zIndex: 20 }}
                   ></th>
                   {subjects.map((subject: any) => (
                     <th key={subject.id} colSpan={modules.length > 0 ? modules.length + 1 : 1}>
-                      <div className="rotate-label">{subject.name}</div>
+                      <div className="rotate-label" style={{ zIndex: 0 }}>{subject.name}</div>
                     </th>
                   ))}
                 </tr>
@@ -278,6 +280,7 @@ const Grades = ({ classId, armId, isEmbedded }: { classId: string, armId: string
                           <th
                             key={`${subject.id}-${module.id}`}
                             className="module-sub-header"
+                            style={{ zIndex: 0 }}
                           >
                             {module.name}
                           </th>
