@@ -168,9 +168,27 @@ export const gradingApi = baseApi.injectEndpoints({
           patchResult.undo();
         }
       },
-      invalidatesTags: (_result, _error, { context }) => [
-        { type: 'Grading', id: `ARM-${context.armId}` },
-      ],
+      invalidatesTags: (_result, _error, { context, scores }) => {
+        const studentIds = [...new Set(scores.map(s => s.studentId))];
+        return [
+          { type: 'Grading', id: `ARM-${context.armId}` },
+          ...studentIds.map(id => ({ type: 'Grading' as const, id: `STUDENT-${id}` })),
+        ];
+      },
+    }),
+
+    getStudentGrades: builder.query<Grade[], string>({
+      query: (studentId) => ({
+        url: `/grading/grades/${studentId}`,
+        method: 'GET',
+      }),
+      providesTags: (result, _error, studentId) =>
+        result
+          ? [
+            ...result.map(({ id }) => ({ type: 'Grading' as const, id })),
+            { type: 'Grading', id: `STUDENT-${studentId}` },
+          ]
+          : [{ type: 'Grading', id: `STUDENT-${studentId}` }],
     }),
   }),
 });
@@ -184,4 +202,5 @@ export const {
   useDeleteGradingModuleMutation,
   useGetGradesByArmQuery,
   useUpsertGradesMutation,
+  useGetStudentGradesQuery,
 } = gradingApi;

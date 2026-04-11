@@ -5,7 +5,7 @@ import GradeModuleListing from './components/GradeModuleListing';
 import { useGetGradingModulesQuery } from '@/services/leApi/gradingApi';
 import type { GradingModule } from '@/services/leApi/gradingApi';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import Broadsheets from './Broadsheets';
+import Broadsheets from './components/Broadsheets';
 import '../Academics.css';
 import './styles.css';
 

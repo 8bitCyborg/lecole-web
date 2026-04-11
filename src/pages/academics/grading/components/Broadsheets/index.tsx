@@ -1,16 +1,16 @@
 import { useState, useMemo } from "react";
 import { Layers, ChevronRight } from "lucide-react";
 import { useGetSchoolArmsQuery } from "@/services/leApi/armsApi";
-import Grades from "../components/Grades/index";
+import Grades from "../Grades/index";
 import "./Broadsheets.css";
 
 const Broadsheets = () => {
   const { data: arms = [], isLoading } = useGetSchoolArmsQuery();
   const [selectedArmId, setSelectedArmId] = useState<string | null>(null);
 
-  const selectedArm = useMemo(() => 
-    arms.find(a => a.id === selectedArmId), 
-  [arms, selectedArmId]);
+  const selectedArm = useMemo(() =>
+    arms.find(a => a.id === selectedArmId),
+    [arms, selectedArmId]);
 
   // Group arms by class name
   const groupedArms = useMemo(() => {
@@ -73,10 +73,10 @@ const Broadsheets = () => {
       {/* ── Main View ── */}
       <main className="broadsheets-main">
         {selectedArm ? (
-          <Grades 
-            key={selectedArm.id} 
-            classId={selectedArm.classId} 
-            armId={selectedArm.id} 
+          <Grades
+            key={selectedArm.id}
+            classId={selectedArm.classId}
+            armId={selectedArm.id}
             isEmbedded
           />
         ) : (

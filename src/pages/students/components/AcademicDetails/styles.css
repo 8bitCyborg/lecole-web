@@ -1,0 +1,418 @@
+/* ── Student Academic Scores Table ──────────────────────────────────────── */
+
+.sa-loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 4rem 2rem;
+  font-weight: 600;
+  color: #1e3a8a;
+  font-size: 0.9rem;
+}
+
+.sa-loading-state .spin {
+  animation: sa-spin 1s linear infinite;
+}
+
+@keyframes sa-spin {
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Toolbar ───────────────────────────────────────────────────────────── */
+
+.sa-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #1e3a8a, #0f172a);
+  border-radius: 0.75rem 0.75rem 0 0;
+  min-height: 42px;
+  color: white;
+}
+
+.sa-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sa-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.sa-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.sa-badge.editing {
+  color: #93c5fd;
+  background: rgba(96, 165, 250, 0.2);
+  border-color: rgba(96, 165, 250, 0.4);
+}
+
+.sa-badge.unsaved {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.15);
+  border-color: rgba(251, 191, 36, 0.4);
+  animation: sa-pulse 2s infinite;
+}
+
+@keyframes sa-pulse {
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.65;
+  }
+}
+
+/* ── Toolbar buttons ───────────────────────────────────────────────────── */
+
+.sa-toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.sa-toolbar-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: white;
+}
+
+.sa-toolbar-btn.icon-only {
+  padding: 0.3rem 0.45rem;
+}
+
+.sa-toolbar-btn.save {
+  background: #10b981;
+  border-color: #059669;
+  color: white;
+}
+
+.sa-toolbar-btn.save:hover {
+  background: #059669;
+}
+
+.sa-toolbar-btn.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Container ─────────────────────────────────────────────────────────── */
+
+.sa-table-container {
+  background: white;
+  border-radius: 0 0 1rem 1rem;
+  border: 1px solid #e2e8f0;
+  border-top: none;
+  overflow: hidden;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+  position: relative;
+}
+
+.sa-table-wrapper {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+/* ── Table ──────────────────────────────────────────────────────────────── */
+
+.sa-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: 'Outfit', sans-serif;
+  table-layout: fixed;
+}
+
+/* ── Header ─────────────────────────────────────────────────────────────── */
+
+.sa-table thead tr {
+  background: linear-gradient(135deg, #1e3a8a, #000);
+}
+
+.sa-table th {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.7rem;
+  vertical-align: middle;
+  border-right: 1px solid rgba(255, 255, 255, 0.12);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.3);
+  padding: 0.85rem 0.75rem;
+  white-space: nowrap;
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sa-table th:last-child {
+  border-right: none;
+}
+
+/* Subject column header */
+.sa-subject-col {
+  text-align: left;
+}
+
+/* Module column headers */
+.sa-module-col {
+  text-align: center;
+}
+
+.sa-module-pct {
+  display: block;
+  font-size: 0.6rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.5);
+  letter-spacing: 0;
+  text-transform: none;
+  margin-top: 0.15rem;
+}
+
+/* Total column header */
+.sa-total-col {
+  background: rgba(0, 0, 0, 0.25) !important;
+  color: rgba(255, 255, 255, 0.95) !important;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  border-left: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ── Body Rows ──────────────────────────────────────────────────────────── */
+
+.sa-table tbody tr:nth-child(odd) {
+  background: white;
+}
+
+.sa-table tbody tr:nth-child(even) {
+  background: #f0f7ff;
+}
+
+.sa-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.sa-table tbody tr:hover td {
+  background: #dbeafe !important;
+}
+
+/* ── Subject Cell (row label) ──────────────────────────────────────────── */
+
+.sa-subject-cell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  padding: 0.6rem 0.75rem !important;
+  border-right: 3px solid #e2e8f0;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: left;
+  box-shadow: 4px 0 8px -2px rgba(0, 0, 0, 0.03);
+}
+
+.sa-subject-name {
+  font-weight: 700;
+  font-size: 0.78rem;
+  color: #1e3a8a;
+  line-height: 1.2;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sa-subject-code {
+  font-size: 0.62rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #94a3b8;
+  text-align: left;
+}
+
+/* ── Score Cells ───────────────────────────────────────────────────────── */
+
+.sa-table td {
+  padding: 0.5rem 0.4rem;
+  font-size: 0.85rem;
+  border-bottom: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.sa-table td:last-child {
+  border-right: none;
+}
+
+.sa-score-cell {
+  font-weight: 600;
+  color: #0f172a;
+  font-size: 0.85rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.sa-score-cell.empty {
+  color: #cbd5e1;
+  font-weight: 500;
+}
+
+.sa-score-cell.locked {
+  background: rgba(241, 245, 249, 0.6);
+}
+
+.sa-grade-display {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.2rem;
+}
+
+.sa-lock-icon {
+  color: #94a3b8;
+  opacity: 0.6;
+}
+
+/* ── Edit mode input ───────────────────────────────────────────────────── */
+
+.sa-grade-input {
+  border: none;
+  border-bottom: solid 1px #10b981;
+  width: 100%;
+  height: 80%;
+  padding: 4px;
+  text-align: center;
+  font-size: 0.85rem;
+  font-weight: 600;
+  font-family: 'Outfit', sans-serif;
+  background: transparent;
+  color: #0f172a;
+  outline: none;
+  transition: border-color 0.2s ease;
+}
+
+.sa-grade-input:focus {
+  border-bottom-color: #1e3a8a;
+  background: rgba(219, 234, 254, 0.3);
+}
+
+/* Total value cell */
+.sa-total-value {
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-weight: 800;
+  font-size: 0.9rem;
+  border-left: 1px solid #c7d7f0;
+}
+
+.sa-table tbody tr:hover .sa-total-value {
+  background: #dbeafe !important;
+}
+
+/* ── Saving overlay ────────────────────────────────────────────────────── */
+
+.sa-saving-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.85);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  z-index: 50;
+  backdrop-filter: blur(2px);
+}
+
+.sa-saving-overlay p {
+  font-weight: 700;
+  color: #1e3a8a;
+  font-size: 0.9rem;
+}
+
+.sa-saving-overlay .spin {
+  animation: sa-spin 1s linear infinite;
+  color: #1e3a8a;
+}
+
+/* ── Error banner ──────────────────────────────────────────────────────── */
+
+.sa-error-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1rem;
+  background: #fef2f2;
+  border-top: 1px solid #fecaca;
+  color: #991b1b;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.sa-error-clear {
+  margin-left: auto;
+  background: none;
+  border: 1px solid #fca5a5;
+  color: #991b1b;
+  padding: 0.2rem 0.6rem;
+  border-radius: 0.3rem;
+  font-size: 0.7rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.sa-error-clear:hover {
+  background: #fee2e2;
+}
+
+/* ── Mobile ─────────────────────────────────────────────────────────────── */
+
+@media (max-width: 768px) {
+  .sa-toolbar {
+    border-radius: 0.5rem 0.5rem 0 0;
+    padding: 0.4rem 0.75rem;
+  }
+
+  .sa-table-container {
+    border-radius: 0 0 0.75rem 0.75rem;
+  }
+
+  .sa-subject-name {
+    font-size: 0.74rem;
+  }
+}
