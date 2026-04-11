@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Edit, Users, BarChart3, Plus } from 'lucide-react';
-import { useGetStudentsByArmQuery } from '@/services/leApi/classApi';
+import { useGetStudentsByArmQuery } from '@/services/leApi/armsApi';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import ClassMaster from '@/pages/classes/arms/armComponents/ClassMaster';
 import AddArmForm from '@/pages/classes/classComponents/AddArmForm/AddArmForm';

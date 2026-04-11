@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
-import { useGetStudentsByArmQuery } from '@/services/leApi/classApi';
+import { useGetStudentsByArmQuery } from '@/services/leApi/armsApi';
 import '@/pages/students/components/StudentlListing/StudentListing.css';
 import '../../Classes.css';
 

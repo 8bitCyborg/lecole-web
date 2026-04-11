@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { Check } from 'lucide-react';
-import { useGetSchoolArmsQuery, useAssignMasterToArmMutation, useGetClassesQuery, CATEGORY_OPTIONS } from '@/services/leApi/classApi';
+import { useGetClassesQuery, CATEGORY_OPTIONS } from '@/services/leApi/classApi';
+import { useGetSchoolArmsQuery, useAssignMasterToArmMutation } from '@/services/leApi/armsApi';
 import type { Category } from '@/services/leApi/classApi';
 import type { Staff } from '@/services/leApi/staffApi';
 import './ClassAssignment.css';

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, Trash2, User, ChevronRight, LayoutGrid, BookOpen } from 'lucide-react';
-import { useGetClassesQuery, useGetArmsQuery, useDeleteArmMutation, CATEGORY_OPTIONS } from '@/services/leApi/classApi';
+import { useGetClassesQuery, CATEGORY_OPTIONS } from '@/services/leApi/classApi';
+import { useGetArmsQuery, useDeleteArmMutation } from '@/services/leApi/armsApi';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import AddArmForm from './classComponents/AddArmForm/AddArmForm';
 import AssignSubjectsToClass from './classComponents/AssignSubjectsToClass/AssignSubjectsToClass';

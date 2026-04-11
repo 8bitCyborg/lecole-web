@@ -12,10 +12,8 @@ import {
 } from 'lucide-react';
 import { useAppSelector } from '@/store/hooks';
 import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
-import {
-  useGetStudentsByArmQuery,
-  useGetClassQuery
-} from '@/services/leApi/classApi';
+import { useGetClassQuery } from '@/services/leApi/classApi';
+import { useGetStudentsByArmQuery } from '@/services/leApi/armsApi';
 import {
   useGetGradingModulesQuery,
   useGetGradesByArmQuery,

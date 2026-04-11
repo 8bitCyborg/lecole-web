@@ -6,7 +6,8 @@ import LeInput from '@/components/ui/LeInput/LeInput';
 import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
 import { useCreateStudentMutation, useUpdateStudentMutation } from '@/services/leApi/studentApi';
 import type { Student } from '@/services/leApi/studentApi';
-import { useGetClassesQuery, useGetArmsQuery } from '@/services/leApi/classApi';
+import { useGetClassesQuery } from '@/services/leApi/classApi';
+import { useGetArmsQuery } from '@/services/leApi/armsApi';
 import type { RootState } from '@/store';
 import './AddStudentForm.css';
 

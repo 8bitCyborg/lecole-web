@@ -1,7 +1,7 @@
 import React from 'react';
 import { UserCheck, Loader2, ChevronDown } from 'lucide-react';
 import { useGetStaffQuery } from '@/services/leApi/staffApi';
-import { useAssignMasterToArmMutation, useGetArmsQuery } from '@/services/leApi/classApi';
+import { useAssignMasterToArmMutation, useGetArmsQuery } from '@/services/leApi/armsApi';
 
 interface ClassMasterProps {
   classId: string;

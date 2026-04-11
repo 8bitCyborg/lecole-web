@@ -5,6 +5,7 @@ import GradeModuleListing from './components/GradeModuleListing';
 import { useGetGradingModulesQuery } from '@/services/leApi/gradingApi';
 import type { GradingModule } from '@/services/leApi/gradingApi';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import Broadsheets from './Broadsheets';
 import '../Academics.css';
 import './styles.css';
 
@@ -59,13 +60,7 @@ const Grading = () => {
             </TabsContent>
 
             <TabsContent value="records" className="grading-tabs-content">
-              <div className="academics-empty-state" style={{ background: 'white', borderRadius: '0 0 1rem 1rem', marginTop: 0 }}>
-                <div className="empty-state-icon">📝</div>
-                <h3 className="empty-state-title">Assessment Broadsheets Pending</h3>
-                <p className="empty-state-description">
-                  The grade entry interface is currently under development. Once your modules are configured, you'll be able to see and input scores directly from this tab.
-                </p>
-              </div>
+              <Broadsheets />
             </TabsContent>
           </Tabs>
         </div>
