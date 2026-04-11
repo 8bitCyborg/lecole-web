@@ -21,7 +21,7 @@ import {
   useGetGradesByArmQuery,
   useUpsertGradesMutation
 } from '@/services/leApi/gradingApi';
-import '../styles.css';
+import './styles.css';
 
 const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
 
@@ -162,7 +162,7 @@ const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
 
   if (isLoadingStudents || isLoadingClass || isLoadingModules || isLoadingGrades) {
     return (
-      <div className="arms-empty-state" style={{ background: 'white' }}>
+      <div className="grades-empty-state" style={{ background: 'white' }}>
         <div className="loading-dense">Synchronizing academic data...</div>
       </div>
     );
@@ -170,7 +170,7 @@ const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
 
   if (students.length === 0 || subjects.length === 0) {
     return (
-      <div className="arms-empty-state" style={{ background: 'white', borderTopLeftRadius: 0 }}>
+      <div className="grades-empty-state" style={{ background: 'white', borderTopLeftRadius: 0 }}>
         <div className="empty-state-icon">📝</div>
         <h3 className="empty-state-title">Setup Incomplete</h3>
         <p className="empty-state-description">

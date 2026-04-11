@@ -7,7 +7,7 @@ import ClassMaster from '@/pages/classes/arms/armComponents/ClassMaster';
 import AddArmForm from '@/pages/classes/classComponents/AddArmForm/AddArmForm';
 import AddStudentForm from '@/pages/students/components/AddStudentForm/AddStudentForm';
 import EnrolledStudents from '@/pages/classes/arms/armComponents/EnrolledStudents';
-import Grades from './armComponents/Grades';
+import Grades from '@/pages/academics/grading/components/Grades/index';
 
 import '../Classes.css';
 import './styles.css';
