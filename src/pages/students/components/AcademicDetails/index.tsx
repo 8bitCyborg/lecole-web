@@ -192,7 +192,7 @@ const StudentAcademicDetails: React.FC<StudentAcademicDetailsProps> = ({ student
                 <table className="sa-table">
                   <thead>
                     <tr>
-                      <th className="sa-subject-col">Subject</th>
+                      <th className="sa-subject-col sa-sticky-col">Subject</th>
                       {modules.map((mod: any) => (
                         <th key={mod.id} className="sa-module-col">
                           {mod.name}
@@ -211,7 +211,7 @@ const StudentAcademicDetails: React.FC<StudentAcademicDetailsProps> = ({ student
 
                       return (
                         <tr key={subject.id}>
-                          <td className="sa-subject-cell">
+                          <td className="sa-subject-cell sa-sticky-col">
                             <span className="sa-subject-name">{subject.name}</span>
                             <span className="sa-subject-code">{subject.code}</span>
                           </td>

@@ -363,7 +363,7 @@
 
 @media (max-width: 768px) {
   .student-profile-container {
-    padding: 0.5rem 1rem;
+    padding: 0.5rem 0rem;
   }
 
   .student-header-banner {
@@ -455,7 +455,7 @@
   }
 
   .student-tabs-content {
-    padding: 1.5rem 1rem !important;
+    padding: 1.5rem 0rem !important;
     border-radius: 0 0 0.75rem 0.75rem;
   }
 }
@@ -511,7 +511,9 @@
 }
 
 @media (max-width: 768px) {
-  .academic-empty-card, .no-subjects-card {
+
+  .academic-empty-card,
+  .no-subjects-card {
     grid-column: span 1;
     padding: 2rem 1rem !important;
   }
