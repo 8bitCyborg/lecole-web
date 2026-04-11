@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { AlertCircle, Loader2, Edit2, Save, XCircle, Lock } from 'lucide-react';
+import { AlertCircle, Loader2, Edit2, Save, XCircle, Lock, ArrowLeft } from 'lucide-react';
 import { useAppSelector } from '@/store/hooks';
 import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
 import {
@@ -12,9 +12,11 @@ import './styles.css';
 
 interface StudentAcademicDetailsProps {
   student: any;
+  onBack?: () => void;
+  embedded?: boolean;
 }
 
-const StudentAcademicDetails: React.FC<StudentAcademicDetailsProps> = ({ student }) => {
+const StudentAcademicDetails: React.FC<StudentAcademicDetailsProps> = ({ student, onBack, embedded }) => {
   const hasClass = !!student.class;
   const subjects: any[] = student.class?.subjects || [];
   const { school } = useAppSelector((state) => state.school);
@@ -135,10 +137,16 @@ const StudentAcademicDetails: React.FC<StudentAcademicDetailsProps> = ({ student
   const modules = gradingModules as any[];
 
   return (
-    <div className="student-sections-container">
+    <div className={`student-sections-container ${embedded ? 'sa-embedded' : ''}`}>
       <div className="detail-section">
+        {onBack && (
+          <button className="sa-back-btn" onClick={onBack}>
+            <ArrowLeft size={16} />
+            <span>Back to General Broadsheet</span>
+          </button>
+        )}
         <h3 className="detail-section-title">
-          Academic Scores — {student.class.name}{student.arm?.name}
+          {student.user?.firstName} {student.user?.lastName} — {student.class.name}{student.arm?.name}
         </h3>
 
         {subjects.length > 0 && modules.length > 0 ? (

@@ -214,6 +214,17 @@
   font-size: 0.8rem;
 }
 
+.student-name-link {
+  cursor: pointer;
+  transition: all 0.15s ease;
+  border-bottom: 1px solid transparent;
+}
+
+.student-name-link:hover {
+  color: #2563eb;
+  border-bottom-color: #2563eb;
+}
+
 /* Subject grouping distinction */
 .subject-group-last {
   border-right: 0.5px solid #000 !important;
@@ -496,6 +507,28 @@ th.subject-group-last {
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+/* ── Pivot view (student detail inside broadsheet) ───────────────────────── */
+.grades-pivot-view {
+  padding: 0;
+  animation: pivotFadeIn 0.4s ease-out;
+}
+
+.grades-table-wrapper {
+  animation: pivotFadeIn 0.3s ease-out;
+}
+
+@keyframes pivotFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 

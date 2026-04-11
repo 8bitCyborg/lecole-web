@@ -141,6 +141,7 @@
   overflow: hidden;
   box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
   position: relative;
+  margin-bottom: 2rem; /* Spacing at bottom of single view */
 }
 
 .sa-table-wrapper {
@@ -152,10 +153,18 @@
 
 .sa-table {
   width: 100%;
+  min-width: 100%;
   border-collapse: separate;
   border-spacing: 0;
   font-family: 'Outfit', sans-serif;
   table-layout: fixed;
+}
+
+@media (max-width: 768px) {
+  .sa-table {
+    width: max-content;
+    table-layout: auto;
+  }
 }
 
 /* ── Header ─────────────────────────────────────────────────────────────── */
@@ -415,4 +424,64 @@
   .sa-subject-name {
     font-size: 0.74rem;
   }
+}
+
+/* ── Back button ───────────────────────────────────────────────────────── */
+
+.sa-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  background: none;
+  border: none;
+  color: #1e3a8a;
+  font-weight: 700;
+  font-size: 0.82rem;
+  cursor: pointer;
+  padding: 0.4rem 0;
+  margin-bottom: 0.75rem;
+  transition: all 0.2s ease;
+  opacity: 0.85;
+}
+
+.sa-back-btn:hover {
+  opacity: 1;
+  transform: translateX(-3px);
+  color: #2563eb;
+}
+
+/* ── Embedded mode (inside Grades broadsheet) ──────────────────────────── */
+
+.sa-embedded {
+  margin: 0;
+  gap: 0;
+}
+
+.sa-embedded .detail-section {
+  margin: 0;
+  padding: 0;
+}
+
+.sa-embedded .detail-section-title {
+  margin-bottom: 1.5rem; /* Margins student name vs table */
+  padding: 0 1.5rem;
+}
+
+.sa-embedded .sa-back-btn {
+  margin: 1.5rem 1.5rem 0.5rem;
+}
+
+.sa-embedded .sa-toolbar {
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+}
+
+.sa-embedded .sa-table-container {
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+  border-bottom: none;
+  box-shadow: none;
+  margin-bottom: 1.5rem; /* Margin table vs bottom */
 }

@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import {
   ChevronLeft,
   ChevronRight,
@@ -19,6 +19,7 @@ import {
   useGetGradesByArmQuery,
   useUpsertGradesMutation
 } from '@/services/leApi/gradingApi';
+import StudentAcademicDetails from '@/pages/students/components/AcademicDetails';
 import './styles.css';
 
 const Grades = ({ classId, armId, isEmbedded }: { classId: string, armId: string, isEmbedded?: boolean }) => {
@@ -34,12 +35,25 @@ const Grades = ({ classId, armId, isEmbedded }: { classId: string, armId: string
   const subjects = classData?.subjects || [];
 
   const scrollRef = useRef<HTMLDivElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const [showScrollLeft, setShowScrollLeft] = useState(false);
   const [showScrollRight, setShowScrollRight] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [saveError, setSaveError] = useState<string | null>(null);
   const [showDiscardModal, setShowDiscardModal] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
+  const [selectedStudent, setSelectedStudent] = useState<any | null>(null);
+  const [containerMinHeight, setContainerMinHeight] = useState<number | undefined>(undefined);
+
+  // Capture container height before switching views to prevent layout jumps
+  const handleSelectStudent = useCallback((student: any | null) => {
+    if (containerRef.current) {
+      setContainerMinHeight(containerRef.current.offsetHeight);
+    }
+    setSelectedStudent(student);
+    // Clear the min-height after the transition settles
+    setTimeout(() => setContainerMinHeight(undefined), 400);
+  }, []);
 
   // Local state for pending changes: `${studentId}|${subjectId}|${moduleId}` -> score
   const [pendingChanges, setPendingChanges] = useState<Record<string, string>>({});
@@ -183,218 +197,268 @@ const Grades = ({ classId, armId, isEmbedded }: { classId: string, armId: string
       {isFullScreen && <div className="fullscreen-backdrop" onClick={() => setIsFullScreen(false)} />}
       <div className={`grades-wrapper ${isFullScreen ? 'full-screen' : ''} ${isEmbedded ? 'embedded' : ''}`}>
 
-        {/* ── Toolbar ── */}
-        <div className="grades-toolbar">
-          <div className="grades-toolbar-left">
-            <span className="grades-toolbar-title">
-              {isEditing ? (
-                hasUnsavedChanges
-                  ? <span className="toolbar-badge unsaved">● Unsaved changes</span>
-                  : <span className="toolbar-badge editing">Editing</span>
-              ) : (
-                <span className="toolbar-badge">Broadsheet</span>
-              )}
-            </span>
-          </div>
-
-          <div className="grades-toolbar-right">
-            {showScrollLeft && (
-              <button
-                className="toolbar-btn icon-only"
-                onClick={() => handleScroll('left')}
-                title="Scroll Left"
-              >
-                <ChevronLeft size={16} />
-              </button>
-            )}
-
-            {showScrollRight && (
-              <button
-                className="toolbar-btn"
-                onClick={() => handleScroll('right')}
-                title="Scroll Right"
-              >
-                <ChevronRight size={16} />
-              </button>
-            )}
-
-            {isEditing && hasUnsavedChanges && (
-              <button
-                className="toolbar-btn save"
-                onClick={handleSave}
-                disabled={isSaving}
-                title="Save Changes"
-              >
-                {isSaving ? <Loader2 size={15} className="spin" /> : <Save size={15} />}
-                <span>{isSaving ? 'Saving…' : 'Save'}</span>
-              </button>
-            )}
-
-            <button
-              className={`toolbar-btn icon-only ${isSaving ? 'disabled' : ''}`}
-              onClick={handleToggleEdit}
-              style={isEditing ? { border: 'solid 1px #f00' } : {}}
-              disabled={isSaving}
-              title={isEditing ? 'Exit Edit Mode' : 'Edit Broadsheet'}
-            >
-              {isEditing ? <XCircle size={16} /> : <Edit2 size={16} />}
-            </button>
-
-            <button
-              className="toolbar-btn icon-only"
-              style={!isFullScreen ? { border: 'solid 1px #fff', background: 'green', color: '#fff' } : { border: 'solid 1px #0f0', color: '#0f0' }}
-              onClick={() => setIsFullScreen(!isFullScreen)}
-              title={isFullScreen ? 'Exit Full Screen' : 'Enter Full Screen'}
-            >
-              {isFullScreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
-            </button>
-          </div>
-        </div>
-
-        {/* ── Table ── */}
-        <div className="grades-container">
-          <div
-            className="grades-table-wrapper"
-            ref={scrollRef}
-            onScroll={checkScroll}
-          >
-            <table className="grades-table">
-              <thead>
-                <tr style={{ position: 'sticky', top: 0, background: '#000', zIndex: 99 }}>
-                  <th
-                    className="sticky-col"
-                    rowSpan={modules.length > 0 ? 2 : 1}
-                    style={{ zIndex: 20 }}
-                  ></th>
-                  {subjects.map((subject: any) => (
-                    <th key={subject.id} colSpan={modules.length > 0 ? modules.length + 1 : 1}>
-                      <div className="rotate-label" style={{ zIndex: 0 }}>{subject.name}</div>
-                    </th>
-                  ))}
-                </tr>
-                {modules.length > 0 && (
-                  <tr>
-                    {subjects.map((subject: any) => (
-                      [
-                        ...modules.map((module: any) => (
-                          <th
-                            key={`${subject.id}-${module.id}`}
-                            className="module-sub-header"
-                            style={{ zIndex: 0 }}
-                          >
-                            {module.name}
-                          </th>
-                        )),
-                        <th
-                          key={`${subject.id}-total`}
-                          className="module-sub-header subject-group-last total-sub-header"
-                        >
-                          Total
-                        </th>
-                      ]
-                    ))}
-                  </tr>
-                )}
-              </thead>
-              <tbody>
-                {students.map((student: any) => (
-                  <tr key={student.id}>
-                    <td className="sticky-col">
-                      <div className="student-info-cell">
-                        <span className="student-name-mini">
-                          {student.user.firstName} {student.user.lastName}
-                        </span>
-                      </div>
-                    </td>
-                    {subjects.map((subject: any) => {
-                      if (modules.length > 0) {
-                        const subjectTotal = modules.reduce((sum: number, module: any) => {
-                          const val = parseFloat(getGradeValue(student.id, subject.id, module.id));
-                          return sum + (isNaN(val) ? 0 : val);
-                        }, 0);
-
-                        return [
-                          ...modules.map((module: any) => {
-                            const isLocked = module.isLocked;
-                            const value = getGradeValue(student.id, subject.id, module.id);
-                            return (
-                              <td
-                                key={`${subject.id}-${module.id}`}
-                                className={`module-grade-cell ${isEditing ? 'editing' : ''} ${isLocked ? 'locked' : ''}`}
-                              >
-                                {isEditing && !isLocked ? (
-                                  <input
-                                    type="text"
-                                    name="grade-input"
-                                    id={`grade-input-${student.id}-${subject.id}-${module.id}`}
-                                    className="grade-input"
-                                    value={value}
-                                    onChange={(e) => handleGradeChange(student.id, subject.id, module.id, e.target.value)}
-                                    placeholder=""
-                                    maxLength={2}
-                                    inputMode='decimal'
-                                  />
-                                ) : (
-                                  <div className="grade-display">
-                                    {isLocked && <Lock size={9} className="lock-icon-mini" />}
-                                    <span>{value || '-'}</span>
-                                  </div>
-                                )}
-                              </td>
-                            );
-                          }),
-                          <td
-                            key={`${subject.id}-total`}
-                            className="module-grade-cell subject-group-last total-cell"
-                          >
-                            <div className="grade-display">
-                              <span>{subjectTotal > 0 ? subjectTotal : '-'}</span>
-                            </div>
-                          </td>
-                        ];
-                      }
-
-                      return (
-                        <td
-                          key={subject.id}
-                          className={`module-grade-cell subject-group-last ${isEditing ? 'editing' : ''}`}
-                        >
-                          {isEditing ? (
-                            <input
-                              type="text"
-                              className="grade-input"
-                              defaultValue="-"
-                              placeholder="-"
-                            />
-                          ) : (
-                            '-'
-                          )}
-                        </td>
-                      );
-                    })}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          {isSaving && (
-            <div className="grades-loading-overlay">
-              <div className="loading-spinner-container">
-                <Loader2 className="spin" size={32} />
-                <p>Saving grades…</p>
+        {/* ── Student Detail Pivot View ── */}
+        {selectedStudent ? (
+          <>
+            <div className="grades-toolbar">
+              <div className="grades-toolbar-left">
+                <span className="toolbar-badge">
+                  {selectedStudent.user.firstName} {selectedStudent.user.lastName}
+                </span>
+              </div>
+              <div className="grades-toolbar-right">
+                <button
+                  className="toolbar-btn icon-only"
+                  style={!isFullScreen ? { border: 'solid 1px #fff', background: 'green', color: '#fff' } : { border: 'solid 1px #0f0', color: '#0f0' }}
+                  onClick={() => setIsFullScreen(!isFullScreen)}
+                  title={isFullScreen ? 'Exit Full Screen' : 'Enter Full Screen'}
+                >
+                  {isFullScreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+                </button>
               </div>
             </div>
-          )}
-
-          {saveError && (
-            <div className="grades-error-banner">
-              <XCircle size={14} />
-              <span>{saveError}</span>
-              <button className="error-clear-btn" onClick={() => setSaveError(null)}>Dismiss</button>
+            <div
+              className="grades-container grades-pivot-view"
+              ref={containerRef}
+              style={containerMinHeight ? { minHeight: containerMinHeight } : undefined}
+            >
+              <StudentAcademicDetails
+                student={{
+                  ...selectedStudent,
+                  class: { ...classData, subjects },
+                  arm: selectedStudent.arm,
+                  armId: armId,
+                }}
+                onBack={() => handleSelectStudent(null)}
+                embedded
+              />
             </div>
-          )}
-        </div>
+          </>
+        ) : (
+          <>
+
+            {/* ── Toolbar ── */}
+            <div className="grades-toolbar">
+              <div className="grades-toolbar-left">
+                <span className="grades-toolbar-title">
+                  {isEditing ? (
+                    hasUnsavedChanges
+                      ? <span className="toolbar-badge unsaved">● Unsaved changes</span>
+                      : <span className="toolbar-badge editing">Editing</span>
+                  ) : (
+                    <span className="toolbar-badge">Broadsheet</span>
+                  )}
+                </span>
+              </div>
+
+              <div className="grades-toolbar-right">
+                {showScrollLeft && (
+                  <button
+                    className="toolbar-btn icon-only"
+                    onClick={() => handleScroll('left')}
+                    title="Scroll Left"
+                  >
+                    <ChevronLeft size={16} />
+                  </button>
+                )}
+
+                {showScrollRight && (
+                  <button
+                    className="toolbar-btn"
+                    onClick={() => handleScroll('right')}
+                    title="Scroll Right"
+                  >
+                    <ChevronRight size={16} />
+                  </button>
+                )}
+
+                {isEditing && hasUnsavedChanges && (
+                  <button
+                    className="toolbar-btn save"
+                    onClick={handleSave}
+                    disabled={isSaving}
+                    title="Save Changes"
+                  >
+                    {isSaving ? <Loader2 size={15} className="spin" /> : <Save size={15} />}
+                    <span>{isSaving ? 'Saving…' : 'Save'}</span>
+                  </button>
+                )}
+
+                <button
+                  className={`toolbar-btn icon-only ${isSaving ? 'disabled' : ''}`}
+                  onClick={handleToggleEdit}
+                  style={isEditing ? { border: 'solid 1px #f00' } : {}}
+                  disabled={isSaving}
+                  title={isEditing ? 'Exit Edit Mode' : 'Edit Broadsheet'}
+                >
+                  {isEditing ? <XCircle size={16} /> : <Edit2 size={16} />}
+                </button>
+
+                <button
+                  className="toolbar-btn icon-only"
+                  style={!isFullScreen ? { border: 'solid 1px #fff', background: 'green', color: '#fff' } : { border: 'solid 1px #0f0', color: '#0f0' }}
+                  onClick={() => setIsFullScreen(!isFullScreen)}
+                  title={isFullScreen ? 'Exit Full Screen' : 'Enter Full Screen'}
+                >
+                  {isFullScreen ? <Minimize2 size={16} /> : <Maximize2 size={16} />}
+                </button>
+              </div>
+            </div>
+
+            {/* ── Table ── */}
+            <div
+              className="grades-container"
+              ref={containerRef}
+              style={containerMinHeight ? { minHeight: containerMinHeight } : undefined}
+            >
+              <div
+                className="grades-table-wrapper"
+                ref={scrollRef}
+                onScroll={checkScroll}
+              >
+                <table className="grades-table">
+                  <thead>
+                    <tr style={{ position: 'sticky', top: 0, background: '#000', zIndex: 99 }}>
+                      <th
+                        className="sticky-col"
+                        rowSpan={modules.length > 0 ? 2 : 1}
+                        style={{ zIndex: 20 }}
+                      ></th>
+                      {subjects.map((subject: any) => (
+                        <th key={subject.id} colSpan={modules.length > 0 ? modules.length + 1 : 1}>
+                          <div className="rotate-label" style={{ zIndex: 0 }}>{subject.name}</div>
+                        </th>
+                      ))}
+                    </tr>
+                    {modules.length > 0 && (
+                      <tr>
+                        {subjects.map((subject: any) => (
+                          [
+                            ...modules.map((module: any) => (
+                              <th
+                                key={`${subject.id}-${module.id}`}
+                                className="module-sub-header"
+                                style={{ zIndex: 0 }}
+                              >
+                                {module.name}
+                              </th>
+                            )),
+                            <th
+                              key={`${subject.id}-total`}
+                              className="module-sub-header subject-group-last total-sub-header"
+                            >
+                              Total
+                            </th>
+                          ]
+                        ))}
+                      </tr>
+                    )}
+                  </thead>
+                  <tbody>
+                    {students.map((student: any) => (
+                      <tr key={student.id}>
+                        <td className="sticky-col">
+                          <div className="student-info-cell">
+                            <span
+                              className="student-name-mini student-name-link"
+                              onClick={() => !isEditing && handleSelectStudent(student)}
+                              title={`View ${student.user.firstName}'s scorecard`}
+                            >
+                              {student.user.firstName} {student.user.lastName}
+                            </span>
+                          </div>
+                        </td>
+                        {subjects.map((subject: any) => {
+                          if (modules.length > 0) {
+                            const subjectTotal = modules.reduce((sum: number, module: any) => {
+                              const val = parseFloat(getGradeValue(student.id, subject.id, module.id));
+                              return sum + (isNaN(val) ? 0 : val);
+                            }, 0);
+
+                            return [
+                              ...modules.map((module: any) => {
+                                const isLocked = module.isLocked;
+                                const value = getGradeValue(student.id, subject.id, module.id);
+                                return (
+                                  <td
+                                    key={`${subject.id}-${module.id}`}
+                                    className={`module-grade-cell ${isEditing ? 'editing' : ''} ${isLocked ? 'locked' : ''}`}
+                                  >
+                                    {isEditing && !isLocked ? (
+                                      <input
+                                        type="text"
+                                        name="grade-input"
+                                        id={`grade-input-${student.id}-${subject.id}-${module.id}`}
+                                        className="grade-input"
+                                        value={value}
+                                        onChange={(e) => handleGradeChange(student.id, subject.id, module.id, e.target.value)}
+                                        placeholder=""
+                                        maxLength={2}
+                                        inputMode='decimal'
+                                      />
+                                    ) : (
+                                      <div className="grade-display">
+                                        {isLocked && <Lock size={9} className="lock-icon-mini" />}
+                                        <span>{value || '-'}</span>
+                                      </div>
+                                    )}
+                                  </td>
+                                );
+                              }),
+                              <td
+                                key={`${subject.id}-total`}
+                                className="module-grade-cell subject-group-last total-cell"
+                              >
+                                <div className="grade-display">
+                                  <span>{subjectTotal > 0 ? subjectTotal : '-'}</span>
+                                </div>
+                              </td>
+                            ];
+                          }
+
+                          return (
+                            <td
+                              key={subject.id}
+                              className={`module-grade-cell subject-group-last ${isEditing ? 'editing' : ''}`}
+                            >
+                              {isEditing ? (
+                                <input
+                                  type="text"
+                                  className="grade-input"
+                                  defaultValue="-"
+                                  placeholder="-"
+                                />
+                              ) : (
+                                '-'
+                              )}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {isSaving && (
+                <div className="grades-loading-overlay">
+                  <div className="loading-spinner-container">
+                    <Loader2 className="spin" size={32} />
+                    <p>Saving grades…</p>
+                  </div>
+                </div>
+              )}
+
+              {saveError && (
+                <div className="grades-error-banner">
+                  <XCircle size={14} />
+                  <span>{saveError}</span>
+                  <button className="error-clear-btn" onClick={() => setSaveError(null)}>Dismiss</button>
+                </div>
+              )}
+            </div>
+          </>
+        )}
       </div>
 
       <DeleteConfirmationModal
