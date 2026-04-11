@@ -259,7 +259,11 @@ const Grades = ({ classId, armId, isEmbedded }: { classId: string, armId: string
             <table className="grades-table">
               <thead>
                 <tr>
-                  <th className="sticky-col" rowSpan={modules.length > 0 ? 2 : 1}></th>
+                  <th
+                    className="sticky-col"
+                    rowSpan={modules.length > 0 ? 2 : 1}
+                    style={{ zIndex: 0, position: 'sticky' }}
+                  ></th>
                   {subjects.map((subject: any) => (
                     <th key={subject.id} colSpan={modules.length > 0 ? modules.length + 1 : 1}>
                       <div className="rotate-label">{subject.name}</div>
