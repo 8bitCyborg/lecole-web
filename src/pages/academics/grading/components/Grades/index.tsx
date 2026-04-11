@@ -21,7 +21,7 @@ import {
 } from '@/services/leApi/gradingApi';
 import './styles.css';
 
-const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
+const Grades = ({ classId, armId, isEmbedded }: { classId: string, armId: string, isEmbedded?: boolean }) => {
 
   const { school } = useAppSelector((state) => state.school);
   const { data: students = [], isLoading: isLoadingStudents } = useGetStudentsByArmQuery(armId!);
@@ -125,8 +125,6 @@ const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
       scores
     };
 
-    console.log('Batch Save Payload:', payload);
-
     try {
       await upsertGrades(payload).unwrap();
       setPendingChanges({});
@@ -183,7 +181,7 @@ const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
   return (
     <>
       {isFullScreen && <div className="fullscreen-backdrop" onClick={() => setIsFullScreen(false)} />}
-      <div className={`grades-wrapper ${isFullScreen ? 'full-screen' : ''}`}>
+      <div className={`grades-wrapper ${isFullScreen ? 'full-screen' : ''} ${isEmbedded ? 'embedded' : ''}`}>
 
         {/* ── Toolbar ── */}
         <div className="grades-toolbar">
@@ -198,6 +196,7 @@ const Grades = ({ classId, armId }: { classId: string, armId: string }) => {
               )}
             </span>
           </div>
+
           <div className="grades-toolbar-right">
             {showScrollLeft && (
               <button
