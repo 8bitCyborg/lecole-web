@@ -224,7 +224,7 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
                   {currentWeekDays.map(day => (
                     <th key={day.dateString} className="day-header">{day.shortDate} <br />{day.displayFormat}</th>
                   ))}
-                  <th className="total-header">Total Present</th>
+                  <th className="total-header">Total Present This Term</th>
                 </tr>
               </thead>
               <tbody>
@@ -250,6 +250,7 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
                             {isEditing ? (
                               <LeDropdown
                                 label=""
+                                placeholder="Mark Student"
                                 className="attendance-le-dropdown"
                                 options={[
                                   { value: 'Present', label: 'Present' },

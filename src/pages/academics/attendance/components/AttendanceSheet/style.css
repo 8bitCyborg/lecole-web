@@ -58,9 +58,9 @@
   border-top-right-radius: 0.75rem;
   border-top-left-radius: 0.75rem;
   min-height: 46px;
-  position: sticky;
+  /* position: sticky; */
   top: 0px;
-  z-index: 100;
+  z-index: 99;
   color: white;
 }
 
@@ -102,8 +102,15 @@
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.65; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.65;
+  }
 }
 
 .toolbar-btn {
@@ -201,7 +208,7 @@
   background: linear-gradient(135deg, #1e3a8a, #111) !important;
   text-align: left;
   width: 180px;
-  box-shadow: 4px 0 8px -2px rgba(0,0,0,0.1);
+  box-shadow: 4px 0 8px -2px rgba(0, 0, 0, 0.1);
 }
 
 .attendance-table th.day-header {
@@ -292,6 +299,7 @@
 .attendance-cell.editing {
   position: relative;
 }
+
 .attendance-cell.editing::after {
   content: '▼';
   font-size: 0.6rem;
@@ -356,13 +364,25 @@
 }
 
 @keyframes spin {
-  from { transform: rotate(0deg); }
-  to { transform: rotate(360deg); }
+  from {
+    transform: rotate(0deg);
+  }
+
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes scaleUp {
-  from { transform: translateX(-50%) scale(0.95); opacity: 0; }
-  to { transform: translateX(-50%) scale(1); opacity: 1; }
+  from {
+    transform: translateX(-50%) scale(0.95);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
 }
 
 .fullscreen-backdrop {
@@ -395,6 +415,17 @@
   overflow: auto;
 }
 
-.attendance-cell .form-group { margin-bottom: 0; }
-.attendance-cell .form-group label { display: none; }
-.attendance-cell .form-input { text-align: center; height: 100%; border-radius: 0; border: none; }
+.attendance-cell .form-group {
+  margin-bottom: 0;
+}
+
+.attendance-cell .form-group label {
+  display: none;
+}
+
+.attendance-cell .form-input {
+  text-align: center;
+  height: 100%;
+  border-radius: 0;
+  border: none;
+}
