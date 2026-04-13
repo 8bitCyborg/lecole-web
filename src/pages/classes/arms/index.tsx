@@ -1,6 +1,13 @@
 import { useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
-import { ArrowLeft, Edit, Users, BarChart3, Plus } from 'lucide-react';
+import {
+  ArrowLeft,
+  Edit,
+  Users,
+  BarChart3,
+  CalendarCheck,
+  Plus
+} from 'lucide-react';
 import { useGetStudentsByArmQuery, useGetArmsQuery } from '@/services/leApi/armsApi';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import ClassMaster from '@/pages/classes/arms/armComponents/ClassMaster';
@@ -8,7 +15,7 @@ import AddArmForm from '@/pages/classes/classComponents/AddArmForm/AddArmForm';
 import AddStudentForm from '@/pages/students/components/AddStudentForm/AddStudentForm';
 import EnrolledStudents from '@/pages/classes/arms/armComponents/EnrolledStudents';
 import Grades from '@/pages/academics/grading/components/Grades/index';
-
+import AttendanceSheet from '@/pages/academics/attendance/components/AttendanceSheet';
 import '../Classes.css';
 import './styles.css';
 
@@ -131,6 +138,10 @@ const ClassArmDetails = () => {
                   <BarChart3 size={18} />
                   Broadsheet
                 </TabsTrigger>
+                <TabsTrigger value="attendance" className="arms-tabs-trigger">
+                  <CalendarCheck size={18} />
+                  Attendance
+                </TabsTrigger>
               </TabsList>
 
               <TabsContent value="students" className="arms-tabs-content">
@@ -139,6 +150,10 @@ const ClassArmDetails = () => {
 
               <TabsContent value="assessments" className="arms-tabs-content">
                 <Grades classId={classId || ''} armId={armId || ''} />
+              </TabsContent>
+
+              <TabsContent value="attendance" className="arms-tabs-content">
+                <AttendanceSheet classId={classId || ''} armId={armId || ''} />
               </TabsContent>
             </Tabs>
           </div>

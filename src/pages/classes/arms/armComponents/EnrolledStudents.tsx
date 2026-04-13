@@ -1,5 +1,6 @@
+import { useState, useMemo, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, ChevronLeft } from 'lucide-react';
 import { useGetStudentsByArmQuery } from '@/services/leApi/armsApi';
 import '@/pages/students/components/StudentlListing/StudentListing.css';
 import '../../Classes.css';
@@ -13,6 +14,20 @@ const EnrolledStudents = ({ currentArmName }: EnrolledStudentsProps) => {
   const navigate = useNavigate();
 
   const { data: students = [], isLoading } = useGetStudentsByArmQuery(armId!);
+
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
+
+  const totalPages = Math.ceil(students.length / itemsPerPage);
+
+  const paginatedStudents = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return students.slice(start, start + itemsPerPage);
+  }, [students, currentPage]);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [armId]);
 
   if (!currentArmName) return null;
 
@@ -44,7 +59,7 @@ const EnrolledStudents = ({ currentArmName }: EnrolledStudentsProps) => {
               </tr>
             </thead>
             <tbody>
-              {students.map((student: any) => (
+              {paginatedStudents.map((student: any) => (
                 <tr
                   key={student.id}
                   onClick={() => navigate(`/students/${student.id}`)}
@@ -90,6 +105,41 @@ const EnrolledStudents = ({ currentArmName }: EnrolledStudentsProps) => {
               ))}
             </tbody>
           </table>
+
+          {totalPages > 1 && (
+            <div className="table-pagination">
+              <div className="pagination-info">
+                Showing <span>{(currentPage - 1) * itemsPerPage + 1}</span> to <span>{Math.min(currentPage * itemsPerPage, students.length)}</span> of <span>{students.length}</span> students
+              </div>
+              <div className="pagination-controls">
+                <button
+                  onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                  disabled={currentPage === 1}
+                  title="Previous Page"
+                >
+                  <ChevronLeft size={20} color="#00b0ff" />
+                </button>
+                <div className="pagination-pages">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                    <button
+                      key={page}
+                      className={`pagination-page-btn ${currentPage === page ? 'active' : ''}`}
+                      onClick={() => setCurrentPage(page)}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+                <button
+                  onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                  disabled={currentPage === totalPages}
+                  title="Next Page"
+                >
+                  <ChevronRight size={20} color="#00b0ff" />
+                </button>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
