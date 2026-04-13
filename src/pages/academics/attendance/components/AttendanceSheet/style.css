@@ -394,3 +394,7 @@
   max-height: calc(100vh - 4rem - 46px);
   overflow: auto;
 }
+
+.attendance-cell .form-group { margin-bottom: 0; }
+.attendance-cell .form-group label { display: none; }
+.attendance-cell .form-input { text-align: center; height: 100%; border-radius: 0; border: none; }

@@ -12,7 +12,9 @@ import {
 } from 'lucide-react';
 import { startOfWeek, addDays, format, getDate } from 'date-fns';
 import { useGetStudentsByArmQuery } from '@/services/leApi/armsApi';
+import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
 import "./style.css";
+
 
 type AttendanceStatus = 'Present' | 'Absent' | '-';
 
@@ -246,16 +248,16 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
                         return (
                           <td key={day.dateString} className={`attendance-cell ${isEditing ? 'editing' : ''}`}>
                             {isEditing ? (
-                              <select
-                                className="attendance-select"
-                                value={status}
-                                onChange={(e) => handleStatusChange(student.id, day.dateString, e.target.value as AttendanceStatus)}
-                              >
-                                <option value="-">-</option>
-                                <option value="Present">Present</option>
-                                <option value="Absent">Absent</option>
-                                <option value="Late">Late</option>
-                              </select>
+                              <LeDropdown
+                                label=""
+                                className="attendance-le-dropdown"
+                                options={[
+                                  { value: 'Present', label: 'Present' },
+                                  { value: 'Absent', label: 'Absent' }
+                                ]}
+                                value={status !== '-' ? status : ''}
+                                onChange={(e) => handleStatusChange(student.id, day.dateString, (e.target.value || '-') as AttendanceStatus)}
+                              />
                             ) : (
                               getStatusDisplay(status)
                             )}
