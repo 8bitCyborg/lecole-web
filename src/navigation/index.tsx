@@ -16,6 +16,7 @@ import StudentDetails from '@/pages/students/StudentDetails';
 import AcademicsDashboard from '@/pages/academics';
 import GradingPage from '@/pages/academics/grading';
 import AssessmentsPage from '@/pages/academics/assessments';
+import Attendance from '@/pages/academics/attendance';
 
 export const publicRouter = createBrowserRouter([
   {
@@ -120,6 +121,10 @@ export const authRouter = createBrowserRouter([
           {
             path: 'grading',
             element: <GradingPage />,
+          },
+          {
+            path: 'attendance',
+            element: <Attendance />,
           },
           {
             path: 'assessments',

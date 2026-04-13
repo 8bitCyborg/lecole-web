@@ -2,9 +2,11 @@ import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useSelector } from 'react-redux';
-import { useCreateArmMutation, useUpdateArmMutation } from '@/services/leApi/armsApi';
+import { useCreateArmMutation, useUpdateArmMutation, useAssignMasterToArmMutation } from '@/services/leApi/armsApi';
+import { useGetStaffQuery } from '@/services/leApi/staffApi';
 import type { RootState } from '@/store';
 import LeInput from '@/components/ui/LeInput/LeInput';
+import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
 import './AddArmForm.css';
 
 interface AddArmFormProps {
@@ -13,6 +15,7 @@ interface AddArmFormProps {
   initialValues?: {
     name: string;
     capacity?: number;
+    classMasterId?: string | null;
   };
   isEdit?: boolean;
   onSuccess?: (values: { name: string; capacity?: number }) => void;
@@ -22,6 +25,7 @@ interface AddArmFormProps {
 const ArmSchema = Yup.object().shape({
   name: Yup.string().required('Arm name is required').min(1, 'Name is too short'),
   capacity: Yup.number().positive('Capacity must be positive').optional().nullable(),
+  classMasterId: Yup.string().optional().nullable(),
 });
 
 const AddArmForm: React.FC<AddArmFormProps> = ({
@@ -35,30 +39,50 @@ const AddArmForm: React.FC<AddArmFormProps> = ({
   const school = useSelector((state: RootState) => state.school.school);
   const [createArm, { isLoading: isCreating }] = useCreateArmMutation();
   const [updateArm, { isLoading: isUpdating }] = useUpdateArmMutation();
+  const [assignMaster, { isLoading: isAssigning }] = useAssignMasterToArmMutation();
+  const { data: allStaff = [] } = useGetStaffQuery();
+  const teachers = allStaff.filter(s => s.isTeachingStaff);
 
-  const isLoading = isCreating || isUpdating;
+  const teacherOptions = [
+    { value: '', label: 'None Assigned' },
+    ...teachers.map(t => ({
+      value: t.id,
+      label: `${t.user.firstName} ${t.user.lastName}`
+    }))
+  ];
 
-  const handleSubmit = async (values: { name: string; capacity?: number | null }) => {
+  const isLoading = isCreating || isUpdating || isAssigning;
+
+  const handleSubmit = async (values: { name: string; capacity?: number | null; classMasterId?: string | null }) => {
     if (!school?.id || !classId) {
       console.error('Missing schoolId or classId');
       return;
     }
 
     try {
+      let armResult: any;
       if (isEdit && armId) {
-        await updateArm({
+        armResult = await updateArm({
           classId,
           armId,
           name: values.name,
           capacity: values.capacity || undefined,
         }).unwrap();
+
+        // Assign master if value changed or even if not, for simplicity in edit mode
+        await assignMaster({ armId, staffId: values.classMasterId || null }).unwrap();
       } else {
-        await createArm({
+        armResult = await createArm({
           name: values.name,
           capacity: values.capacity || undefined,
           classId: classId,
           schoolId: school.id,
         }).unwrap();
+
+        // Assign master after creation
+        if (values.classMasterId) {
+          await assignMaster({ armId: armResult.id, staffId: values.classMasterId }).unwrap();
+        }
       }
 
       onSuccess?.({ name: values.name, capacity: values.capacity || undefined });
@@ -71,6 +95,7 @@ const AddArmForm: React.FC<AddArmFormProps> = ({
     initialValues: {
       name: initialValues?.name || '',
       capacity: initialValues?.capacity || '' as any,
+      classMasterId: initialValues?.classMasterId || '',
     },
     validationSchema: ArmSchema,
     onSubmit: handleSubmit,
@@ -102,7 +127,7 @@ const AddArmForm: React.FC<AddArmFormProps> = ({
 
           <LeInput
             id="capacity"
-            label="Maximum Capacity (Optional)"
+            label="Maximum Capacity"
             type="number"
             {...formik.getFieldProps('capacity')}
             error={formik.errors.capacity as string}
@@ -110,6 +135,17 @@ const AddArmForm: React.FC<AddArmFormProps> = ({
             placeholder="e.g. 40"
           />
         </div>
+
+        {/* <div className="form-row"> */}
+        <LeDropdown
+          id="classMasterId"
+          label="Class Master"
+          options={teacherOptions}
+          {...formik.getFieldProps('classMasterId')}
+          error={formik.errors.classMasterId as string}
+          touched={!!formik.touched.classMasterId}
+        />
+        {/* </div> */}
 
         <div className="form-actions">
           <button

@@ -16,6 +16,7 @@ import {
   ChevronDown,
   GraduationCap,
   BarChart3,
+  CalendarCheck,
   ClipboardList,
 } from 'lucide-react';
 
@@ -56,12 +57,12 @@ const Sidebar: React.FC<SidebarProps> = ({
       path: '/academics',
       id: 'academics',
       children: [
-        { icon: LayoutDashboard, label: 'Overview',     path: '/academics' },
-        { icon: BarChart3,       label: 'Grading',     path: '/academics/grading' },
-        { icon: ClipboardList,   label: 'Assessments', path: '/academics/assessments' },
+        { icon: LayoutDashboard, label: 'Overview', path: '/academics' },
+        { icon: CalendarCheck, label: 'Attendance', path: '/academics/attendance' },
+        { icon: ClipboardList, label: 'Assessments', path: '/academics/assessments' },
+        { icon: BarChart3, label: 'Grading', path: '/academics/grading' },
       ],
     },
-    { icon: Users, label: 'Attendance', path: '/attendance' },
     { icon: UserCircle, label: 'Profile', path: '/profile' },
     { icon: Settings, label: 'Settings', path: '/settings' },
   ];

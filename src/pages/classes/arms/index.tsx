@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import { ArrowLeft, Edit, Users, BarChart3, Plus } from 'lucide-react';
-import { useGetStudentsByArmQuery } from '@/services/leApi/armsApi';
+import { useGetStudentsByArmQuery, useGetArmsQuery } from '@/services/leApi/armsApi';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import ClassMaster from '@/pages/classes/arms/armComponents/ClassMaster';
 import AddArmForm from '@/pages/classes/classComponents/AddArmForm/AddArmForm';
@@ -20,11 +20,14 @@ const ClassArmDetails = () => {
   const [showEnrollModal, setShowEnrollModal] = useState(false);
   const state = location.state as { className?: string; armName?: string; capacity?: number };
   const { data: students = [], refetch } = useGetStudentsByArmQuery(armId!);
+  const { data: arms = [] } = useGetArmsQuery(classId || '', { skip: !classId });
 
+  const arm = arms.find(a => a.id === armId);
   const currentClass = { name: state?.className || 'Class' };
   const currentArm = {
-    name: state?.armName || '',
-    capacity: state?.capacity
+    name: arm?.name || state?.armName || '',
+    capacity: arm?.capacity || state?.capacity,
+    classMasterId: arm?.classMasterId
   };
 
   const handleBack = () => {
@@ -159,6 +162,7 @@ const ClassArmDetails = () => {
               initialValues={{
                 name: currentArm.name,
                 capacity: currentArm.capacity,
+                classMasterId: currentArm.classMasterId,
               }}
               onSuccess={handleEditSuccess}
               onCancel={() => setShowEditModal(false)}

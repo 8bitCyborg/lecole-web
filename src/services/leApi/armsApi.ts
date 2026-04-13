@@ -28,7 +28,7 @@ export const armsApi = baseApi.injectEndpoints({
         method: 'POST',
         body: armData,
       }),
-      invalidatesTags: ['Class', 'Arm'],
+      invalidatesTags: [{ type: 'Arm', id: 'LIST' }, 'Class'],
     }),
     updateArm: builder.mutation<Arm, { classId: string; armId: string; name: string; capacity?: number }>({
       query: ({ classId, armId, ...armData }) => ({
@@ -36,7 +36,11 @@ export const armsApi = baseApi.injectEndpoints({
         method: 'PATCH',
         body: armData,
       }),
-      invalidatesTags: ['Class', 'Arm'],
+      invalidatesTags: (_result, _error, { armId }) => [
+        { type: 'Arm', id: armId },
+        { type: 'Arm', id: 'LIST' },
+        'Class'
+      ],
     }),
 
     getSchoolArms: builder.query<Arm[], void>({
@@ -52,14 +56,26 @@ export const armsApi = baseApi.injectEndpoints({
         url: `/class/${classId}/arms`,
         method: 'GET',
       }),
-      // providesTags: ['Arm'],
+      providesTags: (result) =>
+        result
+          ? [
+            ...result.map(({ id }) => ({ type: 'Arm' as const, id })),
+            { type: 'Arm', id: 'LIST' },
+          ]
+          : [{ type: 'Arm', id: 'LIST' }],
     }),
     deleteArm: builder.mutation<void, { classId: string; armId: string }>({
       query: ({ classId, armId }) => ({
         url: `/class/${classId}/arms/${armId}`,
         method: 'DELETE',
       }),
-      invalidatesTags: ['Class', 'Teachers', 'Student', 'Arm'],
+      invalidatesTags: (_result, _error, { armId }) => [
+        { type: 'Arm', id: armId },
+        { type: 'Arm', id: 'LIST' },
+        'Class',
+        'Teachers',
+        'Student'
+      ],
     }),
 
     assignMasterToArm: builder.mutation<Arm, { armId: string; staffId: string | null }>({
