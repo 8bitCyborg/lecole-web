@@ -213,10 +213,11 @@
 
 .attendance-table th.day-header {
   width: 120px;
+  background: #000;
 }
 
 .attendance-table th.total-header {
-  background: rgba(0, 0, 0, 0.3);
+  background: #000;
   width: 140px;
 }
 

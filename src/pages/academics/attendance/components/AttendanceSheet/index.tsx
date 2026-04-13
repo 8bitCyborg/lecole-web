@@ -23,6 +23,7 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
   const school = useSelector((state: any) => state.school.school);
   const term = school?.currentTerm;
   const session = school?.currentSession;
+  const todayString = useMemo(() => format(new Date(), 'yyyy-MM-dd'), []);
 
   const { data: students = [], isLoading: isLoadingStudents } = useGetStudentsByArmQuery(armId!);
 
@@ -51,6 +52,8 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
     { classId, armId, term, session, startDate, endDate },
     { skip: !term || !session || !startDate || !endDate }
   );
+
+  console.log('attendance records', attendanceRecords)
 
   const [markAttendance, { isLoading: isSaving, isSuccess }] = useMarkAttendanceMutation();
 
@@ -288,9 +291,12 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
                       </td>
                       {currentWeekDays.map(day => {
                         const status = getStatusValue(student.id, day.dateString);
+                        const isToday = day.dateString === todayString;
+                        const canEdit = isEditing && isToday;
+
                         return (
-                          <td key={day.dateString} className={`attendance-cell ${isEditing ? 'editing' : ''}`}>
-                            {isEditing ? (
+                          <td key={day.dateString} className={`attendance-cell ${canEdit ? 'editing' : ''}`}>
+                            {canEdit ? (
                               <LeDropdown
                                 label=""
                                 placeholder="Mark Student"
