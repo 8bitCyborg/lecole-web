@@ -75,7 +75,16 @@
   .arms-tabs-list {
     width: 100% !important;
     max-width: none;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 0.4rem;
+    height: auto;
     border-radius: 1rem 1rem 0 0;
+  }
+
+  .arms-tabs-trigger {
+    padding: 0.75rem 1rem;
+    flex: 1; /* For equal widths, or `flex: 0 0 auto;` if items are wider */
   }
 
   .arms-tabs-content .arm-students-section,

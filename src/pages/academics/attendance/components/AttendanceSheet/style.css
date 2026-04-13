@@ -1,0 +1,396 @@
+/* ── Attendance Table Styles ────────────────────────────────────────────── */
+
+.attendance-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 6rem 2rem;
+  background: white;
+  border-radius: 0 1rem 1rem 1rem;
+  border: 1px solid #e2e8f0;
+  text-align: center;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+}
+
+.empty-state-icon {
+  font-size: 4rem;
+  margin-bottom: 2rem;
+  opacity: 0.5;
+}
+
+.empty-state-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #0f172a;
+  margin-bottom: 0.75rem;
+}
+
+.empty-state-description {
+  color: #64748b;
+  font-size: 1rem;
+  max-width: 400px;
+  margin: 0 auto 2rem;
+}
+
+.loading-dense {
+  font-weight: 600;
+  color: #1e3a8a;
+  font-size: 0.9rem;
+}
+
+.attendance-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  margin-top: 1rem;
+}
+
+/* ── Toolbar ─────────────────────────────────────────────────────────────── */
+.attendance-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #1e3a8a, #0f172a);
+  border: none;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+  border-top-right-radius: 0.75rem;
+  border-top-left-radius: 0.75rem;
+  min-height: 46px;
+  position: sticky;
+  top: 0px;
+  z-index: 100;
+  color: white;
+}
+
+.attendance-toolbar-left {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.attendance-toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.toolbar-badge {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.7);
+  padding: 0.2rem 0.6rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.toolbar-badge.editing {
+  color: #93c5fd;
+  background: rgba(96, 165, 250, 0.2);
+  border-color: rgba(96, 165, 250, 0.4);
+}
+
+.toolbar-badge.unsaved {
+  color: #fbbf24;
+  background: rgba(251, 191, 36, 0.15);
+  border-color: rgba(251, 191, 36, 0.4);
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.65; }
+}
+
+.toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.3rem 0.75rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.85);
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.toolbar-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  border-color: rgba(255, 255, 255, 0.35);
+  color: white;
+}
+
+.toolbar-btn.icon-only {
+  padding: 0.3rem 0.45rem;
+}
+
+.toolbar-btn.save {
+  background: #10b981;
+  border-color: #059669;
+  color: white;
+}
+
+.toolbar-btn.save:hover {
+  background: #059669;
+}
+
+.toolbar-btn.disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+/* ── Container ─────────────────────────────────────────────────────────── */
+.attendance-container {
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 0 0 1rem 1rem;
+  overflow: hidden;
+  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.attendance-table-wrapper {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+.attendance-table {
+  width: 100%;
+  min-width: max-content;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: 'Outfit', sans-serif;
+  table-layout: fixed;
+}
+
+.attendance-table thead tr {
+  height: 50px;
+  background: linear-gradient(135deg, #1e3a8a, #000);
+}
+
+.attendance-table th {
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.75rem;
+  vertical-align: middle;
+  border-right: 1px solid rgba(255, 255, 255, 0.15);
+  border-bottom: 2px solid rgba(0, 0, 0, 0.3);
+  padding: 0 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  text-align: center;
+}
+
+.attendance-table th.header-corner {
+  left: 0;
+  z-index: 30;
+  background: linear-gradient(135deg, #1e3a8a, #111) !important;
+  text-align: left;
+  width: 180px;
+  box-shadow: 4px 0 8px -2px rgba(0,0,0,0.1);
+}
+
+.attendance-table th.day-header {
+  width: 120px;
+}
+
+.attendance-table th.total-header {
+  background: rgba(0, 0, 0, 0.3);
+  width: 140px;
+}
+
+.attendance-table td {
+  height: 48px;
+  padding: 0 0.5rem;
+  font-size: 0.85rem;
+  border-bottom: 1px solid #e2e8f0;
+  border-right: 1px solid #e2e8f0;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.attendance-table tbody tr:nth-child(odd) {
+  background: white;
+}
+
+.attendance-table tbody tr:nth-child(even) {
+  background: #f0f7ff;
+}
+
+.attendance-table tr:hover td {
+  background: #dbeafe !important;
+}
+
+.attendance-table .sticky-col {
+  position: sticky;
+  left: 0;
+  background: white;
+  z-index: 10;
+  text-align: left;
+  border-right: 3px solid #e2e8f0;
+  width: 180px;
+  min-width: 180px;
+  max-width: 180px;
+  padding-left: 1rem;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  box-shadow: 4px 0 8px -2px rgba(0, 0, 0, 0.05);
+}
+
+.attendance-table tr:nth-child(even) .sticky-col {
+  background: #f0f7ff;
+}
+
+.student-info-cell {
+  display: flex;
+  align-items: center;
+  font-weight: 600;
+  color: #1e3a8a;
+}
+
+/* ── Editable cells ──────────────────────────────────────────────────────── */
+
+.attendance-cell.editing {
+  padding: 0;
+}
+
+.attendance-select {
+  width: 100%;
+  height: 47px;
+  border: none;
+  background: transparent;
+  text-align: center;
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #1e293b;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+}
+
+.attendance-select:focus {
+  background: rgba(37, 99, 235, 0.05);
+  box-shadow: inset 0 0 0 2px #2563eb;
+}
+
+.attendance-cell.editing {
+  position: relative;
+}
+.attendance-cell.editing::after {
+  content: '▼';
+  font-size: 0.6rem;
+  color: #94a3b8;
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+/* ── Status Pills ────────────────────────────────────────────────────────── */
+.status-pill {
+  display: inline-block;
+  font-weight: 800;
+  padding: 0.25rem 0.6rem;
+  border-radius: 0.35rem;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  min-width: 28px;
+}
+
+.status-pill.present {
+  background: #dcfce7;
+  color: #166534;
+  border: 1px solid #bbf7d0;
+}
+
+.status-pill.absent {
+  background: #fee2e2;
+  color: #991b1b;
+  border: 1px solid #fecaca;
+}
+
+.status-pill.late {
+  background: #fef9c3;
+  color: #854d0e;
+  border: 1px solid #fef08a;
+}
+
+.status-pill.empty {
+  background: #f1f5f9;
+  color: #94a3b8;
+  border: 1px solid #e2e8f0;
+}
+
+/* ── Totals ──────────────────────────────────────────────────────────────── */
+.total-cell {
+  background: #eff6ff;
+  border-left: 2px solid #cbd5e1;
+}
+
+.total-display {
+  font-weight: 800;
+  color: #1e3a8a;
+  font-size: 0.95rem;
+}
+
+/* ── Animations ──────────────────────────────────────────────────────────── */
+.spin {
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes scaleUp {
+  from { transform: translateX(-50%) scale(0.95); opacity: 0; }
+  to { transform: translateX(-50%) scale(1); opacity: 1; }
+}
+
+.fullscreen-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(8px);
+  z-index: 998;
+}
+
+.attendance-wrapper.full-screen {
+  position: fixed;
+  top: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 95vw;
+  max-height: calc(100vh - 4rem);
+  z-index: 999;
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+  animation: scaleUp 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.attendance-wrapper.full-screen .attendance-toolbar {
+  border-radius: 1rem 1rem 0 0;
+}
+
+.attendance-wrapper.full-screen .attendance-container {
+  max-height: calc(100vh - 4rem - 46px);
+  overflow: auto;
+}
