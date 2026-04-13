@@ -12,6 +12,7 @@ import {
 } from 'lucide-react';
 import { startOfWeek, addDays, format, getDate } from 'date-fns';
 import { useGetStudentsByArmQuery } from '@/services/leApi/armsApi';
+import { useGetAttendanceQuery, useMarkAttendanceMutation } from '@/services/leApi/attendanceApi';
 import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
 import "./style.css";
 
@@ -20,9 +21,10 @@ type AttendanceStatus = 'Present' | 'Absent' | '-';
 
 const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string }) => {
   const school = useSelector((state: any) => state.school.school);
-  const schoolId = school?.id;
+  const term = school?.currentTerm;
+  const session = school?.currentSession;
 
-  const { data: students = [], isLoading } = useGetStudentsByArmQuery(armId!);
+  const { data: students = [], isLoading: isLoadingStudents } = useGetStudentsByArmQuery(armId!);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -37,17 +39,36 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
         label: format(date, 'EEEE'),
         dateString: format(date, 'yyyy-MM-dd'),
         dayNumber: getDate(date),
-        shortDate: format(date, 'EEEE'),
         displayFormat: format(date, 'd/M/yyyy'),
       };
     });
   }, []);
 
+  const startDate = currentWeekDays[0]?.dateString;
+  const endDate = currentWeekDays[currentWeekDays.length - 1]?.dateString;
+
+  const { data: attendanceRecords = [], isLoading: isLoadingAttendance } = useGetAttendanceQuery(
+    { classId, armId, term, session, startDate, endDate },
+    { skip: !term || !session || !startDate || !endDate }
+  );
+
+  const [markAttendance, { isLoading: isSaving, isSuccess }] = useMarkAttendanceMutation();
+
+  const attendanceMap = useMemo(() => {
+    const map: Record<string, AttendanceStatus> = {};
+    attendanceRecords.forEach(record => {
+      if (!record.date) return;
+      const dateStr = record.date.split('T')[0];
+      const statusStr = record.status === 'PRESENT' ? 'Present' : record.status === 'ABSENT' ? 'Absent' : '-';
+      map[`${record.studentId}|${dateStr}`] = statusStr as AttendanceStatus;
+    });
+    return map;
+  }, [attendanceRecords]);
+
   const [showScrollLeft, setShowScrollLeft] = useState(false);
   const [showScrollRight, setShowScrollRight] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isFullScreen, setIsFullScreen] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
 
   // Local state for pending changes: `${studentId}|${day}` -> status
   const [pendingChanges, setPendingChanges] = useState<Record<string, AttendanceStatus>>({});
@@ -94,14 +115,33 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
     }));
   };
 
-  const handleSave = async () => {
-    setIsSaving(true);
-    // Simulate save logic to show the interaction
-    setTimeout(() => {
-      setIsSaving(false);
-      setIsEditing(false);
+  useEffect(() => {
+    if (isSuccess) {
       setPendingChanges({});
-    }, 1000);
+      setIsEditing(false);
+    }
+  }, [isSuccess]);
+
+  const handleSave = async () => {
+    try {
+      const changesByDate: Record<string, { studentId: string; status: string }[]> = {};
+      Object.entries(pendingChanges).forEach(([key, status]) => {
+        const [studentId, dateString] = key.split('|');
+        if (!changesByDate[dateString]) changesByDate[dateString] = [];
+        changesByDate[dateString].push({
+          studentId,
+          status: status === 'Present' ? 'PRESENT' : 'ABSENT'
+        });
+      });
+
+      const promises = Object.entries(changesByDate).map(([dateString, records]) =>
+        markAttendance({ classId, armId, date: dateString, records }).unwrap()
+      );
+
+      await Promise.all(promises);
+    } catch (err) {
+      console.error('Failed to save attendance', err);
+    }
   };
 
   const getStatusValue = (studentId: string, dateString: string): AttendanceStatus => {
@@ -109,7 +149,10 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
     if (pendingChanges[key] !== undefined) {
       return pendingChanges[key];
     }
-    return '-'; // default mock value
+    if (attendanceMap[key] !== undefined) {
+      return attendanceMap[key];
+    }
+    return '-';
   };
 
   const getStatusDisplay = (status: AttendanceStatus) => {
@@ -119,7 +162,7 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
     return <span className="status-pill empty">-</span>;
   };
 
-  if (isLoading) {
+  if (isLoadingStudents || isLoadingAttendance) {
     return (
       <div className="attendance-empty-state" style={{ background: 'white' }}>
         <div className="loading-dense">Synchronizing attendance data...</div>
@@ -222,9 +265,9 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
                 <tr>
                   <th className="sticky-col header-corner">Student Names</th>
                   {currentWeekDays.map(day => (
-                    <th key={day.dateString} className="day-header">{day.shortDate} <br />{day.displayFormat}</th>
+                    <th key={day.dateString} className="day-header">{day.label} <br />{day.displayFormat}</th>
                   ))}
-                  <th className="total-header">Total Present This Term</th>
+                  <th className="total-header">Total Present This Week</th>
                 </tr>
               </thead>
               <tbody>
