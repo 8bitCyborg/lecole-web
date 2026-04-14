@@ -58,22 +58,43 @@
   border-top-right-radius: 0.75rem;
   border-top-left-radius: 0.75rem;
   min-height: 46px;
-  /* position: sticky; */
   top: 0px;
   z-index: 99;
   color: white;
+  flex-wrap: nowrap;
+  gap: 1rem;
+  overflow-x: auto;
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none;    /* Firefox */
+}
+
+/* Hide scrollbar for seamless mobile scrolling */
+.attendance-toolbar::-webkit-scrollbar {
+  display: none;
 }
 
 .attendance-toolbar-left {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 1rem;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
 }
 
 .attendance-toolbar-right {
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
+}
+
+.date-range-picker {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  flex-wrap: nowrap;
+  flex-shrink: 0;
 }
 
 .toolbar-badge {

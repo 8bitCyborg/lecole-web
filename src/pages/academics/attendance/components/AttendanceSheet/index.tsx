@@ -10,7 +10,7 @@ import {
   Maximize2,
   Minimize2,
 } from 'lucide-react';
-import { startOfWeek, addDays, format, getDate } from 'date-fns';
+import { startOfWeek, addDays, format, getDate, eachDayOfInterval, parseISO } from 'date-fns';
 import { useGetStudentsByArmQuery } from '@/services/leApi/armsApi';
 import { useGetAttendanceQuery, useMarkAttendanceMutation } from '@/services/leApi/attendanceApi';
 import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
@@ -30,30 +30,41 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
   const scrollRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const currentWeekDays = useMemo(() => {
+  const [dateRange, setDateRange] = useState(() => {
     const today = new Date();
     const monday = startOfWeek(today, { weekStartsOn: 1 });
+    const friday = addDays(monday, 4);
+    return {
+      start: format(monday, 'yyyy-MM-dd'),
+      end: format(friday, 'yyyy-MM-dd'),
+    };
+  });
 
-    return Array.from({ length: 5 }).map((_, i) => {
-      const date = addDays(monday, i);
-      return {
+  const currentWeekDays = useMemo(() => {
+    try {
+      const start = parseISO(dateRange.start);
+      const end = parseISO(dateRange.end);
+      if (start > end) return [];
+
+      const days = eachDayOfInterval({ start, end });
+      return days.map(date => ({
         label: format(date, 'EEEE'),
         dateString: format(date, 'yyyy-MM-dd'),
         dayNumber: getDate(date),
         displayFormat: format(date, 'd/M/yyyy'),
-      };
-    });
-  }, []);
+      }));
+    } catch {
+      return [];
+    }
+  }, [dateRange]);
 
-  const startDate = currentWeekDays[0]?.dateString;
-  const endDate = currentWeekDays[currentWeekDays.length - 1]?.dateString;
+  const startDate = dateRange.start;
+  const endDate = dateRange.end;
 
   const { data: attendanceRecords = {}, isLoading: isLoadingAttendance } = useGetAttendanceQuery(
     { classId, armId, term, session, startDate, endDate },
     { skip: !term || !session || !startDate || !endDate }
   );
-
-  console.log('attendance records', attendanceRecords)
 
   const [markAttendance, { isLoading: isSaving, isSuccess }] = useMarkAttendanceMutation();
 
@@ -209,6 +220,24 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
                 <span className="toolbar-badge">Weekly Sheet</span>
               )}
             </span>
+
+            {!isEditing && (
+              <div className="date-range-picker">
+                <input
+                  type="date"
+                  value={dateRange.start}
+                  onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
+                  style={{ padding: '0.25rem 0.5rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '0.875rem', outline: 'none' }}
+                />
+                <span style={{ color: '#888', fontSize: '0.875rem' }}>to</span>
+                <input
+                  type="date"
+                  value={dateRange.end}
+                  onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
+                  style={{ padding: '0.25rem 0.5rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '0.875rem', outline: 'none' }}
+                />
+              </div>
+            )}
           </div>
 
           <div className="attendance-toolbar-right">
