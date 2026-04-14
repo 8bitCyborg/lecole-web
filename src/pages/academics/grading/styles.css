@@ -1,14 +1,4 @@
-/* ── Grading Page Specific Styles ───────────────────────────────────────── */
-
-.grading-content-section {
-  padding-bottom: 4rem;
-}
-
 /* ── Grading Configuration: Tabbed Layout ─────────────────────────────────── */
-
-.grading-tabs-card {
-  background: transparent;
-}
 
 .grading-tabs-list {
   height: 3.25rem;
@@ -51,6 +41,7 @@
 
 .grading-tabs-content {
   margin-top: -1px;
+  border-radius: 1.5rem;
 }
 
 /* Ensure the listing container looks right inside tabs */

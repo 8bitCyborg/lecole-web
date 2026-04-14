@@ -1,5 +1,8 @@
 import { useNavigate } from 'react-router-dom';
-import { ArrowLeft, Plus, Calendar, Users, ClipboardCheck } from 'lucide-react';
+import { ArrowLeft, Calendar, Users, ClipboardCheck } from 'lucide-react';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
+import { Settings, ClipboardList } from 'lucide-react';
+import AttendanceRecords from './components/AttendanceRecords';
 import '../Academics.css';
 
 const Attendance = () => {
@@ -17,7 +20,7 @@ const Attendance = () => {
         <div className="academics-header-content" style={{ maxWidth: '800px' }}>
           <h1 className="academics-title">Attendance Tracking</h1>
           <p className="academics-subtitle">
-            Efficiently manage and monitor student presence across all class arms. 
+            Efficiently manage and monitor student presence across all class arms.
             Track daily check-ins, analyze attendance patterns, and ensure comprehensive safety and reporting compliance.
           </p>
 
@@ -46,16 +49,26 @@ const Attendance = () => {
           </div>
         </div>
 
-        <button
-          className="le-button le-button-primary academics-header-cta"
-          style={{ display: 'flex', alignItems: 'center', gap: '8px' }}
-        >
-          <Plus size={16} />
-          Mark Attendance
-        </button>
       </div>
 
-      <div style={{ paddingBottom: '4rem' }} />
+      <div style={{ marginTop: '2rem' }} >
+
+        <div className="grading-tabs-card">
+          <Tabs defaultValue="attendence" className="w-full">
+            <TabsList className="grading-tabs-list">
+              <TabsTrigger value="attendance" className="grading-tabs-trigger">
+                <ClipboardList size={18} />
+                Attendance
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="attendance" className="grading-tabs-content">
+              <AttendanceRecords />
+            </TabsContent>
+
+          </Tabs>
+        </div>
+      </div>
     </div>
   );
 };
