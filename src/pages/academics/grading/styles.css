@@ -42,6 +42,7 @@
 .grading-tabs-content {
   margin-top: -1px;
   border-radius: 1.5rem;
+  border-top-left-radius: 0;
 }
 
 /* Ensure the listing container looks right inside tabs */

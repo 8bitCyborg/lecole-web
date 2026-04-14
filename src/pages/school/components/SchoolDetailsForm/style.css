@@ -1,0 +1,116 @@
+.school-details-form-container {
+  padding: 1rem;
+  background: white;
+  border-radius: 1.5rem;
+  border-top-left-radius: 0;
+}
+
+.school-details-header {
+  margin-bottom: 2.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 2rem;
+}
+
+.header-title-group {
+  flex: 1;
+}
+
+.school-details-title {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: #1e3a8a;
+  margin-bottom: 0.5rem;
+}
+
+.edit-toggle-btn {
+  white-space: nowrap;
+  padding: 0.6rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 700;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+.school-details-subtitle {
+  color: #64748b;
+  font-size: 1rem;
+}
+
+.form-grid-2-col {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.form-group-full {
+  grid-column: 1 / -1;
+  margin-bottom: 1.5rem;
+}
+
+.form-section-label {
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #1e3a8a;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-top: 2rem;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.form-section-label::after {
+  content: '';
+  height: 2px;
+  flex: 1;
+  background: linear-gradient(to right, #e2e8f0, transparent);
+}
+
+.form-section-label:first-of-type {
+  margin-top: 0;
+}
+
+.form-actions-right {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 3rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #e2e8f0;
+}
+
+@media (max-width: 768px) {
+  .form-grid-2-col {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+}
+
+.data-display-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.85rem 1.25rem;
+  background: white;
+  border-radius: 0.75rem;
+  border: 1px solid #f1f5f9;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.data-display-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+}
+
+.data-display-value {
+  font-size: 0.95rem;
+  color: #1e293b;
+  font-weight: 500;
+  min-height: 1.5rem;
+}

@@ -1,26 +1,62 @@
 import { baseApi } from '.';
-import type { School } from '../../store/slices/schoolSlice';
+
+export interface School {
+  id: string;
+  userId: string;
+  name: string;
+  shortname: string | null;
+  address: string;
+  state: string;
+  lga: string | null;
+  phone: string;
+  email: string;
+
+  type: string | null;
+  curriculum: string | null;
+  gradingSystem: string | null;
+  
+  currentTermId: string | null;
+  currentSessionId: string | null;
+
+  ownershipType: string | null;
+  proprietor: string | null;
+  website: string | null;
+  logo: string | null;
+  motto: string | null;
+  dateOfInception: string | null;
+
+  cacNumber: string | null;
+  cacCertificateUrl: string | null;
+  moeNumber: string | null;
+  moeCerticateUrl: string | null;
+  trcnUrl: string | null;
+  tin: string | null;
+
+  bankName: string | null;
+  accountNumber: string | null;
+  accountName: string | null;
+
+  verificationStatus: string;
+  createdAt: string;
+  updatedAt: string;
+}
 
 export interface CreateSchoolRequest {
   userId: string;
   name: string;
+  shortname?: string;
   address: string;
   state: string;
   lga?: string;
   phone: string;
   email: string;
+
+  ownershipType?: string;
+  proprietor?: string;
   website?: string;
   logo?: string;
-  proprietor?: string;
-  description?: string;
-  date_of_inception?: string;
-  type?: string;
-  curriculum?: string;
-  grading_system?: string;
-  current_term?: string;
-  current_session?: string;
-  ownership_type?: string;
   motto?: string;
+  dateOfInception?: string;
 }
 
 export interface UpdateSchoolRequest extends Partial<Omit<CreateSchoolRequest, 'userId'>> {
