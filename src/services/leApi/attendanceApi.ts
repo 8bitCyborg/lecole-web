@@ -27,7 +27,7 @@ export interface BatchUpsertAttendancePayload {
 
 export const attendanceApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getAttendance: builder.query<AttendanceRecord[], GetAttendanceArgs>({
+    getAttendance: builder.query<Record<string, AttendanceRecord[]>, GetAttendanceArgs>({
       query: (params) => ({
         url: '/attendance',
         method: 'GET',
@@ -36,7 +36,7 @@ export const attendanceApi = baseApi.injectEndpoints({
       providesTags: (result, _error, arg) =>
         result
           ? [
-            ...result.map(({ studentId, date }) => ({
+            ...Object.values(result).flat().map(({ studentId, date }) => ({
               type: 'Attendance' as const,
               id: `${studentId}-${date.split('T')[0]}`
             })),

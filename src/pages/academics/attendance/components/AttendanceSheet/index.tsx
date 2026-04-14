@@ -48,7 +48,7 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
   const startDate = currentWeekDays[0]?.dateString;
   const endDate = currentWeekDays[currentWeekDays.length - 1]?.dateString;
 
-  const { data: attendanceRecords = [], isLoading: isLoadingAttendance } = useGetAttendanceQuery(
+  const { data: attendanceRecords = {}, isLoading: isLoadingAttendance } = useGetAttendanceQuery(
     { classId, armId, term, session, startDate, endDate },
     { skip: !term || !session || !startDate || !endDate }
   );
@@ -59,12 +59,19 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
 
   const attendanceMap = useMemo(() => {
     const map: Record<string, AttendanceStatus> = {};
-    attendanceRecords.forEach(record => {
-      if (!record.date) return;
-      const dateStr = record.date.split('T')[0];
-      const statusStr = record.status === 'PRESENT' ? 'Present' : record.status === 'ABSENT' ? 'Absent' : '-';
-      map[`${record.studentId}|${dateStr}`] = statusStr as AttendanceStatus;
-    });
+    if (attendanceRecords) {
+      Object.keys(attendanceRecords).forEach(dateKey => {
+        const recordsForDay = attendanceRecords[dateKey];
+        if (Array.isArray(recordsForDay)) {
+          recordsForDay.forEach(record => {
+            if (!record.date) return;
+            const dateStr = record.date.split('T')[0];
+            const statusStr = record.status === 'PRESENT' ? 'Present' : record.status === 'ABSENT' ? 'Absent' : '-';
+            map[`${record.studentId}|${dateStr}`] = statusStr as AttendanceStatus;
+          });
+        }
+      });
+    }
     return map;
   }, [attendanceRecords]);
 
