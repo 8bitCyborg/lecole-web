@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Calendar, Users, ClipboardCheck } from 'lucide-react';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
-import { Settings, ClipboardList } from 'lucide-react';
+import { ClipboardList } from 'lucide-react';
 import AttendanceRecords from './components/AttendanceRecords';
 import '../Academics.css';
 
