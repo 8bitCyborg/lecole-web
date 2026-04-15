@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { useFindMySchoolQuery } from "../../services/leApi/schoolApi";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../components/ui/tabs';
-import { Settings } from 'lucide-react';
+import {
+  Settings,
+  School2,
+} from 'lucide-react';
 import './SchoolOverview.css';
 import '../academics/Academics.css';
 import SchoolForm from "./components/SchoolDetailsForm";
+import AcademicSession from './components/AcademicSession';
 
 const School = () => {
   const { data: school, isLoading, refetch } = useFindMySchoolQuery();
@@ -28,15 +32,19 @@ const School = () => {
       </div>
 
       <div className="grading-tabs-card">
-        <Tabs defaultValue="management" className="w-full">
+        <Tabs defaultValue="profile" className="w-full">
           <TabsList className="grading-tabs-list">
-            <TabsTrigger value="management" className="grading-tabs-trigger">
-              <Settings size={18} />
+            <TabsTrigger value="profile" className="grading-tabs-trigger">
+              <School2 size={18} />
               Profile
+            </TabsTrigger>
+            <TabsTrigger value="academic-session" className="grading-tabs-trigger">
+              <Settings size={18} />
+              Academic Session
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="management" className="grading-tabs-content">
+          <TabsContent value="profile" className="grading-tabs-content">
             <SchoolForm
               initialData={school}
               isEditMode={isEditing}
@@ -44,6 +52,9 @@ const School = () => {
               onSuccess={() => { setIsEditing(false); refetch(); }}
               onCancel={() => setIsEditing(false)}
             />
+          </TabsContent>
+          <TabsContent value="academic-session" className="grading-tabs-content">
+            <AcademicSession />
           </TabsContent>
         </Tabs>
       </div>
