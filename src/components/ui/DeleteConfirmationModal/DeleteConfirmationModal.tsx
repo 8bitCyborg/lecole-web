@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { createPortal } from 'react-dom';
 import './DeleteConfirmationModal.css';
 
 interface DeleteConfirmationModalProps {
@@ -22,9 +23,15 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   cancelText = "Cancel",
   variant = 'danger'
 }) => {
-  if (!isOpen) return null;
+  const [mounted, setMounted] = useState(false);
 
-  return (
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!isOpen || !mounted) return null;
+
+  return createPortal(
     <div className="modal-overlay" onClick={onCancel}>
       <div className="modal-content delete-confirmation-modal" onClick={(e) => e.stopPropagation()}>
         <div className="delete-modal-header">
@@ -49,7 +56,8 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
           </button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 };
 

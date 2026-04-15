@@ -8,7 +8,7 @@ import {
 import './SchoolOverview.css';
 import '../academics/Academics.css';
 import SchoolForm from "./components/SchoolDetailsForm";
-import AcademicSession from './components/AcademicSession';
+import AcademicSession from './components/AcademicSession/session';
 
 const School = () => {
   const { data: school, isLoading, refetch } = useFindMySchoolQuery();
@@ -17,8 +17,6 @@ const School = () => {
   if (isLoading) {
     return <div className="school-loading">Loading school info...</div>;
   }
-
-
 
   return (
     <div className="school-page-container">
