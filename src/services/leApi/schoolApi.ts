@@ -80,6 +80,7 @@ export const schoolApi = baseApi.injectEndpoints({
         url: '/school',
         method: 'GET',
       }),
+      keepUnusedDataFor: 86400, // 24 hours
       providesTags: ['School'],
     }),
     updateSchool: builder.mutation<School, UpdateSchoolRequest>({
@@ -90,8 +91,6 @@ export const schoolApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['School'],
     }),
-
-
   }),
 });
 
