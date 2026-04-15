@@ -1,9 +1,8 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useSelector } from 'react-redux';
 import { useCreateSubjectMutation } from '../../../services/leApi/subjectApi';
-import type { RootState } from '../../../store';
+import { useFindMySchoolQuery } from '@/services/leApi/schoolApi';
 import LeInput from '../../../components/ui/LeInput/LeInput';
 import './AddSubjectForm.css';
 
@@ -18,11 +17,12 @@ const SubjectSchema = Yup.object().shape({
 });
 
 const AddSubjectForm: React.FC<AddSubjectFormProps> = ({ onSuccess, onCancel }) => {
-  const school = useSelector((state: RootState) => state.school.school);
+  const school = useFindMySchoolQuery();
+  const schoolData = school?.currentData
   const [createSubject, { isLoading }] = useCreateSubjectMutation();
 
   const handleAddSubject = async (values: { name: string; code?: string }) => {
-    if (!school?.id) {
+    if (!schoolData?.id) {
       console.error('No school ID found');
       return;
     };
@@ -31,7 +31,7 @@ const AddSubjectForm: React.FC<AddSubjectFormProps> = ({ onSuccess, onCancel }) 
       await createSubject({
         name: values.name,
         code: values.code,
-        schoolId: school.id,
+        schoolId: schoolData?.id,
       }).unwrap();
 
       onSuccess?.(values);

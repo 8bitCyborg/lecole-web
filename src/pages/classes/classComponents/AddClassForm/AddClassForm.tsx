@@ -1,9 +1,8 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useSelector } from 'react-redux';
 import { useCreateClassMutation } from '@/services/leApi/classApi';
-import type { RootState } from '@/store';
+import { useFindMySchoolQuery } from '@/services/leApi/schoolApi';
 import LeInput from '@/components/ui/LeInput/LeInput';
 import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
 import { CATEGORY_OPTIONS } from '@/services/leApi/classApi';
@@ -21,11 +20,12 @@ const ClassSchema = Yup.object().shape({
 });
 
 const AddClassForm: React.FC<AddClassFormProps> = ({ onSuccess, onCancel }) => {
-  const school = useSelector((state: RootState) => state.school.school);
+  const school = useFindMySchoolQuery();
+  const schoolData = school?.currentData
   const [createClass, { isLoading }] = useCreateClassMutation();
 
   const handleAddClass = async (values: { name: string; category: Category }) => {
-    if (!school?.id) {
+    if (!schoolData?.id) {
       console.error('No school ID found');
       return;
     }
@@ -34,7 +34,7 @@ const AddClassForm: React.FC<AddClassFormProps> = ({ onSuccess, onCancel }) => {
       await createClass({
         name: values.name,
         category: values.category,
-        schoolId: school.id,
+        schoolId: schoolData?.id,
       }).unwrap();
 
       onSuccess?.(values);
