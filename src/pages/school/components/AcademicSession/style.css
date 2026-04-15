@@ -95,9 +95,103 @@
   .form-grid-2-col {
     grid-template-columns: 1fr;
   }
-  
+
   .academic-session-header {
     flex-direction: column;
     gap: 1rem;
+  }
+}
+
+/* Status Controls */
+.active-status-container {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.75rem;
+  border-radius: 2rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.status-badge.active {
+  background: #f0fdf4;
+  color: #166534;
+}
+
+.status-badge.inactive {
+  background: #f8fafc;
+  color: #64748b;
+  border: 1px solid #e2e8f0;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  background-color: #22c55e;
+  border-radius: 50%;
+  display: inline-block;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0.7);
+  }
+
+  70% {
+    transform: scale(1);
+    box-shadow: 0 0 0 10px rgba(34, 197, 94, 0);
+  }
+
+  100% {
+    transform: scale(0.95);
+    box-shadow: 0 0 0 0 rgba(34, 197, 94, 0);
+  }
+}
+
+.end-term-btn {
+  padding: 0.4rem 0.85rem;
+  background: #f00;
+  color: #fff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  height: 2rem !important;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  transition: 0.2s;
+}
+
+.end-term-btn:hover {
+  transform: translateY(-3px);
+  transition: 0.2s;
+  box-shadow: 0 4px 6px -1px rgba(255, 0, 0, 0.5) !important;
+}
+
+.end-term-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }

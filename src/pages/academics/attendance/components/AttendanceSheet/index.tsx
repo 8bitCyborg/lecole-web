@@ -14,6 +14,7 @@ import { startOfWeek, addDays, format, getDate, eachDayOfInterval, parseISO } fr
 import { useGetStudentsByArmQuery } from '@/services/leApi/armsApi';
 import { useGetAttendanceQuery, useMarkAttendanceMutation } from '@/services/leApi/attendanceApi';
 import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
+import LeDatePicker from '@/components/ui/LeDatePicker/LeDatePicker';
 import "./style.css";
 
 
@@ -223,18 +224,16 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
 
             {!isEditing && (
               <div className="date-range-picker">
-                <input
-                  type="date"
+                <LeDatePicker
+                  label=""
                   value={dateRange.start}
                   onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
-                  style={{ padding: '0.25rem 0.5rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '0.875rem', outline: 'none' }}
                 />
                 <span style={{ color: '#888', fontSize: '0.875rem' }}>to</span>
-                <input
-                  type="date"
+                <LeDatePicker
+                  label=""
                   value={dateRange.end}
                   onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
-                  style={{ padding: '0.25rem 0.5rem', border: '1px solid #ccc', borderRadius: '4px', fontSize: '0.875rem', outline: 'none' }}
                 />
               </div>
             )}

@@ -7,6 +7,8 @@ import { useCreateSchoolMutation, useUpdateSchoolMutation } from '../../../../se
 import type { School } from '../../../../services/leApi/schoolApi';
 import LeInput from '../../../../components/ui/LeInput/LeInput';
 import LeDropdown from '../../../../components/ui/LeDropdown/LeDropdown';
+import LeDatePicker from '../../../../components/ui/LeDatePicker/LeDatePicker';
+
 import './style.css';
 
 interface SchoolFormProps {
@@ -297,15 +299,15 @@ const SchoolDetailsForm: React.FC<SchoolFormProps> = ({ onSuccess, onEdit, onCan
           )}
 
           {isEditMode ? (
-            <LeInput
+            <LeDatePicker
               id="dateOfInception"
               label="Date of Inception (Optional)"
-              type="date"
               {...formik.getFieldProps('dateOfInception')}
               error={formik.errors.dateOfInception as string}
               touched={formik.touched.dateOfInception}
             />
           ) : (
+
             <DataDisplay label="Date of Inception" value={initialData?.dateOfInception ? new Date(initialData.dateOfInception).toLocaleDateString() : undefined} />
           )}
         </div>

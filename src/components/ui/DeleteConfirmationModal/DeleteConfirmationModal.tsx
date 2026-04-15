@@ -7,6 +7,9 @@ interface DeleteConfirmationModalProps {
   onConfirm: () => void;
   onCancel: () => void;
   isOpen: boolean;
+  confirmText?: string;
+  cancelText?: string;
+  variant?: 'danger' | 'primary';
 }
 
 const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
@@ -14,7 +17,10 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
   message = "Are you sure you want to delete this item? This action cannot be undone.",
   onConfirm,
   onCancel,
-  isOpen
+  isOpen,
+  confirmText = "Yes, Delete",
+  cancelText = "Cancel",
+  variant = 'danger'
 }) => {
   if (!isOpen) return null;
 
@@ -33,13 +39,13 @@ const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = ({
             className="le-button le-button-outline"
             onClick={onCancel}
           >
-            Cancel
+            {cancelText}
           </button>
           <button
-            className="le-button delete-confirm-btn"
+            className={`le-button ${variant === 'danger' ? 'delete-confirm-btn' : 'le-button-primary'}`}
             onClick={onConfirm}
           >
-            Yes, Delete
+            {confirmText}
           </button>
         </div>
       </div>

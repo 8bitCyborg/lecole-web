@@ -1,8 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import LeInput from '@/components/ui/LeInput/LeInput';
 import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
+import LeDatePicker from '@/components/ui/LeDatePicker/LeDatePicker';
+import TermStatus from './TermStatus';
+import {
+  useFindMySchoolQuery,
+  useGetAcademicSessionByIdQuery,
+  useCreateAcademicSessionMutation,
+} from '@/services/leApi/schoolApi';
 import './style.css';
 
 interface AcademicSessionFormValues {
@@ -10,6 +17,7 @@ interface AcademicSessionFormValues {
   term: string;
   weeks: string;
   startDate: string;
+  endDate: string;
 }
 
 const DataDisplay: React.FC<{ label: string; value: string | number | undefined | null }> = ({ label, value }) => (
@@ -24,33 +32,76 @@ const AcademicSessionSchema = Yup.object().shape({
   term: Yup.string().required('Term is required'),
   weeks: Yup.number().typeError('Must be a number').required('Number of weeks is required').min(1, 'Minimum 1 week'),
   startDate: Yup.string().required('Start date is required'),
+  endDate: Yup.string().required('End date is required'),
 });
 
 const AcademicSession: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
-  const [academicData, setAcademicData] = useState<AcademicSessionFormValues>({
-    sessionName: '2024/2025',
-    term: 'First Term',
-    weeks: '14',
-    startDate: '2024-09-02',
-  });
+
+  const { data: school, isLoading: isSchoolLoading } = useFindMySchoolQuery();
+  const { data: currentSession, isLoading: isSessionLoading } = useGetAcademicSessionByIdQuery(
+    school?.currentSessionId || '',
+    { skip: !school?.currentSessionId }
+  );
+
+  const [createAcademicSession, { isLoading: isCreating }] = useCreateAcademicSessionMutation();
+
+  const currentTerm = currentSession?.terms?.find(t => t.id === school?.currentTermId) || currentSession?.terms?.[0];
 
   const formik = useFormik<AcademicSessionFormValues>({
-    initialValues: academicData,
+    initialValues: {
+      sessionName: currentSession?.identifier || '',
+      term: currentTerm?.identifier || '',
+      weeks: currentTerm?.numberOfWeeks?.toString() || '',
+      startDate: currentTerm?.startDate ? new Date(currentTerm.startDate).toISOString().split('T')[0] : '',
+      endDate: currentTerm?.endDate ? new Date(currentTerm.endDate).toISOString().split('T')[0] : '',
+    },
     validationSchema: AcademicSessionSchema,
     enableReinitialize: true,
-    onSubmit: (values) => {
-      setAcademicData(values);
-      setIsEditing(false);
-      console.log('Form values saved locally:', values);
+    onSubmit: async (values) => {
+      try {
+        await createAcademicSession({
+          identifier: values.sessionName,
+          term: {
+            identifier: values.term,
+            numberOfWeeks: parseInt(values.weeks),
+            startDate: values.startDate,
+            endDate: values.endDate,
+          }
+        }).unwrap();
+        setIsEditing(false);
+      } catch (error) {
+        console.error('Failed to save academic session:', error);
+      }
     },
   });
+
+  // Calculate End Date whenever Start Date or Number of Weeks changes
+  useEffect(() => {
+    if (formik.values.startDate && formik.values.weeks && isEditing) {
+      const start = new Date(formik.values.startDate);
+      const weeks = parseInt(formik.values.weeks);
+      if (!isNaN(start.getTime()) && !isNaN(weeks)) {
+        const end = new Date(start);
+        end.setDate(start.getDate() + (weeks * 7));
+        const formattedEnd = end.toISOString().split('T')[0];
+        // Only update if it's different to avoid infinite loops, though setFieldValue handles this
+        if (formattedEnd !== formik.values.endDate) {
+          formik.setFieldValue('endDate', formattedEnd);
+        }
+      }
+    }
+  }, [formik.values.startDate, formik.values.weeks, isEditing]);
 
   const termOptions = [
     { value: 'First Term', label: 'First Term' },
     { value: 'Second Term', label: 'Second Term' },
     { value: 'Third Term', label: 'Third Term' },
   ];
+
+  if (isSchoolLoading || (school?.currentSessionId && isSessionLoading)) {
+    return <div className="academic-session-container">Loading academic data...</div>;
+  }
 
   return (
     <div className="academic-session-container">
@@ -71,7 +122,7 @@ const AcademicSession: React.FC = () => {
             className="le-button le-button-primary edit-toggle-btn"
             onClick={() => setIsEditing(true)}
           >
-            Edit Session
+            {currentSession ? 'Edit Session' : 'Set Up Session'}
           </button>
         )}
       </div>
@@ -89,7 +140,7 @@ const AcademicSession: React.FC = () => {
               placeholder="e.g. 2024/2025"
             />
           ) : (
-            <DataDisplay label="Academic Session" value={academicData.sessionName} />
+            <DataDisplay label="Academic Session" value={currentSession?.identifier || 'Not Configured'} />
           )}
 
           {isEditing ? (
@@ -103,7 +154,7 @@ const AcademicSession: React.FC = () => {
               placeholder="Select term..."
             />
           ) : (
-            <DataDisplay label="Current Term" value={academicData.term} />
+            <DataDisplay label="Current Term" value={currentTerm?.identifier || 'Not Configured'} />
           )}
         </div>
 
@@ -119,27 +170,53 @@ const AcademicSession: React.FC = () => {
               placeholder="e.g. 14"
             />
           ) : (
-            <DataDisplay label="Number of Weeks" value={academicData.weeks} />
+            <DataDisplay label="Number of Weeks" value={currentTerm?.numberOfWeeks} />
           )}
 
           {isEditing ? (
-            <LeInput
+            <LeDatePicker
               id="startDate"
               label="Term Start Date"
-              type="date"
               {...formik.getFieldProps('startDate')}
               error={formik.errors.startDate}
               touched={formik.touched.startDate}
             />
           ) : (
+
             <DataDisplay
               label="Term Start Date"
-              value={new Date(academicData.startDate).toLocaleDateString(undefined, {
+              value={currentTerm?.startDate ? new Date(currentTerm.startDate).toLocaleDateString(undefined, {
                 year: 'numeric',
                 month: 'long',
                 day: 'numeric'
-              })}
+              }) : 'N/A'}
             />
+          )}
+        </div>
+
+        <div className="form-grid-2-col">
+          {isEditing ? (
+            <LeDatePicker
+              id="endDate"
+              label="Estimated End Date"
+              {...formik.getFieldProps('endDate')}
+              error={formik.errors.endDate}
+              touched={formik.touched.endDate}
+            />
+          ) : (
+
+            <DataDisplay
+              label="Estimated End Date"
+              value={currentTerm?.endDate ? new Date(currentTerm.endDate).toLocaleDateString(undefined, {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+              }) : 'N/A'}
+            />
+          )}
+
+          {!isEditing && school && (
+            <TermStatus school={school} term={currentTerm} />
           )}
         </div>
 
@@ -156,13 +233,14 @@ const AcademicSession: React.FC = () => {
             <button
               type="submit"
               className="le-button le-button-primary"
-              disabled={!formik.isValid}
+              disabled={!formik.isValid || isCreating}
             >
-              Save Configuration
+              {isCreating ? 'Saving...' : 'Save'}
             </button>
           </div>
         )}
       </form>
+
     </div>
   );
 };

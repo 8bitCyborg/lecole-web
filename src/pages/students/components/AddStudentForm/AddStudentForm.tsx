@@ -1,14 +1,17 @@
 import React, { useEffect, useState } from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useSelector } from 'react-redux';
+
 import LeInput from '@/components/ui/LeInput/LeInput';
 import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
+import LeDatePicker from '@/components/ui/LeDatePicker/LeDatePicker';
+
 import { useCreateStudentMutation, useUpdateStudentMutation } from '@/services/leApi/studentApi';
 import type { Student } from '@/services/leApi/studentApi';
 import { useGetClassesQuery } from '@/services/leApi/classApi';
 import { useGetArmsQuery } from '@/services/leApi/armsApi';
-import type { RootState } from '@/store';
+import { useFindMySchoolQuery } from '@/services/leApi/schoolApi';
+
 import './AddStudentForm.css';
 
 interface AddStudentFormProps {
@@ -50,7 +53,7 @@ const toDateInputValue = (iso?: string) => {
 const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, student, initialValues }) => {
   const isEditMode = !!student;
 
-  const school = useSelector((state: RootState) => state.school.school);
+  const { data: school } = useFindMySchoolQuery();
   const [createStudent, { isLoading: isCreating }] = useCreateStudentMutation();
   const [updateStudent, { isLoading: isUpdating }] = useUpdateStudentMutation();
   const isLoading = isCreating || isUpdating;
@@ -184,10 +187,9 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, st
             touched={formik.touched.email}
             placeholder="john.doe@student.lecole.app"
           />
-          <LeInput
+          <LeDatePicker
             id="dateOfBirth"
             label="Date of Birth"
-            type="date"
             {...formik.getFieldProps('dateOfBirth')}
             error={formik.errors.dateOfBirth as string}
             touched={formik.touched.dateOfBirth}

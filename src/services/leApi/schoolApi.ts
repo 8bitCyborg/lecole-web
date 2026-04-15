@@ -41,6 +41,31 @@ export interface School {
   updatedAt: string;
 }
 
+export interface AcademicSession {
+  id: string;
+  identifier: string;
+  schoolId: string | null;
+  startDate: string | null;
+  endDate: string | null;
+  terms?: any[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Term {
+  id: string;
+  identifier: string;
+  academicSessionId: string | null;
+  schoolId: string | null;
+  startDate: string;
+  endDate: string | null;
+  numberOfWeeks: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+
+
 export interface CreateSchoolRequest {
   userId: string;
   name: string;
@@ -59,8 +84,32 @@ export interface CreateSchoolRequest {
   dateOfInception?: string;
 }
 
+export interface CreateAcademicSessionRequest {
+  identifier: string;
+  startDate?: string;
+  endDate?: string;
+  term?: {
+    identifier: string;
+    startDate: string;
+    numberOfWeeks: number;
+    endDate?: string;
+  };
+}
+
+export interface CreateTermRequest {
+  identifier: string;
+  academicSessionId: string;
+  startDate: string;
+  endDate?: string;
+  numberOfWeeks: number;
+}
+
+
+
 export interface UpdateSchoolRequest extends Partial<Omit<CreateSchoolRequest, 'userId'>> {
   id: string;
+  currentTermId?: string | null;
+  currentSessionId?: string | null;
 }
 
 export const schoolApi = baseApi.injectEndpoints({
@@ -88,11 +137,59 @@ export const schoolApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['School'],
     }),
+    createAcademicSession: builder.mutation<AcademicSession, CreateAcademicSessionRequest>({
+      query: (sessionData) => ({
+        url: '/school/sessions',
+        method: 'POST',
+        body: sessionData,
+      }),
+      invalidatesTags: ['AcademicSession', 'School'],
+    }),
+    getAcademicSessions: builder.query<AcademicSession[], void>({
+      query: () => ({
+        url: '/school/sessions',
+        method: 'GET',
+      }),
+      providesTags: ['AcademicSession'],
+    }),
+    getAcademicSessionById: builder.query<AcademicSession, string>({
+      query: (id) => ({
+        url: `/school/sessions/${id}`,
+        method: 'GET',
+      }),
+      providesTags: (_result, _error, id) => [{ type: 'AcademicSession', id }],
+    }),
+    createTerm: builder.mutation<Term, CreateTermRequest>({
+      query: (termData) => ({
+        url: '/school/terms',
+        method: 'POST',
+        body: termData,
+      }),
+      invalidatesTags: ['AcademicSession', 'School'],
+    }),
+    getTerms: builder.query<Term[], { sessionId?: string } | void>({
+      query: (params) => ({
+        url: '/school/terms',
+        method: 'GET',
+        params: params || undefined,
+      }),
+      providesTags: ['AcademicSession'],
+    }),
+
   }),
 });
+
+
 
 export const {
   useCreateSchoolMutation,
   useFindMySchoolQuery,
   useUpdateSchoolMutation,
+  useCreateAcademicSessionMutation,
+  useGetAcademicSessionsQuery,
+  useGetAcademicSessionByIdQuery,
+  useCreateTermMutation,
+  useGetTermsQuery,
 } = schoolApi;
+
+
