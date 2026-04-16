@@ -10,7 +10,6 @@ import {
   Maximize2,
   Minimize2,
 } from 'lucide-react';
-import { useAppSelector } from '@/store/hooks';
 import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
 import { useGetClassQuery } from '@/services/leApi/classApi';
 import { useGetStudentsByArmQuery } from '@/services/leApi/armsApi';
@@ -21,10 +20,12 @@ import {
 } from '@/services/leApi/gradingApi';
 import StudentAcademicDetails from '@/pages/students/components/AcademicDetails';
 import './styles.css';
+import { useFindMySchoolQuery } from '@/services/leApi/schoolApi';
 
 const Grades = ({ classId, armId, isEmbedded }: { classId: string, armId: string, isEmbedded?: boolean }) => {
 
-  const { school } = useAppSelector((state) => state.school);
+  const school = useFindMySchoolQuery();
+  const schoolData = school?.data;
   const { data: students = [], isLoading: isLoadingStudents } = useGetStudentsByArmQuery(armId!);
   const { data: classData, isLoading: isLoadingClass } = useGetClassQuery(classId);
   const { data: modules = [], isLoading: isLoadingModules } = useGetGradingModulesQuery();
@@ -116,6 +117,10 @@ const Grades = ({ classId, armId, isEmbedded }: { classId: string, armId: string
   const handleSave = async () => {
     if (!hasUnsavedChanges || !school) return;
     setSaveError(null);
+    if (!schoolData?.id || !schoolData?.currentTermId || !schoolData?.currentSessionId) {
+      // Show an error toast or return early
+      return;
+    }
 
     const scores = Object.entries(pendingChanges).map(([key, value]) => {
       const [studentId, subjectId, gradingModuleId] = key.split('|');
@@ -130,11 +135,11 @@ const Grades = ({ classId, armId, isEmbedded }: { classId: string, armId: string
 
     const payload = {
       context: {
-        schoolId: school.id,
+        schoolId: schoolData.id,
         classId,
         armId,
-        term: school.currentTerm,
-        session: school.currentSession
+        term: schoolData.currentTermId,
+        session: schoolData.currentSessionId,
       },
       scores
     };

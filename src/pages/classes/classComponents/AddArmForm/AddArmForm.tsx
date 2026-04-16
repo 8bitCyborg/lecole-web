@@ -1,10 +1,9 @@
 import React from 'react';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { useSelector } from 'react-redux';
 import { useCreateArmMutation, useUpdateArmMutation, useAssignMasterToArmMutation } from '@/services/leApi/armsApi';
+import { useFindMySchoolQuery } from '@/services/leApi/schoolApi';
 import { useGetStaffQuery } from '@/services/leApi/staffApi';
-import type { RootState } from '@/store';
 import LeInput from '@/components/ui/LeInput/LeInput';
 import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
 import './AddArmForm.css';
@@ -36,7 +35,9 @@ const AddArmForm: React.FC<AddArmFormProps> = ({
   onSuccess,
   onCancel
 }) => {
-  const school = useSelector((state: RootState) => state.school.school);
+  // const school = useSelector((state: RootState) => state.school.school);
+  const school = useFindMySchoolQuery();
+  const schoolData = school?.data
   const [createArm, { isLoading: isCreating }] = useCreateArmMutation();
   const [updateArm, { isLoading: isUpdating }] = useUpdateArmMutation();
   const [assignMaster, { isLoading: isAssigning }] = useAssignMasterToArmMutation();
@@ -54,7 +55,7 @@ const AddArmForm: React.FC<AddArmFormProps> = ({
   const isLoading = isCreating || isUpdating || isAssigning;
 
   const handleSubmit = async (values: { name: string; capacity?: number | null; classMasterId?: string | null }) => {
-    if (!school?.id || !classId) {
+    if (!schoolData?.id || !classId) {
       console.error('Missing schoolId or classId');
       return;
     }
@@ -76,7 +77,7 @@ const AddArmForm: React.FC<AddArmFormProps> = ({
           name: values.name,
           capacity: values.capacity || undefined,
           classId: classId,
-          schoolId: school.id,
+          schoolId: schoolData.id,
         }).unwrap();
 
         // Assign master after creation

@@ -16,14 +16,16 @@ import { useGetAttendanceQuery, useMarkAttendanceMutation } from '@/services/leA
 import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
 import LeDatePicker from '@/components/ui/LeDatePicker/LeDatePicker';
 import "./style.css";
+import { useFindMySchoolQuery } from '@/services/leApi/schoolApi';
 
 
 type AttendanceStatus = 'Present' | 'Absent' | '-';
 
 const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string }) => {
-  const school = useSelector((state: any) => state.school.school);
-  const term = school?.currentTerm;
-  const session = school?.currentSession;
+  const school = useFindMySchoolQuery();
+  const schoolData = school.currentData;
+  const term = schoolData?.currentTermId;
+  const session = schoolData?.currentSessionId;
   const todayString = useMemo(() => format(new Date(), 'yyyy-MM-dd'), []);
 
   const { data: students = [], isLoading: isLoadingStudents } = useGetStudentsByArmQuery(armId!);
@@ -63,8 +65,8 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
   const endDate = dateRange.end;
 
   const { data: attendanceRecords = {}, isLoading: isLoadingAttendance } = useGetAttendanceQuery(
-    { classId, armId, term, session, startDate, endDate },
-    { skip: !term || !session || !startDate || !endDate }
+    { classId, armId, term: term!, session: session!, startDate, endDate },
+    { skip: !term || !session || !startDate || !endDate || !schoolData?.id }
   );
 
   const [markAttendance, { isLoading: isSaving, isSuccess }] = useMarkAttendanceMutation();
