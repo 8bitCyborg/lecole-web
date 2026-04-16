@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import { CheckCircle2, Plus, AlertCircle, Edit2, Loader2, X, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LeInput from '@/components/ui/LeInput/LeInput';
-import { useUpdateSessionMutation, type AcademicSession } from '@/services/leApi/sessionApi';
+import { useUpdateSessionMutation, useEndSessionMutation, type AcademicSession } from '@/services/leApi/sessionApi';
 import SessionProgress from './SessionProgress';
 import TermCard from './TermCard';
 import PendingSlotCard from './PendingSlotCard';
 import AddTermCard from './AddTermCard';
+import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
 
 interface SessionDashboardProps {
   session: AcademicSession;
@@ -37,6 +38,18 @@ const SessionDashboard: React.FC<SessionDashboardProps> = ({ session }) => {
   const [editTermsPerSession, setEditTermsPerSession] = useState(session.termsPerSession);
 
   const [updateSession, { isLoading: isUpdating }] = useUpdateSessionMutation();
+  const [endSession, { isLoading: isEndingSession }] = useEndSessionMutation();
+
+  const [isEndSessionModalOpen, setIsEndSessionModalOpen] = useState(false);
+
+  const handleEndSession = async () => {
+    try {
+      await endSession(session.id).unwrap();
+      setIsEndSessionModalOpen(false);
+    } catch (err) {
+      console.error('Failed to end session:', err);
+    }
+  };
 
   const handleSaveEdit = async () => {
     if (!editIdentifier.trim()) return;
@@ -202,6 +215,43 @@ const SessionDashboard: React.FC<SessionDashboardProps> = ({ session }) => {
               );
             })}
           </div>
+
+          <div className="mt-5 flex flex-col items-center border-t border-slate-100 pb-10">
+            <div className="max-w-xl text-center mb-6">
+              <h3 className="text-slate-900 font-bold text-lg">End Academic Session</h3>
+              <p className="text-slate-500 text-sm mt-2">
+                Concluding this session will finalize all academic records for <span className="font-semibold text-slate-700">{session.identifier}</span>.
+                This action will clear your current academic context and allow you to configure a new session.
+              </p>
+            </div>
+            <Button
+              onClick={() => setIsEndSessionModalOpen(true)}
+              className="bg-red-600 hover:bg-red-700 text-white font-bold py-6 px-10 shadow-sm hover:shadow-md transition-all active:scale-[0.98]"
+              disabled={isEndingSession}
+            >
+              {isEndingSession ? (
+                <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Concluding Session...</>
+              ) : (
+                `Conclude ${session.identifier} Session`
+              )}
+            </Button>
+          </div>
+
+          <DeleteConfirmationModal
+            isOpen={isEndSessionModalOpen}
+            title="End Academic Session"
+            message={
+              <>
+                You are about to end the <span className="font-semibold">{session.identifier}</span> academic session.<br /><br />
+                This will conclude all terms within this session and reset the school's active academic context.<br />
+                This action <span className="text-red-600 font-bold">cannot be undone</span>.
+              </>
+            }
+            confirmText={isEndingSession ? 'Concluding...' : 'Yes, Conclude Session'}
+            cancelText="Cancel"
+            onConfirm={handleEndSession}
+            onCancel={() => setIsEndSessionModalOpen(false)}
+          />
         </section>
 
       </div>

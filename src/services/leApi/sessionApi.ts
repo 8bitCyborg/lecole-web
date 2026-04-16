@@ -92,6 +92,13 @@ export const sessionApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ['AcademicSession'],
     }),
+    endSession: builder.mutation<AcademicSession, string>({
+      query: (id) => ({
+        url: `/school/session/${id}/end`,
+        method: 'PATCH',
+      }),
+      invalidatesTags: ['AcademicSession', 'School'],
+    }),
   }),
 });
 
@@ -102,5 +109,6 @@ export const {
   useUpdateSessionMutation,
   useCreateTermMutation,
   useUpdateTermMutation,
-  useEndTermMutation
+  useEndTermMutation,
+  useEndSessionMutation
 } = sessionApi;
