@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { CheckCircle2, Plus, AlertCircle, Edit2, Loader2, X, Save } from 'lucide-react';
+import { CheckCircle2, AlertCircle, Edit2, Loader2, X, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import LeInput from '@/components/ui/LeInput/LeInput';
 import { useUpdateSessionMutation, useEndSessionMutation, type AcademicSession } from '@/services/leApi/sessionApi';
@@ -251,6 +251,7 @@ const SessionDashboard: React.FC<SessionDashboardProps> = ({ session }) => {
             cancelText="Cancel"
             onConfirm={handleEndSession}
             onCancel={() => setIsEndSessionModalOpen(false)}
+            requiresPassword={true}
           />
         </section>
 

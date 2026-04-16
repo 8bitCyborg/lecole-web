@@ -217,6 +217,7 @@ const TermCard: React.FC<TermCardProps> = ({ term, index, totalTerms }) => {
         cancelText="Cancel"
         onConfirm={handleEndTerm}
         onCancel={() => setIsEndModalOpen(false)}
+        requiresPassword={true}
       />
     </div>
   )
