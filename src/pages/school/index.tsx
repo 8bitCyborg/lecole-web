@@ -8,7 +8,7 @@ import {
 import './SchoolOverview.css';
 import '../academics/Academics.css';
 import SchoolForm from "./components/SchoolDetailsForm";
-import AcademicSession from './components/AcademicSession/session';
+import AcademicSession from './components/AcademicSession';
 
 const School = () => {
   const { data: school, isLoading, refetch } = useFindMySchoolQuery();
