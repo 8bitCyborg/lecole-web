@@ -1,5 +1,4 @@
 import { useState, useRef, useEffect, useMemo } from 'react';
-import { useSelector } from "react-redux";
 import {
   ChevronLeft,
   ChevronRight,
@@ -13,10 +12,10 @@ import {
 import { startOfWeek, addDays, format, getDate, eachDayOfInterval, parseISO } from 'date-fns';
 import { useGetStudentsByArmQuery } from '@/services/leApi/armsApi';
 import { useGetAttendanceQuery, useMarkAttendanceMutation } from '@/services/leApi/attendanceApi';
+import { useFindMySchoolQuery } from '@/services/leApi/schoolApi';
 import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
 import LeDatePicker from '@/components/ui/LeDatePicker/LeDatePicker';
 import "./style.css";
-import { useFindMySchoolQuery } from '@/services/leApi/schoolApi';
 
 
 type AttendanceStatus = 'Present' | 'Absent' | '-';
