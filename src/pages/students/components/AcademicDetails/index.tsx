@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { AlertCircle, Loader2, Edit2, Save, XCircle, Lock, ArrowLeft } from 'lucide-react';
-import { useAppSelector } from '@/store/hooks';
 import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
 import {
   useGetStudentGradesQuery,
   useGetGradingModulesQuery,
   useUpsertGradesMutation,
 } from '@/services/leApi/gradingApi';
+import { useFindMySchoolQuery } from '@/services/leApi/schoolApi';
 import '../PersonalDetails/styles.css';
 import './styles.css';
 
@@ -19,7 +19,8 @@ interface StudentAcademicDetailsProps {
 const StudentAcademicDetails: React.FC<StudentAcademicDetailsProps> = ({ student, onBack, embedded }) => {
   const hasClass = !!student.class;
   const subjects: any[] = student.class?.subjects || [];
-  const { school } = useAppSelector((state) => state.school);
+  const school = useFindMySchoolQuery();
+  const schoolData = school?.data;
   const { data: grades = [], isLoading } = useGetStudentGradesQuery(student.id);
   const { data: gradingModules = [], isLoading: gradingModulesLoading } = useGetGradingModulesQuery();
   const [upsertGrades, { isLoading: isSaving }] = useUpsertGradesMutation();
@@ -73,6 +74,11 @@ const StudentAcademicDetails: React.FC<StudentAcademicDetailsProps> = ({ student
     if (!hasUnsavedChanges || !school) return;
     setSaveError(null);
 
+    if (!schoolData?.id || !schoolData?.currentTermId || !schoolData?.currentSessionId) {
+      // Show an error toast or return early
+      return;
+    }
+
     const scores = Object.entries(pendingChanges).map(([key, value]) => {
       const [subjectId, gradingModuleId] = key.split('|');
       const score = value === '' ? 0 : parseFloat(value);
@@ -86,11 +92,11 @@ const StudentAcademicDetails: React.FC<StudentAcademicDetailsProps> = ({ student
 
     const payload = {
       context: {
-        schoolId: school.id,
+        schoolId: schoolData.id,
         classId: student.class.id,
         armId: student.armId,
-        term: school.currentTerm,
-        session: school.currentSession,
+        term: schoolData.currentTermId,
+        session: schoolData.currentSessionId,
       },
       scores,
     };

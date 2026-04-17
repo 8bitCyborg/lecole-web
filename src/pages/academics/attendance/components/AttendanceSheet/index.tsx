@@ -306,7 +306,7 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
                   {currentWeekDays.map(day => (
                     <th key={day.dateString} className="day-header">{day.label} <br />{day.displayFormat}</th>
                   ))}
-                  <th className="total-header">Total Present This Week</th>
+                  {/* <th className="total-header">Total Present</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -350,9 +350,9 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
                           </td>
                         );
                       })}
-                      <td className="total-cell">
+                      {/* <td className="total-cell">
                         <div className="total-display">{presents}</div>
-                      </td>
+                      </td> */}
                     </tr>
                   );
                 })}
