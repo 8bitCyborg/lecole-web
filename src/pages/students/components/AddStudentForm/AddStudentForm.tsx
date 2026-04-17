@@ -35,12 +35,12 @@ const GENDER_OPTIONS = [
 const StudentSchema = Yup.object().shape({
   firstName: Yup.string().required('First name is required').min(2, 'Name is too short'),
   lastName: Yup.string().required('Last name is required').min(2, 'Name is too short'),
-  email: Yup.string().email('Invalid email address'),
+  email: Yup.string().email('Invalid email address').nullable(),
   gender: Yup.string().oneOf(['MALE', 'FEMALE'], 'Invalid gender').required('Gender is required'),
   admissionNumber: Yup.string().required('Admission number is required').min(3, 'Admission number is too short'),
   dateOfBirth: Yup.date().nullable(),
-  guardianPhone: Yup.string().matches(/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s./0-9]*$/, 'Invalid phone number'),
-  guardianEmail: Yup.string().email('Invalid email address'),
+  guardianPhone: Yup.string().required('Guardian phone number is required').matches(/^[+]*[(]{0,1}[0-9]{1,4}[)]{0,1}[-\s./0-9]*$/, 'Invalid phone number'),
+  guardianEmail: Yup.string().required('Guardian email is required').email('Invalid email address'),
   classId: Yup.string(),
   armId: Yup.string(),
   password: Yup.string().min(8, 'Password must be at least 8 characters'),
@@ -117,6 +117,7 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, st
       guardianEmail: student?.guardianEmail || '',
       classId: student?.classId || initialValues?.classId || '',
       armId: student?.armId || initialValues?.armId || '',
+      useGuardianEmail: false,
       ...(!isEditMode && { password: 'LecoleStudent@123' }),
     },
     validationSchema: StudentSchema,
@@ -130,6 +131,12 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, st
       formik.setFieldValue('armId', '');
     }
   }, [formik.values.classId]);
+
+  useEffect(() => {
+    if (formik.values.useGuardianEmail) {
+      formik.setFieldValue('email', formik.values.guardianEmail);
+    }
+  }, [formik.values.useGuardianEmail, formik.values.guardianEmail]);
 
   useEffect(() => {
     if (errorMessage) setErrorMessage(null);
@@ -189,6 +196,40 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, st
           />
         </div>
 
+        <div className="form-row guardian-row">
+          <LeInput
+            id="guardianPhone"
+            label="Guardian Phone Number"
+            {...formik.getFieldProps('guardianPhone')}
+            className="guardian-phone-input"
+            error={formik.errors.guardianPhone as string}
+            touched={formik.touched.guardianPhone}
+            placeholder="+234 800 000 0000"
+          />
+          <LeInput
+            id="guardianEmail"
+            label="Guardian Email"
+            type="email"
+            {...formik.getFieldProps('guardianEmail')}
+            className="guardian-email-input"
+            error={formik.errors.guardianEmail as string}
+            touched={formik.touched.guardianEmail}
+            placeholder="guardian@example.com"
+          />
+        </div>
+
+        <div className="form-checkbox-sync">
+          <label className="checkbox-container">
+            <input
+              type="checkbox"
+              id="useGuardianEmail"
+              {...formik.getFieldProps('useGuardianEmail')}
+              checked={formik.values.useGuardianEmail}
+            />
+            <span className="checkbox-text">Use Guardian Email for Student</span>
+          </label>
+        </div>
+
         <div className="form-row">
           <LeInput
             id="email"
@@ -198,6 +239,7 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, st
             error={formik.errors.email as string}
             touched={formik.touched.email}
             placeholder="john.doe@student.lecole.app"
+            disabled={formik.values.useGuardianEmail}
           />
           <LeDatePicker
             id="dateOfBirth"
@@ -226,30 +268,6 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, st
             error={formik.errors.armId as string}
             touched={formik.touched.armId}
             disabled={!formik.values.classId || !!initialValues?.armId}
-          />
-        </div>
-
-        <div className="form-section-divider">
-          <span>Guardian Information</span>
-        </div>
-
-        <div className="form-row">
-          <LeInput
-            id="guardianPhone"
-            label="Guardian Phone Number"
-            {...formik.getFieldProps('guardianPhone')}
-            error={formik.errors.guardianPhone as string}
-            touched={formik.touched.guardianPhone}
-            placeholder="+234 800 000 0000"
-          />
-          <LeInput
-            id="guardianEmail"
-            label="Guardian Email"
-            type="email"
-            {...formik.getFieldProps('guardianEmail')}
-            error={formik.errors.guardianEmail as string}
-            touched={formik.touched.guardianEmail}
-            placeholder="guardian@example.com"
           />
         </div>
 
