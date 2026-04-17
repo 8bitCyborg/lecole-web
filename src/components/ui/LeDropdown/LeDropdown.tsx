@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { ChevronDown } from 'lucide-react';
+import { ChevronDown, ChevronUp, ChevronLeft, ChevronRight } from 'lucide-react';
 import './ledropdown.css';
 
 interface LeDropdownProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'onChange'> {
@@ -10,6 +10,7 @@ interface LeDropdownProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElem
   options: { value: string; label: string; disabled?: boolean }[];
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  direction?: 'up' | 'down' | 'left' | 'right';
 }
 
 const LeDropdown: React.FC<LeDropdownProps> = ({
@@ -23,6 +24,7 @@ const LeDropdown: React.FC<LeDropdownProps> = ({
   value = '',
   onChange,
   disabled,
+  direction = 'down',
   ...props
 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -59,6 +61,11 @@ const LeDropdown: React.FC<LeDropdownProps> = ({
 
   const selectedOption = options.find(opt => opt.value === value);
 
+  const ChevronIcon = direction === 'up' ? ChevronUp : 
+                      direction === 'left' ? ChevronLeft : 
+                      direction === 'right' ? ChevronRight : 
+                      ChevronDown;
+
   return (
     <div className={`le-select-container ${disabled ? 'disabled' : ''}`} ref={dropdownRef}>
       {label && <label htmlFor={id} className="le-select-label">{label}</label>}
@@ -72,11 +79,11 @@ const LeDropdown: React.FC<LeDropdownProps> = ({
         <span className={selectedOption ? 'selected-text' : 'placeholder-text'}>
           {selectedOption ? selectedOption.label : placeholder}
         </span>
-        <ChevronDown size={18} className={`select-chevron ${isOpen ? 'open' : ''}`} />
+        <ChevronIcon size={18} className={`select-chevron ${isOpen ? 'open' : ''}`} />
       </div>
 
       {isOpen && !disabled && (
-        <div className="le-select-dropdown">
+        <div className={`le-select-dropdown ${direction}`}>
           <div
             className={`le-select-option ${value === '' ? 'active' : ''}`}
             onClick={(e) => handleSelect('', e)}

@@ -397,6 +397,7 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
                                 label=""
                                 placeholder="Mark Student"
                                 className="attendance-le-dropdown"
+                                direction="down"
                                 options={[
                                   { value: 'Present', label: 'Present' },
                                   { value: 'Absent', label: 'Absent' }
