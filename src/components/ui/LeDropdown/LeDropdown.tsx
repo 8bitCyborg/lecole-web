@@ -7,7 +7,7 @@ interface LeDropdownProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElem
   placeholder?: string;
   error?: string;
   touched?: boolean;
-  options: { value: string; label: string }[];
+  options: { value: string; label: string; disabled?: boolean }[];
   value?: string;
   onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
@@ -43,8 +43,9 @@ const LeDropdown: React.FC<LeDropdownProps> = ({
     };
   }, []);
 
-  const handleSelect = (optionValue: string, e: React.MouseEvent) => {
+  const handleSelect = (optionValue: string, e: React.MouseEvent, disabledOption?: boolean) => {
     e.stopPropagation();
+    if (disabledOption) return;
     if (onChange) {
       // Simulate an event object for compatibility with typical form handlers
       const event = {
@@ -85,8 +86,8 @@ const LeDropdown: React.FC<LeDropdownProps> = ({
           {options.map((option) => (
             <div
               key={option.value}
-              className={`le-select-option ${value === option.value ? 'active' : ''}`}
-              onClick={(e) => handleSelect(option.value, e)}
+              className={`le-select-option ${value === option.value ? 'active' : ''} ${option.disabled ? 'disabled' : ''}`}
+              onClick={(e) => handleSelect(option.value, e, option.disabled)}
             >
               {option.label}
             </div>
@@ -105,7 +106,7 @@ const LeDropdown: React.FC<LeDropdownProps> = ({
         tabIndex={-1}
       >
         <option value="">Select...</option>
-        {options.map(opt => <option key={opt.value} value={opt.value}>{opt.label}</option>)}
+        {options.map(opt => <option key={opt.value} value={opt.value} disabled={opt.disabled}>{opt.label}</option>)}
       </select>
 
       {isError && <div className="error-message">{error}</div>}

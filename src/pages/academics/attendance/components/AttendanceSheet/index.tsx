@@ -9,12 +9,13 @@ import {
   Maximize2,
   Minimize2,
 } from 'lucide-react';
-import { startOfWeek, addDays, format, getDate, eachDayOfInterval, parseISO } from 'date-fns';
+import { addDays, format, getDate, eachDayOfInterval, parseISO, differenceInDays } from 'date-fns';
 import { useGetStudentsByArmQuery } from '@/services/leApi/armsApi';
 import { useGetAttendanceQuery, useMarkAttendanceMutation } from '@/services/leApi/attendanceApi';
 import { useFindMySchoolQuery } from '@/services/leApi/schoolApi';
+import { useGetCurrentSessionQuery } from '@/services/leApi/sessionApi';
 import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
-import LeDatePicker from '@/components/ui/LeDatePicker/LeDatePicker';
+import AttendanceWeekPicker from './AttendanceWeekPicker';
 import "./style.css";
 
 
@@ -25,27 +26,93 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
   const schoolData = school.currentData;
   const term = schoolData?.currentTermId;
   const session = schoolData?.currentSessionId;
-  const todayString = useMemo(() => format(new Date(), 'yyyy-MM-dd'), []);
 
   const { data: students = [], isLoading: isLoadingStudents } = useGetStudentsByArmQuery(armId!);
 
   const scrollRef = useRef<HTMLDivElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
 
-  const [dateRange, setDateRange] = useState(() => {
+  const { data: sessionData } = useGetCurrentSessionQuery(undefined, { skip: !session });
+  const currentTerm = useMemo(() => sessionData?.terms?.find(t => t.id === term), [sessionData, term]);
+
+  const [selectedWeek, setSelectedWeek] = useState<number>(1);
+
+  // Initialize selectedWeek/currentWeek logic
+  useEffect(() => {
+    if (currentTerm?.startDate) {
+      const today = new Date();
+      const start = parseISO(currentTerm.startDate);
+      const diffDays = differenceInDays(today, start);
+
+      let week = Math.floor(diffDays / 7) + 1;
+
+      // Handle scenarios where the current date is before the Term start date (default to Week 1)
+      if (diffDays < 0) week = 1;
+
+      // or after the Term end date (default to the final week)
+      if (currentTerm.numberOfWeeks && week > currentTerm.numberOfWeeks) {
+        week = currentTerm.numberOfWeeks;
+      }
+
+      setSelectedWeek(week);
+    }
+  }, [currentTerm]);
+
+  const actualCurrentWeek = useMemo(() => {
+    if (!currentTerm?.startDate) return 1;
     const today = new Date();
-    const monday = startOfWeek(today, { weekStartsOn: 1 });
+    const start = parseISO(currentTerm.startDate);
+    const diffDays = differenceInDays(today, start);
+
+    let week = Math.floor(diffDays / 7) + 1;
+    if (diffDays < 0) week = 1;
+    if (currentTerm.numberOfWeeks && week > currentTerm.numberOfWeeks) {
+      week = currentTerm.numberOfWeeks;
+    }
+    return week;
+  }, [currentTerm]);
+
+  const isCurrentWeekSelected = selectedWeek === actualCurrentWeek;
+
+  // Auto-exit editing mode when navigating away from current week
+  useEffect(() => {
+    if (!isCurrentWeekSelected) {
+      setIsEditing(false);
+    }
+  }, [isCurrentWeekSelected]);
+
+  const { startDate, endDate } = useMemo(() => {
+    if (!currentTerm?.startDate) return { startDate: '', endDate: '' };
+
+    const baseDate = parseISO(currentTerm.startDate);
+    const monday = addDays(baseDate, (selectedWeek - 1) * 7);
     const friday = addDays(monday, 4);
+
     return {
-      start: format(monday, 'yyyy-MM-dd'),
-      end: format(friday, 'yyyy-MM-dd'),
+      startDate: format(monday, 'yyyy-MM-dd'),
+      endDate: format(friday, 'yyyy-MM-dd'),
     };
-  });
+  }, [currentTerm, selectedWeek]);
+
+  const maxAllowedWeek = useMemo(() => {
+    if (!currentTerm?.startDate) return 1;
+    const today = new Date();
+    const start = parseISO(currentTerm.startDate);
+    const diffDays = differenceInDays(today, start);
+    if (diffDays < 0) return 1;
+
+    let mWeek = Math.floor(diffDays / 7) + 1;
+    if (currentTerm.numberOfWeeks && mWeek > currentTerm.numberOfWeeks) {
+      return currentTerm.numberOfWeeks;
+    }
+    return mWeek;
+  }, [currentTerm]);
 
   const currentWeekDays = useMemo(() => {
     try {
-      const start = parseISO(dateRange.start);
-      const end = parseISO(dateRange.end);
+      if (!startDate || !endDate) return [];
+      const start = parseISO(startDate);
+      const end = parseISO(endDate);
       if (start > end) return [];
 
       const days = eachDayOfInterval({ start, end });
@@ -58,10 +125,7 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
     } catch {
       return [];
     }
-  }, [dateRange]);
-
-  const startDate = dateRange.start;
-  const endDate = dateRange.end;
+  }, [startDate, endDate]);
 
   const { data: attendanceRecords = {}, isLoading: isLoadingAttendance } = useGetAttendanceQuery(
     { classId, armId, term: term!, session: session!, startDate, endDate },
@@ -127,6 +191,7 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
   }, [students]);
 
   const handleToggleEdit = () => {
+    if (!isCurrentWeekSelected) return;
     setIsEditing(!isEditing);
   };
 
@@ -223,20 +288,14 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
               )}
             </span>
 
-            {!isEditing && (
-              <div className="date-range-picker">
-                <LeDatePicker
-                  label=""
-                  value={dateRange.start}
-                  onChange={(e) => setDateRange(prev => ({ ...prev, start: e.target.value }))}
-                />
-                <span style={{ color: '#888', fontSize: '0.875rem' }}>to</span>
-                <LeDatePicker
-                  label=""
-                  value={dateRange.end}
-                  onChange={(e) => setDateRange(prev => ({ ...prev, end: e.target.value }))}
-                />
-              </div>
+            {!isEditing && currentTerm && (
+              <AttendanceWeekPicker
+                selectedWeek={selectedWeek}
+                onWeekChange={setSelectedWeek}
+                startDate={currentTerm.startDate}
+                numberOfWeeks={currentTerm.numberOfWeeks || 13}
+                maxAllowedWeek={maxAllowedWeek}
+              />
             )}
           </div>
 
@@ -273,14 +332,16 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
               </button>
             )}
 
-            <button
-              className={`toolbar-btn icon-only ${isSaving ? 'disabled' : ''}`}
-              onClick={handleToggleEdit}
-              disabled={isSaving}
-              title={isEditing ? 'Exit Edit Mode' : 'Edit Attendance'}
-            >
-              {isEditing ? <XCircle size={16} /> : <Edit2 size={16} />}
-            </button>
+            {!isSaving && isCurrentWeekSelected && (
+              <button
+                className={`toolbar-btn icon-only ${isSaving ? 'disabled' : ''}`}
+                onClick={handleToggleEdit}
+                disabled={isSaving}
+                title={isEditing ? 'Exit Edit Mode' : 'Edit Attendance'}
+              >
+                {isEditing ? <XCircle size={16} /> : <Edit2 size={16} />}
+              </button>
+            )}
 
             <button
               className="toolbar-btn icon-only"
@@ -306,7 +367,7 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
                   {currentWeekDays.map(day => (
                     <th key={day.dateString} className="day-header">{day.label} <br />{day.displayFormat}</th>
                   ))}
-                  {/* <th className="total-header">Total Present</th> */}
+                  <th className="total-header">Days Present This week</th>
                 </tr>
               </thead>
               <tbody>
@@ -327,8 +388,7 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
                       </td>
                       {currentWeekDays.map(day => {
                         const status = getStatusValue(student.id, day.dateString);
-                        const isToday = day.dateString === todayString;
-                        const canEdit = isEditing && isToday;
+                        const canEdit = isEditing && isCurrentWeekSelected;
 
                         return (
                           <td key={day.dateString} className={`attendance-cell ${canEdit ? 'editing' : ''}`}>
@@ -350,9 +410,9 @@ const AttendanceSheet = ({ classId, armId }: { classId: string, armId: string })
                           </td>
                         );
                       })}
-                      {/* <td className="total-cell">
+                      <td className="total-cell">
                         <div className="total-display">{presents}</div>
-                      </td> */}
+                      </td>
                     </tr>
                   );
                 })}

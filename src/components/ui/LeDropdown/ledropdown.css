@@ -101,6 +101,13 @@
   font-weight: 700;
 }
 
+.le-select-option.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  background: transparent !important;
+  color: #94a3b8 !important;
+}
+
 .hidden-native-select {
   display: none;
 }

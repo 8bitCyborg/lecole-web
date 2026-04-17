@@ -63,7 +63,7 @@
   color: white;
   flex-wrap: nowrap;
   gap: 1rem;
-  overflow-x: auto;
+  overflow: visible;
   -ms-overflow-style: none; /* IE and Edge */
   scrollbar-width: none;    /* Firefox */
 }
@@ -95,6 +95,48 @@
   align-items: center;
   flex-wrap: nowrap;
   flex-shrink: 0;
+}
+
+.week-picker-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: nowrap;
+}
+
+.attendance-week-dropdown {
+  min-width: 100px !important;
+  max-width: 130px !important;
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: 1px solid rgba(255, 255, 255, 0.2) !important;
+  color: white !important;
+  height: 32px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 0 0.75rem !important;
+  border-radius: 0.5rem !important;
+  font-size: 0.8rem !important;
+  font-weight: 600 !important;
+  transition: all 0.2s ease !important;
+}
+
+.attendance-week-dropdown:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+  border-color: rgba(255, 255, 255, 0.35) !important;
+}
+
+.attendance-week-dropdown .selected-text {
+  color: white !important;
+}
+
+.attendance-week-dropdown .select-chevron {
+  color: rgba(255, 255, 255, 0.8) !important;
+}
+
+/* Ensure the container doesn't have extra margins when used in toolbar */
+.week-picker-container .le-select-container {
+  margin-bottom: 0;
 }
 
 .toolbar-badge {
