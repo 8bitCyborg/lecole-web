@@ -54,7 +54,7 @@ const Attendance = () => {
       <div style={{ marginTop: '2rem' }} >
 
         <div className="grading-tabs-card">
-          <Tabs defaultValue="attendence" className="w-full">
+          <Tabs defaultValue="attendance" className="w-full">
             <TabsList className="grading-tabs-list">
               <TabsTrigger value="attendance" className="grading-tabs-trigger">
                 <ClipboardList size={18} />

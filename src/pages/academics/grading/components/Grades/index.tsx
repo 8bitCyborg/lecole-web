@@ -323,7 +323,7 @@ const Grades = ({ classId, armId, isEmbedded }: { classId: string, armId: string
               >
                 <table className="grades-table">
                   <thead>
-                    <tr style={{ position: 'sticky', top: 0, background: '#000', zIndex: 99 }}>
+                    <tr style={{}}>
                       <th
                         className="sticky-col"
                         rowSpan={modules.length > 0 ? 2 : 1}
