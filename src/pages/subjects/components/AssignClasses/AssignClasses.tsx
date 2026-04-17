@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Check } from 'lucide-react';
 import { useAssignClassesMutation } from '@/services/leApi/subjectApi';
 import { useGetClassesQuery, CATEGORY_OPTIONS } from '@/services/leApi/classApi';
-import type { Category } from '@/services/leApi/classApi';
+import type { Category, Class } from '@/services/leApi/classApi';
 import './AssignClasses.css';
 
 interface AssignClassesProps {
@@ -24,8 +24,8 @@ const AssignClasses: React.FC<AssignClassesProps> = ({
   assignedClassIds,
 }) => {
   const [assignClasses] = useAssignClassesMutation();
-  const { data: allClassMap = {} } = useGetClassesQuery();
-  const allClassIds = Object.keys(allClassMap);
+  const { data: classes = [] } = useGetClassesQuery();
+  const allClassIds = classes.map(c => c.id);
   const [selectedIds, setSelectedIds] = useState<string[]>(assignedClassIds);
   const [isUpdating, setIsUpdating] = useState(false);
 
@@ -33,12 +33,12 @@ const AssignClasses: React.FC<AssignClassesProps> = ({
     setSelectedIds(assignedClassIds);
   }, [assignedClassIds]);
 
-  const groupedClasses = Object.values(allClassMap).reduce((acc, details) => {
+  const groupedClasses = classes.reduce((acc, details) => {
     const cat = details.category || 'OTHER';
     if (!acc[cat]) acc[cat] = [];
     acc[cat].push(details);
     return acc;
-  }, {} as Record<string, any[]>);
+  }, {} as Record<string, Class[]>);
 
   const getCategoryLabel = (cat: string) =>
     CATEGORY_OPTIONS.find(opt => opt.value === cat)?.label || cat;
@@ -113,9 +113,9 @@ const AssignClasses: React.FC<AssignClassesProps> = ({
           const catClasses = groupedClasses[cat];
           if (!catClasses || catClasses.length === 0) return null;
 
-          const catIds = catClasses.map(c => c.id);
-          const allCatSelected = catIds.every(id => selectedIds.includes(id));
-          const someCatSelected = catIds.some(id => selectedIds.includes(id));
+          const catIds = catClasses.map((c: Class) => c.id);
+          const allCatSelected = catIds.every((id: string) => selectedIds.includes(id));
+          const someCatSelected = catIds.some((id: string) => selectedIds.includes(id));
           const accent = CATEGORY_ACCENT[cat] || 'slate';
 
           return (
@@ -126,7 +126,7 @@ const AssignClasses: React.FC<AssignClassesProps> = ({
                     {getCategoryLabel(cat)}
                   </span>
                   <span className="ac-category-count">
-                    {catIds.filter(id => selectedIds.includes(id)).length}&thinsp;/&thinsp;{catIds.length}
+                    {catIds.filter((id: string) => selectedIds.includes(id)).length}&thinsp;/&thinsp;{catIds.length}
                   </span>
                 </div>
                 <button
@@ -141,7 +141,7 @@ const AssignClasses: React.FC<AssignClassesProps> = ({
               </div>
 
               <div className="ac-pills-grid">
-                {catClasses.map(({ id, name }) => {
+                {catClasses.map(({ id, name }: Class) => {
                   const isSelected = selectedIds.includes(id);
                   return (
                     <button

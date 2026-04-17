@@ -61,10 +61,12 @@ const LeDropdown: React.FC<LeDropdownProps> = ({
 
   const selectedOption = options.find(opt => opt.value === value);
 
-  const ChevronIcon = direction === 'up' ? ChevronUp : 
-                      direction === 'left' ? ChevronLeft : 
-                      direction === 'right' ? ChevronRight : 
-                      ChevronDown;
+  const ChevronIcon = ({
+    up: ChevronUp,
+    left: ChevronLeft,
+    right: ChevronRight,
+    down: ChevronDown,
+  } as const)[direction];
 
   return (
     <div className={`le-select-container ${disabled ? 'disabled' : ''}`} ref={dropdownRef}>
