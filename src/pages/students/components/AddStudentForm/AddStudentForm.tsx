@@ -88,7 +88,6 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, st
         }
         await createStudent({
           ...values,
-          schoolId: school.id,
         }).unwrap();
       }
       onSuccess?.(values);
