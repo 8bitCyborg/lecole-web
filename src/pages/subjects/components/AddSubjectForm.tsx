@@ -10,6 +10,7 @@ import './AddSubjectForm.css';
 interface AddSubjectFormProps {
   onSuccess?: (values: { name: string; code?: string }) => void;
   onCancel?: () => void;
+  onLoadingChange?: (loading: boolean) => void;
 }
 
 const SubjectSchema = Yup.object().shape({
@@ -17,11 +18,15 @@ const SubjectSchema = Yup.object().shape({
   code: Yup.string().optional(),
 });
 
-const AddSubjectForm: React.FC<AddSubjectFormProps> = ({ onSuccess, onCancel }) => {
+const AddSubjectForm: React.FC<AddSubjectFormProps> = ({ onSuccess, onCancel, onLoadingChange }) => {
   const school = useFindMySchoolQuery();
   const schoolData = school?.currentData
   const [createSubject, { isLoading }] = useCreateSubjectMutation();
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    onLoadingChange?.(isLoading);
+  }, [isLoading, onLoadingChange]);
 
   const handleAddSubject = async (values: { name: string; code?: string }) => {
     if (!schoolData?.id) {
@@ -89,6 +94,7 @@ const AddSubjectForm: React.FC<AddSubjectFormProps> = ({ onSuccess, onCancel }) 
             type="button"
             className="le-button le-button-outline cancel-btn"
             onClick={onCancel}
+            disabled={isLoading}
           >
             Cancel
           </button>

@@ -7,6 +7,7 @@ import './Staff.css';
 
 const StaffPage: React.FC = () => {
   const [showAddModal, setShowAddModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddSuccess = () => {
     setShowAddModal(false);
@@ -68,14 +69,17 @@ const StaffPage: React.FC = () => {
           <div className="modal-content">
             <button
               className="modal-close"
-              onClick={() => setShowAddModal(false)}
+              onClick={() => !isSubmitting && setShowAddModal(false)}
+              disabled={isSubmitting}
               aria-label="Close"
+              style={{ opacity: isSubmitting ? 0.5 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
             >
               &times;
             </button>
             <AddStaffForm
               onSuccess={handleAddSuccess}
               onCancel={() => setShowAddModal(false)}
+              onLoadingChange={setIsSubmitting}
             />
           </div>
         </div>

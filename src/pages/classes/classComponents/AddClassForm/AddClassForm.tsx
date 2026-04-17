@@ -13,6 +13,7 @@ import './AddClassForm.css';
 interface AddClassFormProps {
   onSuccess?: (values: { name: string; category: Category }) => void;
   onCancel?: () => void;
+  onLoadingChange?: (loading: boolean) => void;
 }
 
 const ClassSchema = Yup.object().shape({
@@ -20,11 +21,15 @@ const ClassSchema = Yup.object().shape({
   category: Yup.string().required('Category is required'),
 });
 
-const AddClassForm: React.FC<AddClassFormProps> = ({ onSuccess, onCancel }) => {
+const AddClassForm: React.FC<AddClassFormProps> = ({ onSuccess, onCancel, onLoadingChange }) => {
   const school = useFindMySchoolQuery();
   const schoolData = school?.currentData
   const [createClass, { isLoading }] = useCreateClassMutation();
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    onLoadingChange?.(isLoading);
+  }, [isLoading, onLoadingChange]);
 
   const handleAddClass = async (values: { name: string; category: Category }) => {
     if (!schoolData?.id) {
@@ -92,6 +97,7 @@ const AddClassForm: React.FC<AddClassFormProps> = ({ onSuccess, onCancel }) => {
             type="button"
             className="le-button le-button-outline cancel-btn"
             onClick={onCancel}
+            disabled={isLoading}
           >
             Cancel
           </button>

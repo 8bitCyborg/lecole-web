@@ -20,6 +20,7 @@ interface AddArmFormProps {
   isEdit?: boolean;
   onSuccess?: (values: { name: string; capacity?: number }) => void;
   onCancel?: () => void;
+  onLoadingChange?: (loading: boolean) => void;
 }
 
 const ArmSchema = Yup.object().shape({
@@ -34,7 +35,8 @@ const AddArmForm: React.FC<AddArmFormProps> = ({
   initialValues,
   isEdit = false,
   onSuccess,
-  onCancel
+  onCancel,
+  onLoadingChange
 }) => {
   // const school = useSelector((state: RootState) => state.school.school);
   const school = useFindMySchoolQuery();
@@ -55,6 +57,10 @@ const AddArmForm: React.FC<AddArmFormProps> = ({
   ];
 
   const isLoading = isCreating || isUpdating || isAssigning;
+
+  React.useEffect(() => {
+    onLoadingChange?.(isLoading);
+  }, [isLoading, onLoadingChange]);
 
   const handleSubmit = async (values: { name: string; capacity?: number | null; classMasterId?: string | null }) => {
     if (!schoolData?.id || !classId) {
@@ -161,6 +167,7 @@ const AddArmForm: React.FC<AddArmFormProps> = ({
             type="button"
             className="le-button le-button-outline cancel-btn"
             onClick={onCancel}
+            disabled={isLoading}
           >
             Cancel
           </button>

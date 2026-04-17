@@ -7,6 +7,7 @@ import './Classes.css';
 
 const ClassPage = () => {
   const [showAddModal, setShowAddModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [classToDelete, setClassToDelete] = useState<any>(null);
   const { data: classMap = [] } = useGetClassesQuery(undefined, {
@@ -88,14 +89,17 @@ const ClassPage = () => {
           <div className="modal-content">
             <button
               className="modal-close"
-              onClick={() => setShowAddModal(false)}
+              onClick={() => !isSubmitting && setShowAddModal(false)}
+              disabled={isSubmitting}
               aria-label="Close"
+              style={{ opacity: isSubmitting ? 0.5 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
             >
               &times;
             </button>
             <AddClassForm
               onSuccess={handleAddSuccess}
               onCancel={() => setShowAddModal(false)}
+              onLoadingChange={setIsSubmitting}
             />
           </div>
         </div>

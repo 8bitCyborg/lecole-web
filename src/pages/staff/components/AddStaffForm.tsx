@@ -10,6 +10,7 @@ import './AddStaffForm.css';
 interface AddStaffFormProps {
   onSuccess?: (values: any) => void;
   onCancel?: () => void;
+  onLoadingChange?: (loading: boolean) => void;
 }
 
 const TITLE_OPTIONS = [
@@ -48,9 +49,13 @@ const StaffSchema = Yup.object().shape({
 });
 
 
-const AddStaffForm: React.FC<AddStaffFormProps> = ({ onSuccess, onCancel }) => {
+const AddStaffForm: React.FC<AddStaffFormProps> = ({ onSuccess, onCancel, onLoadingChange }) => {
   const [createStaff, { isLoading }] = useCreateStaffMutation();
   const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
+
+  React.useEffect(() => {
+    onLoadingChange?.(isLoading);
+  }, [isLoading, onLoadingChange]);
 
   const handleAddStaff = async (values: any) => {
     try {
@@ -200,6 +205,7 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({ onSuccess, onCancel }) => {
             type="button"
             className="le-button le-button-outline cancel-btn"
             onClick={onCancel}
+            disabled={isLoading}
           >
             Cancel
           </button>

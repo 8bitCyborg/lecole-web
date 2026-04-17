@@ -13,6 +13,8 @@ const SubjectPage = () => {
   const { data: subjects = [], isLoading } = useGetSubjectsQuery();
   const [deleteSubject] = useDeleteSubjectMutation();
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const navigate = useNavigate();
 
   const handleAddSuccess = () => {
@@ -145,14 +147,17 @@ const SubjectPage = () => {
           <div className="modal-content">
             <button
               className="modal-close"
-              onClick={() => setShowAddModal(false)}
+              onClick={() => !isSubmitting && setShowAddModal(false)}
+              disabled={isSubmitting}
               aria-label="Close"
+              style={{ opacity: isSubmitting ? 0.5 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
             >
               &times;
             </button>
             <AddSubjectForm
               onSuccess={handleAddSuccess}
               onCancel={() => setShowAddModal(false)}
+              onLoadingChange={setIsSubmitting}
             />
           </div>
         </div>

@@ -13,6 +13,7 @@ interface GradeModuleFormProps {
   currentTotalPercentage: number;
   onSuccess: () => void;
   onCancel: () => void;
+  onLoadingChange?: (loading: boolean) => void;
 }
 
 const CATEGORY_OPTIONS = [
@@ -26,7 +27,8 @@ const GradeModuleForm: React.FC<GradeModuleFormProps> = ({
   module,
   currentTotalPercentage,
   onSuccess,
-  onCancel
+  onCancel,
+  onLoadingChange
 }) => {
   const isEditMode = !!module;
   const basePercentage = isEditMode ? (currentTotalPercentage - (module?.percentage || 0)) : currentTotalPercentage;
@@ -45,6 +47,10 @@ const GradeModuleForm: React.FC<GradeModuleFormProps> = ({
   const [createModule, { isLoading: isCreating }] = useCreateGradingModuleMutation();
   const [updateModule, { isLoading: isUpdating }] = useUpdateGradingModuleMutation();
   const isLoading = isCreating || isUpdating;
+
+  React.useEffect(() => {
+    onLoadingChange?.(isLoading);
+  }, [isLoading, onLoadingChange]);
 
   const formik = useFormik({
     initialValues: {

@@ -11,6 +11,7 @@ import './styles.css';
 
 const Grading = () => {
   const [showModal, setShowModal] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [activeModule, setActiveModule] = useState<GradingModule | undefined>(undefined);
   const { data: modules = [] } = useGetGradingModulesQuery();
 
@@ -22,6 +23,7 @@ const Grading = () => {
   };
 
   const handleCloseModal = () => {
+    if (isSubmitting) return;
     setShowModal(false);
     setActiveModule(undefined);
   };
@@ -72,7 +74,9 @@ const Grading = () => {
             <button
               className="modal-close"
               onClick={handleCloseModal}
+              disabled={isSubmitting}
               aria-label="Close"
+              style={{ opacity: isSubmitting ? 0.5 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
             >
               &times;
             </button>
@@ -81,6 +85,7 @@ const Grading = () => {
               currentTotalPercentage={currentTotalPercentage}
               onSuccess={handleCloseModal}
               onCancel={handleCloseModal}
+              onLoadingChange={setIsSubmitting}
             />
           </div>
         </div>

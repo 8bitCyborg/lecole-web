@@ -24,6 +24,7 @@ interface AddStudentFormProps {
     classId?: string;
     armId?: string;
   };
+  onLoadingChange?: (loading: boolean) => void;
 }
 
 const GENDER_OPTIONS = [
@@ -51,7 +52,7 @@ const toDateInputValue = (iso?: string) => {
   return iso.split('T')[0];
 };
 
-const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, student, initialValues }) => {
+const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, student, initialValues, onLoadingChange }) => {
   const isEditMode = !!student;
 
   const { data: school } = useFindMySchoolQuery();
@@ -59,6 +60,10 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, st
   const [updateStudent, { isLoading: isUpdating }] = useUpdateStudentMutation();
   const isLoading = isCreating || isUpdating;
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    onLoadingChange?.(isLoading);
+  }, [isLoading, onLoadingChange]);
 
   const { data: classes = [] } = useGetClassesQuery();
 
@@ -90,7 +95,6 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, st
         }
         await createStudent({
           ...values,
-          // schoolId: school.id,
         }).unwrap();
       }
       onSuccess?.(values);
@@ -254,6 +258,7 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, st
             type="button"
             className="le-button le-button-outline cancel-btn"
             onClick={onCancel}
+            disabled={isLoading}
           >
             Cancel
           </button>
