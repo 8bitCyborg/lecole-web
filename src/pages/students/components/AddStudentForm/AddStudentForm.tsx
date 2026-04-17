@@ -5,6 +5,7 @@ import * as Yup from 'yup';
 import LeInput from '@/components/ui/LeInput/LeInput';
 import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
 import LeDatePicker from '@/components/ui/LeDatePicker/LeDatePicker';
+import LeFormError from '@/components/ui/LeFormError/LeFormError';
 
 import { useCreateStudentMutation, useUpdateStudentMutation } from '@/services/leApi/studentApi';
 import type { Student } from '@/services/leApi/studentApi';
@@ -57,6 +58,7 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, st
   const [createStudent, { isLoading: isCreating }] = useCreateStudentMutation();
   const [updateStudent, { isLoading: isUpdating }] = useUpdateStudentMutation();
   const isLoading = isCreating || isUpdating;
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const { data: classes = [] } = useGetClassesQuery();
 
@@ -88,11 +90,14 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, st
         }
         await createStudent({
           ...values,
+          // schoolId: school.id,
         }).unwrap();
       }
       onSuccess?.(values);
     } catch (err: any) {
       console.error(`Failed to ${isEditMode ? 'update' : 'create'} student:`, err);
+      const msg = err?.data?.message || err?.message || 'An unexpected error occurred. Please try again.';
+      setErrorMessage(Array.isArray(msg) ? msg[0] : msg);
     }
   };
 
@@ -121,6 +126,10 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, st
       formik.setFieldValue('armId', '');
     }
   }, [formik.values.classId]);
+
+  useEffect(() => {
+    if (errorMessage) setErrorMessage(null);
+  }, [formik.values]);
 
   return (
     <div className="add-student-form-container">
@@ -258,6 +267,7 @@ const AddStudentForm: React.FC<AddStudentFormProps> = ({ onSuccess, onCancel, st
               : (isEditMode ? 'Save Changes' : 'Enroll Student')}
           </button>
         </div>
+        <LeFormError message={errorMessage || ''} onClose={() => setErrorMessage(null)} />
       </form>
     </div>
   );

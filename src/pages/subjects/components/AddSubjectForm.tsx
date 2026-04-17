@@ -4,6 +4,7 @@ import * as Yup from 'yup';
 import { useCreateSubjectMutation } from '../../../services/leApi/subjectApi';
 import { useFindMySchoolQuery } from '@/services/leApi/schoolApi';
 import LeInput from '../../../components/ui/LeInput/LeInput';
+import LeFormError from '../../../components/ui/LeFormError/LeFormError';
 import './AddSubjectForm.css';
 
 interface AddSubjectFormProps {
@@ -20,6 +21,7 @@ const AddSubjectForm: React.FC<AddSubjectFormProps> = ({ onSuccess, onCancel }) 
   const school = useFindMySchoolQuery();
   const schoolData = school?.currentData
   const [createSubject, { isLoading }] = useCreateSubjectMutation();
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   const handleAddSubject = async (values: { name: string; code?: string }) => {
     if (!schoolData?.id) {
@@ -37,6 +39,8 @@ const AddSubjectForm: React.FC<AddSubjectFormProps> = ({ onSuccess, onCancel }) 
       onSuccess?.(values);
     } catch (err: any) {
       console.error('Failed to create subject:', err);
+      const msg = err?.data?.message || err?.message || 'An unexpected error occurred.';
+      setErrorMessage(Array.isArray(msg) ? msg[0] : msg);
     }
   };
 
@@ -48,6 +52,10 @@ const AddSubjectForm: React.FC<AddSubjectFormProps> = ({ onSuccess, onCancel }) 
     validationSchema: SubjectSchema,
     onSubmit: handleAddSubject,
   });
+
+  React.useEffect(() => {
+    if (errorMessage) setErrorMessage(null);
+  }, [formik.values]);
 
   return (
     <div className="add-subject-form-container">
@@ -92,6 +100,7 @@ const AddSubjectForm: React.FC<AddSubjectFormProps> = ({ onSuccess, onCancel }) 
             {isLoading ? 'Creating...' : 'Create Subject'}
           </button>
         </div>
+        <LeFormError message={errorMessage || ''} onClose={() => setErrorMessage(null)} />
       </form>
     </div>
   );

@@ -6,6 +6,7 @@ import { useFindMySchoolQuery } from '@/services/leApi/schoolApi';
 import { useGetStaffQuery } from '@/services/leApi/staffApi';
 import LeInput from '@/components/ui/LeInput/LeInput';
 import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
+import LeFormError from '@/components/ui/LeFormError/LeFormError';
 import './AddArmForm.css';
 
 interface AddArmFormProps {
@@ -41,6 +42,7 @@ const AddArmForm: React.FC<AddArmFormProps> = ({
   const [createArm, { isLoading: isCreating }] = useCreateArmMutation();
   const [updateArm, { isLoading: isUpdating }] = useUpdateArmMutation();
   const [assignMaster, { isLoading: isAssigning }] = useAssignMasterToArmMutation();
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
   const { data: allStaff = [] } = useGetStaffQuery();
   const teachers = allStaff.filter(s => s.isTeachingStaff);
 
@@ -89,6 +91,8 @@ const AddArmForm: React.FC<AddArmFormProps> = ({
       onSuccess?.({ name: values.name, capacity: values.capacity || undefined });
     } catch (err: any) {
       console.error(`Failed to ${isEdit ? 'update' : 'create'} arm:`, err);
+      const msg = err?.data?.message || err?.message || 'An unexpected error occurred.';
+      setErrorMessage(Array.isArray(msg) ? msg[0] : msg);
     }
   };
 
@@ -102,6 +106,10 @@ const AddArmForm: React.FC<AddArmFormProps> = ({
     onSubmit: handleSubmit,
     enableReinitialize: true,
   });
+
+  React.useEffect(() => {
+    if (errorMessage) setErrorMessage(null);
+  }, [formik.values]);
 
   return (
     <div className="add-arm-form-container">
@@ -164,6 +172,7 @@ const AddArmForm: React.FC<AddArmFormProps> = ({
             {isLoading ? (isEdit ? 'Updating...' : 'Creating...') : (isEdit ? 'Update Arm' : 'Create Arm')}
           </button>
         </div>
+        <LeFormError message={errorMessage || ''} onClose={() => setErrorMessage(null)} />
       </form>
     </div>
   );

@@ -5,6 +5,7 @@ import { useCreateClassMutation } from '@/services/leApi/classApi';
 import { useFindMySchoolQuery } from '@/services/leApi/schoolApi';
 import LeInput from '@/components/ui/LeInput/LeInput';
 import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
+import LeFormError from '@/components/ui/LeFormError/LeFormError';
 import { CATEGORY_OPTIONS } from '@/services/leApi/classApi';
 import type { Category } from '@/services/leApi/classApi';
 import './AddClassForm.css';
@@ -23,6 +24,7 @@ const AddClassForm: React.FC<AddClassFormProps> = ({ onSuccess, onCancel }) => {
   const school = useFindMySchoolQuery();
   const schoolData = school?.currentData
   const [createClass, { isLoading }] = useCreateClassMutation();
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   const handleAddClass = async (values: { name: string; category: Category }) => {
     if (!schoolData?.id) {
@@ -40,6 +42,8 @@ const AddClassForm: React.FC<AddClassFormProps> = ({ onSuccess, onCancel }) => {
       onSuccess?.(values);
     } catch (err: any) {
       console.error('Failed to create class:', err);
+      const msg = err?.data?.message || err?.message || 'An unexpected error occurred.';
+      setErrorMessage(Array.isArray(msg) ? msg[0] : msg);
     }
   };
 
@@ -51,6 +55,10 @@ const AddClassForm: React.FC<AddClassFormProps> = ({ onSuccess, onCancel }) => {
     validationSchema: ClassSchema,
     onSubmit: handleAddClass,
   });
+
+  React.useEffect(() => {
+    if (errorMessage) setErrorMessage(null);
+  }, [formik.values]);
 
   return (
     <div className="add-class-form-container">
@@ -95,6 +103,7 @@ const AddClassForm: React.FC<AddClassFormProps> = ({ onSuccess, onCancel }) => {
             {isLoading ? 'Creating...' : 'Create Class'}
           </button>
         </div>
+        <LeFormError message={errorMessage || ''} onClose={() => setErrorMessage(null)} />
       </form>
     </div>
   );

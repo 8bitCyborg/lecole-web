@@ -1,0 +1,117 @@
+.le-form-error-container {
+  margin-bottom: 2rem;
+  width: 100%;
+  animation: leFormErrorFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.le-form-error-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  background: linear-gradient(135deg, #fff5f5 0%, #fff0f0 100%);
+  border-left: 4px solid #f87171;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 15px rgba(239, 68, 68, 0.08), 
+              0 1px 2px rgba(239, 68, 68, 0.05),
+              inset 0 1px 0 rgba(255, 255, 255, 0.5);
+  position: relative;
+  overflow: hidden;
+}
+
+.le-form-error-content::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 100px;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(239, 68, 68, 0.03));
+  pointer-events: none;
+}
+
+.le-form-error-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ef4444;
+  margin-top: 0.15rem;
+  background: white;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  box-shadow: 0 2px 5px rgba(239, 68, 68, 0.1);
+}
+
+.le-form-error-message {
+  flex: 1;
+}
+
+.le-form-error-title {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 800;
+  color: #991b1b;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.25rem;
+}
+
+.le-form-error-text {
+  font-size: 0.95rem;
+  color: #b91c1c;
+  line-height: 1.5;
+  margin: 0;
+  font-weight: 500;
+}
+
+.le-form-error-close {
+  background: transparent;
+  border: none;
+  color: #f87171;
+  cursor: pointer;
+  padding: 0.25rem;
+  border-radius: 0.375rem;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: -0.25rem;
+  margin-right: -0.5rem;
+}
+
+.le-form-error-close:hover {
+  background: rgba(248, 113, 113, 0.1);
+  color: #ef4444;
+}
+
+@keyframes leFormErrorFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.99);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Dark mode support if needed */
+@media (prefers-color-scheme: dark) {
+  .le-form-error-content {
+    background: linear-gradient(135deg, #2d1a1a 0%, #1a0f0f 100%);
+    border-left-color: #ef4444;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  }
+  
+  .le-form-error-title {
+    color: #fecaca;
+  }
+  
+  .le-form-error-text {
+    color: #fca5a5;
+  }
+  
+  .le-form-error-icon {
+    background: #451a1a;
+  }
+}

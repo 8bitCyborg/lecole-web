@@ -3,6 +3,7 @@ import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import LeInput from '../../../components/ui/LeInput/LeInput';
 import LeDropdown from '../../../components/ui/LeDropdown/LeDropdown';
+import LeFormError from '../../../components/ui/LeFormError/LeFormError';
 import { useCreateStaffMutation } from '../../../services/leApi/staffApi';
 import './AddStaffForm.css';
 
@@ -49,6 +50,7 @@ const StaffSchema = Yup.object().shape({
 
 const AddStaffForm: React.FC<AddStaffFormProps> = ({ onSuccess, onCancel }) => {
   const [createStaff, { isLoading }] = useCreateStaffMutation();
+  const [errorMessage, setErrorMessage] = React.useState<string | null>(null);
 
   const handleAddStaff = async (values: any) => {
     try {
@@ -56,6 +58,8 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({ onSuccess, onCancel }) => {
       onSuccess?.(values);
     } catch (err: any) {
       console.error('Failed to create staff member:', err);
+      const msg = err?.data?.message || err?.message || 'An unexpected error occurred.';
+      setErrorMessage(Array.isArray(msg) ? msg[0] : msg);
     }
   };
 
@@ -76,6 +80,10 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({ onSuccess, onCancel }) => {
     validationSchema: StaffSchema,
     onSubmit: handleAddStaff,
   });
+
+  React.useEffect(() => {
+    if (errorMessage) setErrorMessage(null);
+  }, [formik.values]);
 
   return (
     <div className="add-staff-form-container">
@@ -203,6 +211,7 @@ const AddStaffForm: React.FC<AddStaffFormProps> = ({ onSuccess, onCancel }) => {
             {formik.isSubmitting ? 'Adding...' : 'Add Staff Member'}
           </button>
         </div>
+        <LeFormError message={errorMessage || ''} onClose={() => setErrorMessage(null)} />
       </form>
     </div>
   );
