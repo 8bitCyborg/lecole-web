@@ -31,6 +31,11 @@ export interface CreateClassRequest {
   category: Category;
 }
 
+export interface CreateBulkClassesRequest {
+  classes: { name: string; category: Category }[];
+  schoolId: string;
+}
+
 
 
 export const classApi = baseApi.injectEndpoints({
@@ -55,6 +60,14 @@ export const classApi = baseApi.injectEndpoints({
         url: '/class',
         method: 'POST',
         body: classData,
+      }),
+      invalidatesTags: ['Class'],
+    }),
+    createBulkClasses: builder.mutation<{ count: number }, CreateBulkClassesRequest>({
+      query: (data) => ({
+        url: '/class/bulk',
+        method: 'POST',
+        body: data,
       }),
       invalidatesTags: ['Class'],
     }),
@@ -84,6 +97,7 @@ export const {
   useGetClassesQuery,
   useGetClassQuery,
   useCreateClassMutation,
+  useCreateBulkClassesMutation,
   useDeleteClassMutation,
   useAssignSubjectsToClassMutation,
 } = classApi;
