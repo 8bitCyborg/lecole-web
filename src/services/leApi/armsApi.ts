@@ -20,6 +20,12 @@ export interface CreateArmRequest {
   capacity?: number;
 }
 
+export interface CreateBulkArmsRequest {
+  arms: { name: string; capacity?: number; classMasterId?: string }[];
+  classId: string;
+  schoolId: string;
+}
+
 export const armsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     createArm: builder.mutation<Arm, CreateArmRequest>({
@@ -27,6 +33,14 @@ export const armsApi = baseApi.injectEndpoints({
         url: `/class/${armData.classId}/arms`,
         method: 'POST',
         body: armData,
+      }),
+      invalidatesTags: [{ type: 'Arm', id: 'LIST' }, 'Class'],
+    }),
+    createBulkArms: builder.mutation<{ count: number }, CreateBulkArmsRequest>({
+      query: (data) => ({
+        url: `/class/${data.classId}/arms/bulk`,
+        method: 'POST',
+        body: data,
       }),
       invalidatesTags: [{ type: 'Arm', id: 'LIST' }, 'Class'],
     }),
@@ -105,6 +119,7 @@ export const armsApi = baseApi.injectEndpoints({
 
 export const {
   useCreateArmMutation,
+  useCreateBulkArmsMutation,
   useUpdateArmMutation,
   useGetSchoolArmsQuery,
   useGetArmsQuery,
