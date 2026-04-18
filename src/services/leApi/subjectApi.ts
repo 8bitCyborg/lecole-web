@@ -28,6 +28,11 @@ export interface CreateSubjectRequest {
   code?: string;
 }
 
+export interface CreateBulkSubjectsRequest {
+  subjects: { name: string; code?: string }[];
+  schoolId: string;
+}
+
 export const subjectApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getSubjects: builder.query<Subject[], void>({
@@ -50,6 +55,14 @@ export const subjectApi = baseApi.injectEndpoints({
         url: '/subject',
         method: 'POST',
         body: subjectData,
+      }),
+      invalidatesTags: ['Subject'],
+    }),
+    createBulkSubjects: builder.mutation<{ count: number }, CreateBulkSubjectsRequest>({
+      query: (data) => ({
+        url: '/subject/bulk',
+        method: 'POST',
+        body: data,
       }),
       invalidatesTags: ['Subject'],
     }),
@@ -87,6 +100,7 @@ export const {
   useGetSubjectsQuery,
   useGetSubjectByIdQuery,
   useCreateSubjectMutation,
+  useCreateBulkSubjectsMutation,
   useAssignClassesMutation,
   useAssignTeachersMutation,
   useDeleteSubjectMutation,

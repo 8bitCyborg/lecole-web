@@ -2,8 +2,8 @@ import React, { useState } from 'react';
 import './leinput.css';
 
 
-interface LeInputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label: string;
+interface LeInputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'label'> {
+  label?: React.ReactNode;
   error?: string;
   touched?: boolean;
   showPasswordToggle?: boolean;
@@ -32,7 +32,7 @@ const LeInput: React.FC<LeInputProps> = ({
 
   return (
     <div className="form-group">
-      <label htmlFor={id}>{label}</label>
+      {label && <label htmlFor={id}>{label}</label>}
 
       <div className={`input-outer-wrapper ${phonePrefix ? 'phone-input-wrapper' : ''} ${showPasswordToggle ? 'password-input-wrapper' : ''}`}>
         {phonePrefix && <span className="phone-prefix">{phonePrefix}</span>}
