@@ -65,41 +65,18 @@
 
 /* Custom Dropdown Content */
 .le-select-dropdown {
-  position: absolute;
-  width: max-content;
-  min-width: 100%;
+  position: fixed;
   background: white;
   border: 1px solid #e2e8f0;
   border-radius: 0.5rem;
   box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+  z-index: 10000;
   max-height: 250px;
   overflow-y: auto;
   padding: 0.5rem;
   animation: dropdownFadeIn 0.15s ease-out;
 }
 
-.le-select-dropdown.down {
-  top: calc(100% + 4px);
-  left: 0;
-}
-
-.le-select-dropdown.up {
-  bottom: calc(100% + 4px);
-  left: 0;
-  top: auto;
-}
-
-.le-select-dropdown.left {
-  right: calc(100% + 4px);
-  top: 0;
-  left: auto;
-}
-
-.le-select-dropdown.right {
-  left: calc(100% + 4px);
-  top: 0;
-}
 
 .le-select-option {
   padding: 0.75rem 1rem;
