@@ -33,14 +33,18 @@ const AddTermCard: React.FC<AddTermCardProps> = ({
   const [createTerm, { isLoading }] = useCreateTermMutation();
 
   const [identifier, setIdentifier] = useState('');
+  const [customIdentifier, setCustomIdentifier] = useState('');
   const [startDate, setStartDate] = useState('');
   const [weeks, setWeeks] = useState(12);
   const [estimatedEndDate, setEstimatedEndDate] = useState('');
 
-  const termOptions = Array.from({ length: totalTerms }, (_, i) => ({
-    value: `${ordinals[i] || i + 1} Term`,
-    label: `${ordinals[i] || i + 1} Term`
-  }));
+  const termOptions = [
+    ...Array.from({ length: totalTerms }, (_, i) => ({
+      value: `${ordinals[i] || i + 1} Term`,
+      label: `${ordinals[i] || i + 1} Term`
+    })),
+    { value: 'custom', label: 'Custom...' }
+  ];
 
   useEffect(() => {
     if (startDate && weeks) {
@@ -57,9 +61,10 @@ const AddTermCard: React.FC<AddTermCardProps> = ({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      const finalIdentifier = identifier === 'custom' ? customIdentifier : identifier;
       await createTerm({
         academicSessionId: sessionId,
-        identifier,
+        identifier: finalIdentifier,
         startDate,
         numberOfWeeks: weeks,
       }).unwrap();
@@ -72,7 +77,7 @@ const AddTermCard: React.FC<AddTermCardProps> = ({
   return (
     <div className="as-add-term-card">
       <div className="as-add-term-header">
-        <span className="as-term-index">Term {slotNumber}</span>
+        <span className="as-term-index"></span>
         <button className="as-cancel-btn" onClick={onCancel} type="button" aria-label="Cancel">
           <X className="w-4 h-4" />
         </button>
@@ -86,6 +91,16 @@ const AddTermCard: React.FC<AddTermCardProps> = ({
           onChange={(e) => setIdentifier(e.target.value)}
           required
         />
+        {identifier === 'custom' && (
+          <LeInput
+            label="Custom Name"
+            placeholder="e.g. Summer Intensive"
+            value={customIdentifier}
+            onChange={(e) => setCustomIdentifier(e.target.value)}
+            required
+            autoFocus
+          />
+        )}
         <LeDatePicker
           label="Start Date"
           value={startDate}

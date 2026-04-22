@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useCreateSessionMutation } from '@/services/leApi/sessionApi';
 import { Button } from '@/components/ui/button';
-import LeInput from '@/components/ui/LeInput/LeInput';
+import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
 import {
   Layers,
   ArrowRight,
@@ -20,10 +20,17 @@ import {
  * Two-column card: form on the left, live preview + feature list on the right.
  */
 const SessionSetup: React.FC = () => {
-  const [createSession, { isLoading }] = useCreateSessionMutation();
+  const [createSession, { isLoading, error }] = useCreateSessionMutation();
 
   const [identifier, setIdentifier] = useState('');
   const [termsPerSession, setTermsPerSession] = useState(3);
+
+  const currentYear = new Date().getFullYear();
+  const sessionOptions = [
+    { value: `${currentYear - 1}/${currentYear}`, label: `${currentYear - 1}/${currentYear}` },
+    { value: `${currentYear}/${currentYear + 1}`, label: `${currentYear}/${currentYear + 1}` },
+    { value: `${currentYear}`, label: `${currentYear}` },
+  ];
 
   const isValid = identifier.trim().length > 0;
   const termSlots = Array.from({ length: termsPerSession }, (_, i) => i + 1);
@@ -34,7 +41,7 @@ const SessionSetup: React.FC = () => {
     try {
       await createSession({ identifier, termsPerSession }).unwrap();
     } catch (err) {
-      console.error('Failed to create session:', err);
+      // Handled by mutation error object
     }
   };
 
@@ -61,20 +68,18 @@ const SessionSetup: React.FC = () => {
 
           <form onSubmit={handleSubmit} className="as-setup-form">
             <div className="as-field-group">
-              <LeInput
-                label="Session Identifier"
-                placeholder="e.g. 2025 / 2026"
+              <LeDropdown
+                label="Academic Year"
+                placeholder="Select session..."
+                options={sessionOptions}
                 value={identifier}
                 onChange={(e) => setIdentifier(e.target.value)}
                 required
               />
-              <p className="as-field-hint">
-                Typically the start and end year of the academic year.
-              </p>
             </div>
 
             <div className="as-field-group">
-              <label className="as-field-label">Terms per Session</label>
+              <label className="as-field-label">Terms remaining for this session</label>
               <div className="as-pill-selector">
                 {[1, 2, 3, 4].map((n) => (
                   <button
@@ -100,6 +105,12 @@ const SessionSetup: React.FC = () => {
                 <>Initialize Session <ArrowRight className="w-4 h-4 ml-2" /></>
               )}
             </Button>
+
+            {error && (
+              <div className="text-red-500 text-sm mt-0 italic">
+                {(error as any)?.data?.message || 'An error occurred. Please try again.'}
+              </div>
+            )}
           </form>
         </div>
 

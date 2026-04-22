@@ -156,17 +156,19 @@ const TermCard: React.FC<TermCardProps> = ({ term, index, totalTerms }) => {
   return (
     <div className="as-term-card" style={{ animationDelay: `${index * 60}ms` }}>
       <div className="as-term-card-top">
-        <div className="flex items-center gap-2">
-          <span className="as-term-index">Term {index + 1}</span>
-          <button
-            type="button"
-            onClick={() => setIsEditing(true)}
-            className="text-indigo-400 hover:text-indigo-600 transition-colors bg-indigo-50 hover:bg-indigo-100 p-1 rounded-md"
-            title="Edit Term Details"
-          >
-            <Edit2 className="w-3.5 h-3.5" />
-          </button>
-        </div>
+        {term.status === "active" &&
+          <div className="flex items-center gap-2">
+            <span className="as-term-index">Edit Term</span>
+            <button
+              type="button"
+              onClick={() => setIsEditing(true)}
+              className="text-indigo-400 hover:text-indigo-600 transition-colors bg-indigo-50 hover:bg-indigo-100 p-1 rounded-md"
+              title="Edit Term Details"
+            >
+              <Edit2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
+        }
         <span className={`as-term-badge as-term-badge--${term.status}`}>
           {term.status}
         </span>
