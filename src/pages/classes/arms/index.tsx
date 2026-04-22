@@ -12,6 +12,7 @@ import { useGetStudentsByArmQuery, useGetArmsQuery } from '@/services/leApi/arms
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import ClassMaster from '@/pages/classes/arms/armComponents/ClassMaster';
 import AddArmForm from '@/pages/classes/classComponents/AddArmForm/AddArmForm';
+import Sheet from '@/components/ui/Sheet';
 import AddStudentForm from '@/pages/students/components/AddStudentForm/AddStudentForm';
 import EnrolledStudents from '@/pages/classes/arms/armComponents/EnrolledStudents';
 import Grades from '@/pages/academics/grading/components/Grades/index';
@@ -160,53 +161,31 @@ const ClassArmDetails = () => {
         )}
       </div>
 
-      {showEditModal && (
-        <div className="modal-overlay" onClick={() => setShowEditModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button
-              className="modal-close"
-              onClick={() => setShowEditModal(false)}
-              aria-label="Close"
-            >
-              &times;
-            </button>
-            <AddArmForm
-              classId={classId || ''}
-              armId={armId}
-              isEdit={true}
-              initialValues={{
-                name: currentArm.name,
-                capacity: currentArm.capacity,
-                classMasterId: currentArm.classMasterId,
-              }}
-              onSuccess={handleEditSuccess}
-              onCancel={() => setShowEditModal(false)}
-            />
-          </div>
-        </div>
-      )}
+      <Sheet isOpen={showEditModal} onClose={() => setShowEditModal(false)}>
+        <AddArmForm
+          classId={classId || ''}
+          armId={armId}
+          isEdit={true}
+          initialValues={{
+            name: currentArm.name,
+            capacity: currentArm.capacity,
+            classMasterId: currentArm.classMasterId,
+          }}
+          onSuccess={handleEditSuccess}
+          onCancel={() => setShowEditModal(false)}
+        />
+      </Sheet>
 
-      {showEnrollModal && (
-        <div className="modal-overlay" onClick={() => setShowEnrollModal(false)}>
-          <div className="modal-content" style={{ maxWidth: '800px' }} onClick={(e) => e.stopPropagation()}>
-            <button
-              className="modal-close"
-              onClick={() => setShowEnrollModal(false)}
-              aria-label="Close"
-            >
-              &times;
-            </button>
-            <AddStudentForm
-              initialValues={{
-                classId: classId,
-                armId: armId
-              }}
-              onSuccess={handleEnrollSuccess}
-              onCancel={() => setShowEnrollModal(false)}
-            />
-          </div>
-        </div>
-      )}
+      <Sheet isOpen={showEnrollModal} onClose={() => setShowEnrollModal(false)}>
+        <AddStudentForm
+          initialValues={{
+            classId: classId,
+            armId: armId
+          }}
+          onSuccess={handleEnrollSuccess}
+          onCancel={() => setShowEnrollModal(false)}
+        />
+      </Sheet>
 
     </div>
   );

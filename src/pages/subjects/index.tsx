@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { ChevronRight, Trash2 } from 'lucide-react';
 import { useGetSubjectsQuery, useDeleteSubjectMutation } from '../../services/leApi/subjectApi';
 import AddSubjectForm from './components/AddSubjectForm';
+import Sheet from '@/components/ui/Sheet';
 import DeleteConfirmationModal from '../../components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
 import './Subjects.css';
 
@@ -142,26 +143,17 @@ const SubjectPage = () => {
         )}
       </div>
 
-      {showAddModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <button
-              className="modal-close"
-              onClick={() => !isSubmitting && setShowAddModal(false)}
-              disabled={isSubmitting}
-              aria-label="Close"
-              style={{ opacity: isSubmitting ? 0.5 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
-            >
-              &times;
-            </button>
-            <AddSubjectForm
-              onSuccess={handleAddSuccess}
-              onCancel={() => setShowAddModal(false)}
-              onLoadingChange={setIsSubmitting}
-            />
-          </div>
-        </div>
-      )}
+      <Sheet
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        isSubmitting={isSubmitting}
+      >
+        <AddSubjectForm
+          onSuccess={handleAddSuccess}
+          onCancel={() => setShowAddModal(false)}
+          onLoadingChange={setIsSubmitting}
+        />
+      </Sheet>
 
       <DeleteConfirmationModal
         isOpen={showDeleteModal}

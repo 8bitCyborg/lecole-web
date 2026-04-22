@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useGetClassesQuery, useDeleteClassMutation } from '../../services/leApi/classApi';
 import AddClassForm from './classComponents/AddClassForm/AddClassForm';
+import Sheet from '@/components/ui/Sheet';
 import ClassListing from './classComponents/ClassListing';
 import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
 // import emptyClassesIllustration from '@/assets/empty-classes.png';
@@ -89,26 +90,18 @@ const ClassPage = () => {
         )}
       </div>
 
-      {showAddModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <button
-              className="modal-close"
-              onClick={() => !isSubmitting && setShowAddModal(false)}
-              disabled={isSubmitting}
-              aria-label="Close"
-              style={{ opacity: isSubmitting ? 0.5 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
-            >
-              &times;
-            </button>
-            <AddClassForm
-              onSuccess={handleAddSuccess}
-              onCancel={() => setShowAddModal(false)}
-              onLoadingChange={setIsSubmitting}
-            />
-          </div>
-        </div>
-      )}
+      <Sheet
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        isSubmitting={isSubmitting}
+      // maxWidth="50rem"
+      >
+        <AddClassForm
+          onSuccess={handleAddSuccess}
+          onCancel={() => setShowAddModal(false)}
+          onLoadingChange={setIsSubmitting}
+        />
+      </Sheet>
 
       <DeleteConfirmationModal
         isOpen={showDeleteModal}

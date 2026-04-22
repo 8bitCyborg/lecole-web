@@ -6,6 +6,7 @@ import { useGetGradingModulesQuery } from '@/services/leApi/gradingApi';
 import type { GradingModule } from '@/services/leApi/gradingApi';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import Broadsheets from './components/Broadsheets';
+import Sheet from '@/components/ui/Sheet';
 import '../Academics.css';
 import './styles.css';
 
@@ -68,28 +69,19 @@ const Grading = () => {
         </div>
       </div>
 
-      {showModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <button
-              className="modal-close"
-              onClick={handleCloseModal}
-              disabled={isSubmitting}
-              aria-label="Close"
-              style={{ opacity: isSubmitting ? 0.5 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
-            >
-              &times;
-            </button>
-            <GradeModuleForm
-              module={activeModule}
-              currentTotalPercentage={currentTotalPercentage}
-              onSuccess={handleCloseModal}
-              onCancel={handleCloseModal}
-              onLoadingChange={setIsSubmitting}
-            />
-          </div>
-        </div>
-      )}
+      <Sheet
+        isOpen={showModal}
+        onClose={handleCloseModal}
+        isSubmitting={isSubmitting}
+      >
+        <GradeModuleForm
+          module={activeModule}
+          currentTotalPercentage={currentTotalPercentage}
+          onSuccess={handleCloseModal}
+          onCancel={handleCloseModal}
+          onLoadingChange={setIsSubmitting}
+        />
+      </Sheet>
     </div>
   );
 };

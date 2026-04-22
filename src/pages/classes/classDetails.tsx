@@ -5,6 +5,7 @@ import { useGetClassesQuery, CATEGORY_OPTIONS } from '@/services/leApi/classApi'
 import { useGetArmsQuery, useDeleteArmMutation } from '@/services/leApi/armsApi';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import AddArmForm from './classComponents/AddArmForm/AddArmForm';
+import Sheet from '@/components/ui/Sheet';
 import AssignSubjectsToClass from './classComponents/AssignSubjectsToClass/AssignSubjectsToClass';
 import { useGetStaffQuery } from '@/services/leApi/staffApi';
 import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
@@ -211,24 +212,13 @@ const ClassArmsPage = () => {
       </div>
 
 
-      {showAddModal && (
-        <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <button
-              className="modal-close"
-              onClick={() => setShowAddModal(false)}
-              aria-label="Close"
-            >
-              &times;
-            </button>
-            <AddArmForm
-              classId={classId || ''}
-              onSuccess={handleAddSuccess}
-              onCancel={() => setShowAddModal(false)}
-            />
-          </div>
-        </div>
-      )}
+      <Sheet isOpen={showAddModal} onClose={() => setShowAddModal(false)}>
+        <AddArmForm
+          classId={classId || ''}
+          onSuccess={handleAddSuccess}
+          onCancel={() => setShowAddModal(false)}
+        />
+      </Sheet>
 
       <DeleteConfirmationModal
         isOpen={showDeleteModal}

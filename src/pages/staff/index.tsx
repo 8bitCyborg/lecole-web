@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Users, GraduationCap, Briefcase } from 'lucide-react';
 import AddStaffForm from './components/AddStaffForm';
+import Sheet from '@/components/ui/Sheet';
 import StaffListing from './components/StaffListing';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../components/ui/tabs';
 import './Staff.css';
@@ -64,26 +65,18 @@ const StaffPage: React.FC = () => {
         </div>
       </div>
 
-      {showAddModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <button
-              className="modal-close"
-              onClick={() => !isSubmitting && setShowAddModal(false)}
-              disabled={isSubmitting}
-              aria-label="Close"
-              style={{ opacity: isSubmitting ? 0.5 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
-            >
-              &times;
-            </button>
-            <AddStaffForm
-              onSuccess={handleAddSuccess}
-              onCancel={() => setShowAddModal(false)}
-              onLoadingChange={setIsSubmitting}
-            />
-          </div>
-        </div>
-      )}
+      <Sheet
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        isSubmitting={isSubmitting}
+        style={{ width: '50vw' }}
+      >
+        <AddStaffForm
+          onSuccess={handleAddSuccess}
+          onCancel={() => setShowAddModal(false)}
+          onLoadingChange={setIsSubmitting}
+        />
+      </Sheet>
     </div>
   );
 };

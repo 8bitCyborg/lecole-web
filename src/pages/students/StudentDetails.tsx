@@ -13,6 +13,7 @@ import StudentPersonalDetails from './components/PersonalDetails';
 import StudentFinanceDetails from './components/FinanceDetails';
 import StudentAcademicDetails from './components/AcademicDetails';
 import AddStudentForm from './components/AddStudentForm/AddStudentForm';
+import Sheet from '@/components/ui/Sheet';
 import './components/PersonalDetails/styles.css';
 import './Students.css';
 
@@ -139,24 +140,13 @@ const StudentDetails = () => {
       </Tabs>
 
       {/* Edit Profile Modal */}
-      {showEditModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <button
-              className="modal-close"
-              onClick={() => setShowEditModal(false)}
-              aria-label="Close"
-            >
-              &times;
-            </button>
-            <AddStudentForm
-              student={student}
-              onSuccess={handleEditSuccess}
-              onCancel={() => setShowEditModal(false)}
-            />
-          </div>
-        </div>
-      )}
+      <Sheet isOpen={showEditModal} onClose={() => setShowEditModal(false)}>
+        <AddStudentForm
+          student={student}
+          onSuccess={handleEditSuccess}
+          onCancel={() => setShowEditModal(false)}
+        />
+      </Sheet>
     </div>
   );
 };

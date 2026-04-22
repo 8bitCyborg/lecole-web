@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import AddStudentForm from './components/AddStudentForm/AddStudentForm';
+import Sheet from '@/components/ui/Sheet';
 import StudentListing from './components/StudentlListing';
 import './Students.css';
 
@@ -33,26 +34,17 @@ const Students = () => {
         <StudentListing onAddClick={() => setShowAddModal(true)} />
       </div>
 
-      {showAddModal && (
-        <div className="modal-overlay">
-          <div className="modal-content">
-            <button
-              className="modal-close"
-              onClick={() => !isSubmitting && setShowAddModal(false)}
-              disabled={isSubmitting}
-              aria-label="Close"
-              style={{ opacity: isSubmitting ? 0.5 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
-            >
-              &times;
-            </button>
-            <AddStudentForm
-              onSuccess={handleAddSuccess}
-              onCancel={() => setShowAddModal(false)}
-              onLoadingChange={setIsSubmitting}
-            />
-          </div>
-        </div>
-      )}
+      <Sheet
+        isOpen={showAddModal}
+        onClose={() => setShowAddModal(false)}
+        isSubmitting={isSubmitting}
+      >
+        <AddStudentForm
+          onSuccess={handleAddSuccess}
+          onCancel={() => setShowAddModal(false)}
+          onLoadingChange={setIsSubmitting}
+        />
+      </Sheet>
     </div>
   );
 };
