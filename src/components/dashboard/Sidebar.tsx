@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
+import { useFindMySchoolQuery } from '@/services/leApi/schoolApi';
 import './Sidebar.css';
 import {
   LayoutDashboard,
@@ -18,6 +19,7 @@ import {
   BarChart3,
   CalendarCheck,
   ClipboardList,
+  Lock,
 } from 'lucide-react';
 
 interface SidebarProps {
@@ -35,8 +37,12 @@ const Sidebar: React.FC<SidebarProps> = ({
   onLogout,
   logoutLoading
 }) => {
+  const { data: school } = useFindMySchoolQuery();
+  const isSchoolSetup = !!school;
+
   const location = useLocation();
   const [openSubmenus, setOpenSubmenus] = useState<string[]>(['staff', 'academics']);
+  const [showTooltipId, setShowTooltipId] = useState<string | null>(null);
 
   const toggleSubmenu = (id: string) => {
     setOpenSubmenus(prev =>
@@ -47,15 +53,16 @@ const Sidebar: React.FC<SidebarProps> = ({
   const navItems = [
     { icon: LayoutDashboard, label: 'Overview', path: '/' },
     { icon: University, label: 'School', path: '/school' },
-    { icon: BookOpen, label: 'Subjects', path: '/subjects' },
-    { icon: Presentation, label: 'Classes', path: '/classes' },
-    { icon: UsersRound, label: 'Staff', path: '/staff' },
-    { icon: Users, label: 'Students', path: '/students' },
+    { icon: BookOpen, label: 'Subjects', path: '/subjects', requiresSchool: true },
+    { icon: Presentation, label: 'Classes', path: '/classes', requiresSchool: true },
+    { icon: UsersRound, label: 'Staff', path: '/staff', requiresSchool: true },
+    { icon: Users, label: 'Students', path: '/students', requiresSchool: true },
     {
       icon: GraduationCap,
       label: 'Academics',
       path: '/academics',
       id: 'academics',
+      requiresSchool: true,
       children: [
         { icon: LayoutDashboard, label: 'Overview', path: '/academics' },
         { icon: CalendarCheck, label: 'Attendance', path: '/academics/attendance' },
@@ -70,32 +77,70 @@ const Sidebar: React.FC<SidebarProps> = ({
   const renderNavItem = (item: any) => {
     const isSubmenuOpen = openSubmenus.includes(item.id || '');
     const hasChildren = item.children && item.children.length > 0;
+    const isDisabled = item.requiresSchool && !isSchoolSetup;
+
     const isParentActive = hasChildren && (
       location.pathname === item.path ||
       item.children.some((child: any) => location.pathname === child.path)
     );
 
+    const tooltipText = isDisabled
+      ? `Setup your school first to access ${item.label}`
+      : (isCollapsed ? item.label : '');
+
     if (hasChildren) {
+      const showTip = showTooltipId === item.id;
+
       return (
         <div key={item.id} className="nav-group">
           <div
-            className={`nav-item nav-parent ${isParentActive ? 'active' : ''} ${isSubmenuOpen ? 'expanded' : ''}`}
-            onClick={() => !isCollapsed && toggleSubmenu(item.id)}
-            title={isCollapsed ? item.label : ''}
+            className={`nav-item nav-parent ${isParentActive ? 'active' : ''} ${isSubmenuOpen ? 'expanded' : ''} ${isDisabled ? 'nav-item-disabled' : ''}`}
+            onClick={() => {
+              if (isDisabled) {
+                setShowTooltipId(showTip ? null : item.id);
+                return;
+              }
+              if (!isCollapsed) toggleSubmenu(item.id);
+            }}
+            title={tooltipText}
+            style={{ position: 'relative' }}
           >
             <item.icon size={20} />
             {!isCollapsed && (
               <>
                 <span className="nav-label">{item.label}</span>
-                <ChevronDown
-                  size={14}
-                  className={`submenu-arrow ${isSubmenuOpen ? 'rotated' : ''}`}
-                />
+                {isDisabled ? (
+                  <Lock size={12} style={{ marginLeft: 'auto', opacity: 0.6 }} />
+                ) : (
+                  <ChevronDown
+                    size={14}
+                    className={`submenu-arrow ${isSubmenuOpen ? 'rotated' : ''}`}
+                  />
+                )}
               </>
+            )}
+            {isCollapsed && isDisabled && (
+              <div style={{
+                position: 'absolute',
+                top: '4px',
+                right: '4px',
+                background: '#1e293b',
+                borderRadius: '50%',
+                padding: '2px',
+                border: '1px solid rgba(255,255,255,0.1)'
+              }}>
+                <Lock size={8} />
+              </div>
             )}
           </div>
 
-          {!isCollapsed && isSubmenuOpen && (
+          {showTip && !isCollapsed && (
+            <div className="nav-disabled-tip">
+              <span>Setup your school to unlock</span>
+            </div>
+          )}
+
+          {!isCollapsed && isSubmenuOpen && !isDisabled && (
             <div className="nav-submenu">
               {item.children.map((child: any) => (
                 <NavLink
@@ -108,6 +153,46 @@ const Sidebar: React.FC<SidebarProps> = ({
                   <span>{child.label}</span>
                 </NavLink>
               ))}
+            </div>
+          )}
+        </div>
+      );
+    }
+
+    if (isDisabled) {
+      const showTip = showTooltipId === item.path;
+
+      return (
+        <div key={item.id || item.path} className="nav-group">
+          <div
+            className="nav-item nav-item-disabled"
+            onClick={() => setShowTooltipId(showTip ? null : item.path)}
+            style={{ position: 'relative' }}
+          >
+            <item.icon size={20} />
+            {!isCollapsed && (
+              <>
+                <span>{item.label}</span>
+                <Lock size={12} style={{ marginLeft: 'auto', opacity: 0.6 }} />
+              </>
+            )}
+            {isCollapsed && (
+              <div style={{
+                position: 'absolute',
+                top: '4px',
+                right: '4px',
+                background: '#1e293b',
+                borderRadius: '50%',
+                padding: '2px',
+                border: '1px solid rgba(255,255,255,0.1)'
+              }}>
+                <Lock size={8} />
+              </div>
+            )}
+          </div>
+          {showTip && !isCollapsed && (
+            <div className="nav-disabled-tip">
+              <span>Setup your school to unlock</span>
             </div>
           )}
         </div>

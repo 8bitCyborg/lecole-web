@@ -112,6 +112,20 @@
   font-size: 0.95rem;
 }
 
+.nav-item-disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  pointer-events: auto;
+  margin-bottom: 0rem;
+  padding-bottom: 0rem;
+}
+
+.nav-item-disabled:hover {
+  background: transparent !important;
+  color: var(--sidebar-text) !important;
+  transform: none !important;
+}
+
 .sidebar-collapsed .nav-item span {
   opacity: 0;
   pointer-events: none;
@@ -192,6 +206,19 @@
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+.nav-disabled-tip {
+  animation: slideDown 0.25s ease-out;
+  margin-left: 1rem;
+}
+
+.nav-disabled-tip span {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #a5b4fc;
+  display: block;
+  line-height: 1.4;
 }
 
 @media (max-width: 768px) {

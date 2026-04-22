@@ -1,8 +1,9 @@
 import React from 'react';
 import { useGetCurrentSessionQuery } from '@/services/leApi/sessionApi';
-import { Loader2 } from 'lucide-react';
+import { Loader2, School } from 'lucide-react';
 import SessionSetup from './SessionSetup';
 import SessionDashboard from './SessionDashboard';
+import { useFindMySchoolQuery } from '@/services/leApi/schoolApi';
 import './style.css';
 
 /**
@@ -21,13 +22,32 @@ import './style.css';
  *  - AddTermCard       → inline term creation form
  */
 const AcademicSession: React.FC = () => {
-  const { data: session, isLoading } = useGetCurrentSessionQuery();
+  const { data: school, isLoading: schoolLoading } = useFindMySchoolQuery();
+  const { data: session, isLoading } = useGetCurrentSessionQuery(undefined, {
+    skip: !school
+  });
 
-  if (isLoading) {
+  if (isLoading || schoolLoading) {
     return (
       <div className="as-root as-center">
         <Loader2 className="w-6 h-6 text-indigo-500 animate-spin" />
         <p className="as-loading-text">Loading academic session…</p>
+      </div>
+    );
+  }
+
+  if (!school) {
+    return (
+      <div className="as-root as-center as-empty-state">
+        <div className="as-empty-icon-wrap">
+          <School className="as-empty-icon" />
+        </div>
+        <div className="as-empty-content">
+          <h2 className="as-empty-title">Please, setup your school first</h2>
+          <p className="as-empty-description">
+            Before you can manage academic sessions, you need to first setup your school in the profile tab
+          </p>
+        </div>
       </div>
     );
   }
