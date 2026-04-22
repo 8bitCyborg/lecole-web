@@ -78,6 +78,8 @@ const Sidebar: React.FC<SidebarProps> = ({
     const isSubmenuOpen = openSubmenus.includes(item.id || '');
     const hasChildren = item.children && item.children.length > 0;
     const isDisabled = item.requiresSchool && !isSchoolSetup;
+    const itemId = item.id || item.path;
+    const showTip = showTooltipId === itemId && !isCollapsed;
 
     const isParentActive = hasChildren && (
       location.pathname === item.path ||
@@ -88,16 +90,34 @@ const Sidebar: React.FC<SidebarProps> = ({
       ? `Setup your school first to access ${item.label}`
       : (isCollapsed ? item.label : '');
 
-    if (hasChildren) {
-      const showTip = showTooltipId === item.id;
+    const renderTooltipContent = () => showTip && (
+      <div className="nav-disabled-tip">
+        <span>Setup your school to unlock</span>
+      </div>
+    );
 
+    const renderLockBadge = () => isCollapsed && isDisabled && (
+      <div style={{
+        position: 'absolute',
+        top: '4px',
+        right: '4px',
+        background: '#1e293b',
+        borderRadius: '50%',
+        padding: '2px',
+        border: '1px solid rgba(255,255,255,0.1)'
+      }}>
+        <Lock size={8} />
+      </div>
+    );
+
+    if (hasChildren) {
       return (
         <div key={item.id} className="nav-group">
           <div
             className={`nav-item nav-parent ${isParentActive ? 'active' : ''} ${isSubmenuOpen ? 'expanded' : ''} ${isDisabled ? 'nav-item-disabled' : ''}`}
             onClick={() => {
               if (isDisabled) {
-                setShowTooltipId(showTip ? null : item.id);
+                setShowTooltipId(showTooltipId === itemId ? null : itemId);
                 return;
               }
               if (!isCollapsed) toggleSubmenu(item.id);
@@ -119,26 +139,10 @@ const Sidebar: React.FC<SidebarProps> = ({
                 )}
               </>
             )}
-            {isCollapsed && isDisabled && (
-              <div style={{
-                position: 'absolute',
-                top: '4px',
-                right: '4px',
-                background: '#1e293b',
-                borderRadius: '50%',
-                padding: '2px',
-                border: '1px solid rgba(255,255,255,0.1)'
-              }}>
-                <Lock size={8} />
-              </div>
-            )}
+            {renderLockBadge()}
           </div>
 
-          {showTip && !isCollapsed && (
-            <div className="nav-disabled-tip">
-              <span>Setup your school to unlock</span>
-            </div>
-          )}
+          {renderTooltipContent()}
 
           {!isCollapsed && isSubmenuOpen && !isDisabled && (
             <div className="nav-submenu">
@@ -160,13 +164,11 @@ const Sidebar: React.FC<SidebarProps> = ({
     }
 
     if (isDisabled) {
-      const showTip = showTooltipId === item.path;
-
       return (
-        <div key={item.id || item.path} className="nav-group">
+        <div key={item.path} className="nav-group">
           <div
             className="nav-item nav-item-disabled"
-            onClick={() => setShowTooltipId(showTip ? null : item.path)}
+            onClick={() => setShowTooltipId(showTooltipId === itemId ? null : itemId)}
             style={{ position: 'relative' }}
           >
             <item.icon size={20} />
@@ -176,25 +178,9 @@ const Sidebar: React.FC<SidebarProps> = ({
                 <Lock size={12} style={{ marginLeft: 'auto', opacity: 0.6 }} />
               </>
             )}
-            {isCollapsed && (
-              <div style={{
-                position: 'absolute',
-                top: '4px',
-                right: '4px',
-                background: '#1e293b',
-                borderRadius: '50%',
-                padding: '2px',
-                border: '1px solid rgba(255,255,255,0.1)'
-              }}>
-                <Lock size={8} />
-              </div>
-            )}
+            {renderLockBadge()}
           </div>
-          {showTip && !isCollapsed && (
-            <div className="nav-disabled-tip">
-              <span>Setup your school to unlock</span>
-            </div>
-          )}
+          {renderTooltipContent()}
         </div>
       );
     }
