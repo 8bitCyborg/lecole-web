@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { useFindMySchoolQuery } from "../../services/leApi/schoolApi";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../components/ui/tabs';
+import { Tabs, TabsList, TabsTrigger, TabsContent } from '@/components/ui/tabs';
 import {
   Settings,
   School2,
@@ -11,12 +10,7 @@ import SchoolForm from "./components/SchoolDetailsForm";
 import AcademicSession from './components/AcademicSession';
 
 const School = () => {
-  const { data: school, isLoading, refetch } = useFindMySchoolQuery();
   const [isEditing, setIsEditing] = useState(false);
-
-  if (isLoading) {
-    return <div className="school-loading">Loading school info...</div>;
-  }
 
   return (
     <div className="school-page-container">
@@ -44,10 +38,9 @@ const School = () => {
 
           <TabsContent value="profile" className="grading-tabs-content">
             <SchoolForm
-              initialData={school}
               isEditMode={isEditing}
               onEdit={() => setIsEditing(true)}
-              onSuccess={() => { setIsEditing(false); refetch(); }}
+              onSuccess={() => setIsEditing(false)}
               onCancel={() => setIsEditing(false)}
             />
           </TabsContent>

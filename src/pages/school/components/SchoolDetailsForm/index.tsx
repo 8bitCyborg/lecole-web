@@ -2,22 +2,31 @@ import React, { useEffect } from 'react';
 import { useSelector } from 'react-redux';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import type { RootState } from '../../../../store';
-import { useCreateSchoolMutation, useUpdateSchoolMutation } from '../../../../services/leApi/schoolApi';
-import type { School } from '../../../../services/leApi/schoolApi';
-import LeInput from '../../../../components/ui/LeInput/LeInput';
-import LeDropdown from '../../../../components/ui/LeDropdown/LeDropdown';
-import LeDatePicker from '../../../../components/ui/LeDatePicker/LeDatePicker';
+import type { RootState } from '@/store';
+import {
+  useCreateSchoolMutation,
+  useUpdateSchoolMutation,
+  useFindMySchoolQuery
+} from '@/services/leApi/schoolApi';
+import LeInput from '@/components/ui/LeInput/LeInput';
+import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
+import LeDatePicker from '@/components/ui/LeDatePicker/LeDatePicker';
+import { Loader2 } from 'lucide-react';
 
 import './style.css';
 
 interface SchoolFormProps {
-  initialData?: School | null | undefined;
   isEditMode?: boolean;
   onEdit?: () => void;
   onSuccess?: () => void;
   onCancel?: () => void;
 }
+
+const OWNERSHIP_OPTIONS = [
+  { value: 'private', label: 'Private' },
+  { value: 'mission', label: 'Mission' },
+  { value: 'public', label: 'Public' },
+];
 
 const DataDisplay: React.FC<{ label: string; value: string | undefined | null }> = ({ label, value }) => (
   <div className="data-display-group">
@@ -42,10 +51,13 @@ const SchoolSchema = Yup.object().shape({
   dateOfInception: Yup.string().optional(),
 });
 
-const SchoolDetailsForm: React.FC<SchoolFormProps> = ({ onSuccess, onEdit, onCancel, initialData, isEditMode = false }) => {
+const SchoolDetailsForm: React.FC<SchoolFormProps> = ({ onSuccess, onEdit, onCancel, isEditMode = false }) => {
   const user = useSelector((state: RootState) => state.auth.user);
+  const { data: school, isLoading: isFetching, refetch } = useFindMySchoolQuery();
   const [createSchool, { isLoading: isCreating }] = useCreateSchoolMutation();
   const [updateSchool, { isLoading: isUpdating }] = useUpdateSchoolMutation();
+
+  const isSetup = !!school;
 
   const formik = useFormik({
     initialValues: {
@@ -78,9 +90,9 @@ const SchoolDetailsForm: React.FC<SchoolFormProps> = ({ onSuccess, onEdit, onCan
           dateOfInception: dateFormatted,
         };
 
-        if (isEditMode && initialData) {
+        if (isEditMode && school) {
           await updateSchool({
-            id: initialData.id,
+            id: school.id,
             ...payload,
           }).unwrap();
         } else {
@@ -91,6 +103,7 @@ const SchoolDetailsForm: React.FC<SchoolFormProps> = ({ onSuccess, onEdit, onCan
           }).unwrap();
         }
 
+        refetch();
         onSuccess?.();
       } catch (err) {
         console.error('Failed to save school:', err);
@@ -99,50 +112,79 @@ const SchoolDetailsForm: React.FC<SchoolFormProps> = ({ onSuccess, onEdit, onCan
   });
 
   useEffect(() => {
-    if (initialData && isEditMode) {
+    if (school && isEditMode) {
       formik.setValues({
-        name: initialData.name || '',
-        shortname: initialData.shortname || '',
-        email: initialData.email || '',
-        phone: initialData.phone || '',
-        address: initialData.address || '',
-        state: initialData.state || '',
-        lga: initialData.lga || '',
-        ownershipType: initialData.ownershipType || '',
-        proprietor: initialData.proprietor || '',
-        website: initialData.website || '',
-        logo: initialData.logo || '',
-        motto: initialData.motto || '',
-        dateOfInception: initialData.dateOfInception ? new Date(initialData.dateOfInception).toISOString().split('T')[0] : '',
+        name: school.name || '',
+        shortname: school.shortname || '',
+        email: school.email || '',
+        phone: school.phone || '',
+        address: school.address || '',
+        state: school.state || '',
+        lga: school.lga || '',
+        ownershipType: school.ownershipType || '',
+        proprietor: school.proprietor || '',
+        website: school.website || '',
+        logo: school.logo || '',
+        motto: school.motto || '',
+        dateOfInception: school.dateOfInception ? new Date(school.dateOfInception).toISOString().split('T')[0] : '',
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialData, isEditMode]);
+  }, [school, isEditMode]);
 
-  const isLoading = isCreating || isUpdating;
+  const isSaving = isCreating || isUpdating;
+  const isDisplayingForm = isEditMode || !isSetup;
+
+  if (isFetching) {
+    return (
+      <div className="school-details-loading">
+        <Loader2 className="animate-spin" size={24} />
+        <span>Loading profile...</span>
+      </div>
+    );
+  }
+
+  const getHeaderContent = () => {
+    if (!isSetup) {
+      return {
+        title: 'Setup School details',
+        subtitle: 'Configure your school profile to get started with management features.',
+        buttonLabel: 'Creating School...',
+        showButton: false
+      };
+    }
+    return {
+      title: isEditMode ? 'Edit School Details' : 'School Profile',
+      subtitle: isEditMode ? 'Update your basic info and branding details.' : 'Overview of your institution profile and configuration.',
+      buttonLabel: isEditMode ? 'Cancel Editing' : 'Edit School Info',
+      showButton: true
+    };
+  };
+
+  const { title, subtitle } = getHeaderContent();
 
   return (
     <div className="school-details-form-container">
       <div className="school-details-header">
         <div className="header-title-group">
-          <h2 className="school-details-title">{isEditMode ? 'Edit School Details' : 'School Profile'}</h2>
-          <p className="school-details-subtitle">
-            {isEditMode ? 'Update your basic info and branding details.' : 'Overview of your institution profile and configuration.'}
-          </p>
+          <h2 className="school-details-title">{title}</h2>
+          <p className="school-details-subtitle">{subtitle}</p>
         </div>
-        <button
-          type="button"
-          className={`le-button ${isEditMode ? 'le-button-secondary' : 'le-button-primary'} edit-toggle-btn`}
-          onClick={isEditMode ? onCancel : onEdit}
-        >
-          {isEditMode ? 'Cancel Editing' : 'Edit School Info'}
-        </button>
+        {isSetup && (
+          <button
+            type="button"
+            className={`le-button ${isEditMode ? 'le-button-secondary' : 'le-button-primary'} edit-toggle-btn`}
+            onClick={isEditMode ? onCancel : onEdit}
+          >
+            {isEditMode ? 'Cancel Editing' : 'Edit School Info'}
+          </button>
+        )}
       </div>
 
       <form onSubmit={formik.handleSubmit}>
         <div className="form-section-label">General Info</div>
         <div className="form-grid-2-col">
-          {isEditMode ? (
+          {isDisplayingForm ? (
             <LeInput
               id="name"
               label="School Name"
@@ -152,10 +194,10 @@ const SchoolDetailsForm: React.FC<SchoolFormProps> = ({ onSuccess, onEdit, onCan
               placeholder="e.g. Lecole High School"
             />
           ) : (
-            <DataDisplay label="School Name" value={initialData?.name} />
+            <DataDisplay label="School Name" value={school?.name} />
           )}
 
-          {isEditMode ? (
+          {isDisplayingForm ? (
             <LeInput
               id="shortname"
               label="Shortname (Optional)"
@@ -165,12 +207,12 @@ const SchoolDetailsForm: React.FC<SchoolFormProps> = ({ onSuccess, onEdit, onCan
               placeholder="e.g. Lecole"
             />
           ) : (
-            <DataDisplay label="Shortname" value={initialData?.shortname} />
+            <DataDisplay label="Shortname" value={school?.shortname} />
           )}
         </div>
 
         <div className="form-grid-2-col">
-          {isEditMode ? (
+          {isDisplayingForm ? (
             <LeInput
               id="email"
               label="School Email"
@@ -181,10 +223,10 @@ const SchoolDetailsForm: React.FC<SchoolFormProps> = ({ onSuccess, onEdit, onCan
               placeholder="contact@school.edu"
             />
           ) : (
-            <DataDisplay label="School Email" value={initialData?.email} />
+            <DataDisplay label="School Email" value={school?.email} />
           )}
 
-          {isEditMode ? (
+          {isDisplayingForm ? (
             <LeInput
               id="phone"
               label="School Phone Number"
@@ -194,13 +236,13 @@ const SchoolDetailsForm: React.FC<SchoolFormProps> = ({ onSuccess, onEdit, onCan
               placeholder="e.g. 08012345678"
             />
           ) : (
-            <DataDisplay label="School Phone Number" value={initialData?.phone} />
+            <DataDisplay label="School Phone Number" value={school?.phone} />
           )}
         </div>
 
         <div className="form-section-label">Location</div>
         <div className="form-group-full">
-          {isEditMode ? (
+          {isDisplayingForm ? (
             <LeInput
               id="address"
               label="Address"
@@ -210,12 +252,12 @@ const SchoolDetailsForm: React.FC<SchoolFormProps> = ({ onSuccess, onEdit, onCan
               placeholder="Full physical address"
             />
           ) : (
-            <DataDisplay label="Address" value={initialData?.address} />
+            <DataDisplay label="Address" value={school?.address} />
           )}
         </div>
-        
+
         <div className="form-grid-2-col">
-          {isEditMode ? (
+          {isDisplayingForm ? (
             <LeInput
               id="state"
               label="State"
@@ -225,10 +267,10 @@ const SchoolDetailsForm: React.FC<SchoolFormProps> = ({ onSuccess, onEdit, onCan
               placeholder="e.g. Lagos"
             />
           ) : (
-            <DataDisplay label="State" value={initialData?.state} />
+            <DataDisplay label="State" value={school?.state} />
           )}
 
-          {isEditMode ? (
+          {isDisplayingForm ? (
             <LeInput
               id="lga"
               label="LGA (Optional)"
@@ -238,39 +280,30 @@ const SchoolDetailsForm: React.FC<SchoolFormProps> = ({ onSuccess, onEdit, onCan
               placeholder="e.g. Ikeja"
             />
           ) : (
-            <DataDisplay label="LGA" value={initialData?.lga} />
+            <DataDisplay label="LGA" value={school?.lga} />
           )}
         </div>
 
         <div className="form-section-label">Branding & Ownership</div>
         <div className="form-grid-2-col">
-          {isEditMode ? (
+          {isDisplayingForm ? (
             <LeDropdown
               id="ownershipType"
               label="Ownership Type"
-              options={[
-                { value: 'private', label: 'Private' },
-                { value: 'mission', label: 'Mission' },
-                { value: 'public', label: 'Public' },
-              ]}
+              options={OWNERSHIP_OPTIONS}
               {...formik.getFieldProps('ownershipType')}
               error={formik.errors.ownershipType as string}
               touched={formik.touched.ownershipType}
               placeholder="Select ownership..."
             />
           ) : (
-            <DataDisplay 
-              label="Ownership Type" 
-              value={
-                initialData?.ownershipType === 'private' ? 'Private' :
-                initialData?.ownershipType === 'mission' ? 'Mission' :
-                initialData?.ownershipType === 'public' ? 'Public' :
-                initialData?.ownershipType
-              } 
+            <DataDisplay
+              label="Ownership Type"
+              value={OWNERSHIP_OPTIONS.find(opt => opt.value === school?.ownershipType)?.label || school?.ownershipType}
             />
           )}
 
-          {isEditMode ? (
+          {isDisplayingForm ? (
             <LeInput
               id="proprietor"
               label="Proprietor (Optional)"
@@ -280,12 +313,12 @@ const SchoolDetailsForm: React.FC<SchoolFormProps> = ({ onSuccess, onEdit, onCan
               placeholder="e.g. Jane Doe"
             />
           ) : (
-            <DataDisplay label="Proprietor" value={initialData?.proprietor} />
+            <DataDisplay label="Proprietor" value={school?.proprietor} />
           )}
         </div>
 
         <div className="form-grid-2-col">
-          {isEditMode ? (
+          {isDisplayingForm ? (
             <LeInput
               id="website"
               label="Website (Optional)"
@@ -295,10 +328,10 @@ const SchoolDetailsForm: React.FC<SchoolFormProps> = ({ onSuccess, onEdit, onCan
               placeholder="https://..."
             />
           ) : (
-            <DataDisplay label="Website" value={initialData?.website} />
+            <DataDisplay label="Website" value={school?.website} />
           )}
 
-          {isEditMode ? (
+          {isDisplayingForm ? (
             <LeDatePicker
               id="dateOfInception"
               label="Date of Inception (Optional)"
@@ -307,13 +340,12 @@ const SchoolDetailsForm: React.FC<SchoolFormProps> = ({ onSuccess, onEdit, onCan
               touched={formik.touched.dateOfInception}
             />
           ) : (
-
-            <DataDisplay label="Date of Inception" value={initialData?.dateOfInception ? new Date(initialData.dateOfInception).toLocaleDateString() : undefined} />
+            <DataDisplay label="Date of Inception" value={school?.dateOfInception ? new Date(school.dateOfInception).toLocaleDateString() : undefined} />
           )}
         </div>
 
         <div className="form-grid-2-col">
-          {isEditMode ? (
+          {isDisplayingForm ? (
             <LeInput
               id="logo"
               label="Logo URL (Optional)"
@@ -323,10 +355,10 @@ const SchoolDetailsForm: React.FC<SchoolFormProps> = ({ onSuccess, onEdit, onCan
               placeholder="https://..."
             />
           ) : (
-            <DataDisplay label="Logo URL" value={initialData?.logo} />
+            <DataDisplay label="Logo URL" value={school?.logo} />
           )}
 
-          {isEditMode ? (
+          {isDisplayingForm ? (
             <LeInput
               id="motto"
               label="School Motto (Optional)"
@@ -336,27 +368,29 @@ const SchoolDetailsForm: React.FC<SchoolFormProps> = ({ onSuccess, onEdit, onCan
               placeholder="e.g. Excellence in all."
             />
           ) : (
-            <DataDisplay label="School Motto" value={initialData?.motto} />
+            <DataDisplay label="School Motto" value={school?.motto} />
           )}
         </div>
 
-        {isEditMode && (
+        {isDisplayingForm && (
           <div className="form-actions-right">
-            <button
-              type="button"
-              className="le-button le-button-secondary"
-              style={{ marginRight: '1rem', background: '#f1f5f9', color: '#475569', boxShadow: 'none' }}
-              onClick={onCancel}
-              disabled={isLoading}
-            >
-              Cancel
-            </button>
+            {isSetup && (
+              <button
+                type="button"
+                className="le-button le-button-secondary"
+                style={{ marginRight: '1rem', background: '#f1f5f9', color: '#475569', boxShadow: 'none' }}
+                onClick={onCancel}
+                disabled={isSaving}
+              >
+                Cancel
+              </button>
+            )}
             <button
               type="submit"
               className="le-button le-button-primary"
-              disabled={isLoading || !formik.isValid}
+              disabled={isSaving || !formik.isValid}
             >
-              {isLoading ? 'Saving...' : (initialData ? 'Update Details' : 'Create School')}
+              {isSaving ? 'Saving...' : (isSetup ? 'Update Details' : 'Create School')}
             </button>
           </div>
         )}
