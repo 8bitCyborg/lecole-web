@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Check } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useAssignClassesMutation } from '@/services/leApi/subjectApi';
 import { useGetClassesQuery, CATEGORY_OPTIONS } from '@/services/leApi/classApi';
 import type { Category, Class } from '@/services/leApi/classApi';
@@ -85,27 +86,43 @@ const AssignClasses: React.FC<AssignClassesProps> = ({
     JSON.stringify(selectedIds.slice().sort()) !==
     JSON.stringify(assignedClassIds.slice().sort());
 
+
   return (
     <div className="assign-classes-container">
 
-      {/* ── Summary bar ──────────────────────────────────────────────── */}
-      <div className="ac-summary-bar">
-        <div className="ac-summary-text">
-          <h3 className="ac-summary-title">Class Assignments</h3>
-          <p className="ac-summary-desc">
-            Use this tab to assign or unassign this subject to classes across your institution.
-            <br />
-            <b>{assignedClassIds.length > 0 && ` Currently assigned to ${assignedClassIds.length} class${assignedClassIds.length === 1 ? '' : 'es'}.`}</b>
-          </p>
-        </div>
+      {classes.length === 0 &&
+        <div className="ac-empty-state">
 
-        <button className="ac-select-all-btn" onClick={toggleAll}>
-          <span className={`ac-mini-check ${allSelected ? 'ac-mini-check--active' : ''}`}>
-            {allSelected && <Check size={10} strokeWidth={3.5} />}
-          </span>
-          {allSelected ? 'Deselect All Classes' : 'Select All Classes'}
-        </button>
-      </div>
+          <h3 className="ac-empty-title">No Classes Found</h3>
+          <p className="ac-empty-desc">
+            You haven't created any classes yet. You need to create classes before you can assign subjects to them.
+          </p>
+          <Link to="/classes" className="ac-empty-cta">
+            Go to Classes
+          </Link>
+        </div>
+      }
+
+      {/* ── Summary bar ──────────────────────────────────────────────── */}
+      {classes.length != 0 &&
+        <div className="ac-summary-bar">
+          <div className="ac-summary-text">
+            <h3 className="ac-summary-title">Class Assignments</h3>
+            <p className="ac-summary-desc">
+              Use this tab to assign or unassign this subject to classes across your institution.
+              <br />
+              <b>{assignedClassIds.length > 0 && ` Currently assigned to ${assignedClassIds.length} class${assignedClassIds.length === 1 ? '' : 'es'}.`}</b>
+            </p>
+          </div>
+
+          <button className="ac-select-all-btn" onClick={toggleAll}>
+            <span className={`ac-mini-check ${allSelected ? 'ac-mini-check--active' : ''}`}>
+              {allSelected && <Check size={10} strokeWidth={3.5} />}
+            </span>
+            {allSelected ? 'Deselect All Classes' : 'Select All Classes'}
+          </button>
+        </div>
+      }
 
       {/* ── Category sections ─────────────────────────────────────────── */}
       <div className="ac-categories">

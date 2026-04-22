@@ -24,7 +24,6 @@ interface AddTermCardProps {
  * calls onSuccess / onCancel to hand control back to the parent.
  */
 const AddTermCard: React.FC<AddTermCardProps> = ({
-  slotNumber,
   sessionId,
   totalTerms,
   onCancel,

@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useGetClassesQuery, useDeleteClassMutation } from '../../services/leApi/classApi';
 import AddClassForm from './classComponents/AddClassForm/AddClassForm';
 import ClassListing from './classComponents/ClassListing';
-import DeleteConfirmationModal from '../../components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
+import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal/DeleteConfirmationModal';
+// import emptyClassesIllustration from '@/assets/empty-classes.png';
 import './Classes.css';
 
 const ClassPage = () => {
@@ -63,7 +64,11 @@ const ClassPage = () => {
       <div className="classes-listing-section">
         {classes.length === 0 ? (
           <div className="classes-empty-state">
-            <div className="empty-state-icon">🏫</div>
+            {/* <img
+              src={emptyClassesIllustration}
+              alt="No classes"
+              className="ac-empty-illustration"
+            /> */}
             <h2 className="empty-state-title">No Classes Created Yet</h2>
             <p className="empty-state-description">
               Start by creating your first class. Once added, your classes will appear here for easy management

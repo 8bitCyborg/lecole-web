@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Check } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import { useGetStaffQuery } from '@/services/leApi/staffApi';
 import { useAssignTeachersMutation } from '@/services/leApi/subjectApi';
+// import emptyTeachersIllustration from '@/assets/empty-teachers.png';
 import './AssignTeachers.css';
 
 interface AssignTeachersProps {
@@ -60,49 +62,69 @@ const AssignTeachers: React.FC<AssignTeachersProps> = ({
 
   return (
     <div className="assign-teachers-container">
+      {sortedTeachers.length === 0 && (
+        <div className="at-empty-state">
+          {/* <img
+            src={emptyTeachersIllustration}
+            alt="No staff"
+            className="at-empty-illustration"
+          /> */}
+          <h3 className="at-empty-title">No Teaching Staff Found</h3>
+          <p className="at-empty-desc">
+            You haven't added any teaching staff to your school yet. You need instructors to assign them to subjects.
+          </p>
+          <Link to="/staff" className="at-empty-cta">
+            Go to Staff Management
+          </Link>
+        </div>
+      )}
 
       {/* ── Summary bar ──────────────────────────────────────────────── */}
-      <div className="at-summary-bar">
-        <div className="at-summary-text">
-          <h3 className="at-summary-title">Staff Assignment</h3>
-          <p className="at-summary-desc">
-            Use this tab to assign or unassign subject matter experts and instructors to this subject.
-            <br />
-            <b>{assignedTeacherIds.length > 0 && ` Currently assigned to ${assignedTeacherIds.length} staff member${assignedTeacherIds.length === 1 ? '' : 's'}.`}</b>
-          </p>
-        </div>
+      {sortedTeachers.length > 0 && (
+        <div className="at-summary-bar">
+          <div className="at-summary-text">
+            <h3 className="at-summary-title">Staff Assignment</h3>
+            <p className="at-summary-desc">
+              Use this tab to assign or unassign subject matter experts and instructors to this subject.
+              <br />
+              <b>{assignedTeacherIds.length > 0 && ` Currently assigned to ${assignedTeacherIds.length} staff member${assignedTeacherIds.length === 1 ? '' : 's'}.`}</b>
+            </p>
+          </div>
 
-        <button className="at-select-all-btn" onClick={toggleAll}>
-          <span className={`at-mini-check ${allSelected ? 'at-mini-check--active' : ''}`}>
-            {allSelected && <Check size={10} strokeWidth={3.5} />}
-          </span>
-          {allSelected ? 'Deselect All Staff' : 'Select All Staff'}
-        </button>
-      </div>
+          <button className="at-select-all-btn" onClick={toggleAll}>
+            <span className={`at-mini-check ${allSelected ? 'at-mini-check--active' : ''}`}>
+              {allSelected && <Check size={10} strokeWidth={3.5} />}
+            </span>
+            {allSelected ? 'Deselect All Staff' : 'Select All Staff'}
+          </button>
+        </div>
+      )}
 
       {/* ── Teachers grid ─────────────────────────────────────────────── */}
-      <div className="at-content">
-        <div className="at-teachers-grid">
-          {sortedTeachers.map(({ id, name, email }) => {
-            const isSelected = selectedIds.includes(id);
-            return (
-              <button
-                key={id}
-                className={`at-card ${isSelected ? 'at-card--selected' : ''}`}
-                onClick={() => toggleTeacher(id)}
-              >
-                <div className="at-card-info">
-                  <span className="at-card-name">{name}</span>
-                  {email && <span className="at-card-email">{email}</span>}
-                </div>
-                <span className={`at-card-check ${isSelected ? 'at-card-check--selected' : ''}`}>
-                  {isSelected && <Check size={12} strokeWidth={3.5} />}
-                </span>
-              </button>
-            );
-          })}
+      {sortedTeachers.length > 0 && (
+        <div className="at-content">
+          <div className="at-teachers-grid">
+            {sortedTeachers.map(({ id, name, email }) => {
+              const isSelected = selectedIds.includes(id);
+              return (
+                <button
+                  key={id}
+                  className={`at-card ${isSelected ? 'at-card--selected' : ''}`}
+                  onClick={() => toggleTeacher(id)}
+                >
+                  <div className="at-card-info">
+                    <span className="at-card-name">{name}</span>
+                    {email && <span className="at-card-email">{email}</span>}
+                  </div>
+                  <span className={`at-card-check ${isSelected ? 'at-card-check--selected' : ''}`}>
+                    {isSelected && <Check size={12} strokeWidth={3.5} />}
+                  </span>
+                </button>
+              );
+            })}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* ── Footer ────────────────────────────────────────────────────── */}
       <div className="at-footer">
