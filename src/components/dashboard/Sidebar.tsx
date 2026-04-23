@@ -41,7 +41,7 @@ const Sidebar: React.FC<SidebarProps> = ({
   const isSchoolSetup = !!school;
 
   const location = useLocation();
-  const [openSubmenus, setOpenSubmenus] = useState<string[]>(['staff', 'academics']);
+  const [openSubmenus, setOpenSubmenus] = useState<string[]>([]);
   const [showTooltipId, setShowTooltipId] = useState<string | null>(null);
 
   const toggleSubmenu = (id: string) => {
