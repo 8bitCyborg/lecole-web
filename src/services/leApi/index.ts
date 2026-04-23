@@ -3,8 +3,8 @@ import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolk
 import { logout } from '../../store/slices/authSlice';
 
 // const API_BASE_URL = 'https://psychological-sybil-phoenix-inc-0c1104e5.koyeb.app';
-const API_BASE_URL = 'http://localhost:3000';
-// const API_BASE_URL = '/api';
+// const API_BASE_URL = 'http://localhost:3000';
+const API_BASE_URL = '/api';
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
