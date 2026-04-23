@@ -37,9 +37,31 @@ export default defineConfig({
             src: 'logo-512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any maskable',
+            purpose: 'any',
+          },
+          {
+            src: 'logo-512.png',
+            sizes: '512x512',
+            type: 'image/png',
+            purpose: 'maskable',
           },
         ],
+        screenshots: [
+          {
+            src: 'screenshot-mobile.png',
+            sizes: '786x1704',
+            type: 'image/png',
+            form_factor: 'narrow',
+            label: 'Lecole Mobile App'
+          },
+          {
+            src: 'screenshot-desktop.png',
+            sizes: '2560x1440',
+            type: 'image/png',
+            form_factor: 'wide',
+            label: 'Lecole Desktop App'
+          }
+        ]
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg,webp}'],
