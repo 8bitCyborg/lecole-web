@@ -4,6 +4,13 @@
   functions = "netlify/functions"
   publish = "dist"
 
+# 1. API Proxy (Must be ABOVE the SPA redirect)
+  [[redirects]]
+  from = "/api/*"
+  to = "https://psychological-sybil-phoenix-inc-0c1104e5.koyeb.app/:splat"
+  status = 200
+  force = true
+
   ## Uncomment to use this redirect for Single Page Applications like create-react-app.
   ## Not needed for static site generators.
   [[redirects]]
