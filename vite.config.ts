@@ -15,17 +15,19 @@ export default defineConfig({
     react(),
     tailwindcss(),
     VitePWA({
+      filename: 'sw.js', // ensure the service worker name is standard
+      manifestFilename: 'manifest.json', // use .json for broader compatibility
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
-        id: '/',
+        id: './',
+        start_url: './',
+        scope: './',
         name: 'Lecole',
         short_name: 'Lecole',
         description: 'Lecole',
         theme_color: '#ffffff',
         display: 'standalone',
-        start_url: '/',
-        scope: '/',
         orientation: 'portrait',
         icons: [
           {
