@@ -18,20 +18,23 @@ export default defineConfig({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {
+        id: '/',
         name: 'Lecole',
         short_name: 'Lecole',
         description: 'Lecole',
         theme_color: '#ffffff',
         display: 'standalone',
+        start_url: '/',
+        scope: '/',
         orientation: 'portrait',
         icons: [
           {
-            src: '/logo-192.png',
+            src: 'logo-192.png',
             sizes: '192x192',
             type: 'image/png',
           },
           {
-            src: '/logo-512.png',
+            src: 'logo-512.png',
             sizes: '512x512',
             type: 'image/png',
             purpose: 'any maskable',
