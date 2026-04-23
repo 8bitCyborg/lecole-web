@@ -55,9 +55,9 @@ export default defineConfig({
             label: 'Lecole Mobile App'
           },
           {
-            src: 'screenshot-desktop.png',
+            src: 'screenshot-desktop.webp',
             sizes: '2560x1440',
-            type: 'image/png',
+            type: 'image/webp',
             form_factor: 'wide',
             label: 'Lecole Desktop App'
           }
