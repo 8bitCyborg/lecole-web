@@ -50,6 +50,13 @@ export const authApi = baseApi.injectEndpoints({
         body,
       }),
     }),
+    getProfile: builder.query<{ memberships: any[]; profile: any }, void>({
+      query: () => ({
+        url: '/user/profile',
+        method: 'GET',
+      }),
+      providesTags: ['User'],
+    }),
   }),
 });
 
@@ -58,4 +65,5 @@ export const {
   useSignupMutation,
   useLogoutMutation,
   useVerifyPasswordMutation,
+  useGetProfileQuery,
 } = authApi;

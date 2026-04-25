@@ -1,0 +1,107 @@
+/* ── Profile Page Specific Styles (Adapted from Arms) ────────────────────── */
+
+.profile-page-container {
+  padding: 2rem 4rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  animation: fadeIn 0.5s ease-out;
+}
+
+@media (max-width: 1024px) {
+  .profile-page-container {
+    padding: 0;
+  }
+}
+
+.profile-tabs-card {
+  background: transparent;
+  margin-top: 1rem;
+}
+
+.profile-tabs-list {
+  height: 3.25rem;
+  background: white;
+  border-radius: 1rem 1rem 0 0;
+  gap: 0.25rem;
+  z-index: 10;
+  border-bottom: none;
+  padding: 0.25rem;
+  display: flex !important;
+  justify-content: flex-start !important;
+  margin-bottom: -0.45rem;
+  border-left: 1px solid #e2e8f0;
+  width: auto !important;
+  max-width: fit-content;
+}
+
+.profile-tabs-trigger {
+  height: 100%;
+  border-radius: 0.5rem;
+  padding: 0 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: #64748b;
+  background: transparent;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+  box-shadow: none;
+  display: flex !important;
+  align-items: center !important;
+  border: none;
+}
+
+.profile-tabs-trigger:hover {
+  color: #0f172a;
+  background: #f8fafc;
+}
+
+.profile-tabs-trigger[data-state="active"] {
+  color: #1e40af;
+  background: #eff6ff;
+}
+
+.profile-tabs-content {
+  margin-top: -1px;
+}
+
+.tab-content-container {
+  background: white;
+  border-radius: 0 1rem 1rem 1rem;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05);
+  padding: 2.5rem;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@media (max-width: 768px) {
+  .profile-tabs-list {
+    width: 100% !important;
+    max-width: none;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 0.4rem;
+    height: auto;
+    border-radius: 1rem 1rem 0 0;
+  }
+
+  .profile-tabs-trigger {
+    padding: 0.75rem 1rem;
+    flex: 1; 
+  }
+
+  .tab-content-container {
+    border-radius: 0 0 1rem 1rem;
+    padding: 1.5rem;
+  }
+}

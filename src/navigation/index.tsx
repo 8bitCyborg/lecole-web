@@ -18,6 +18,8 @@ import GradingPage from '@/pages/academics/grading';
 import AssessmentsPage from '@/pages/academics/assessments';
 import Attendance from '@/pages/academics/attendance';
 
+import Profile from '@/pages/profile';
+
 export const publicRouter = createBrowserRouter([
   {
     path: '/',
@@ -110,6 +112,10 @@ export const authRouter = createBrowserRouter([
             ],
           },
         ]
+      },
+      {
+        path: 'profile',
+        element: <Profile />,
       },
       {
         path: 'academics',
