@@ -17,8 +17,15 @@ import Sheet from '@/components/ui/Sheet';
 import './components/PersonalDetails/styles.css';
 import './Students.css';
 
-const StudentDetails = () => {
-  const { studentId } = useParams<{ studentId: string }>();
+const StudentDetails = ({
+  studentId: propStudentId,
+  hideBackButton
+}: {
+  studentId?: string,
+  hideBackButton?: boolean
+}) => {
+  const { studentId: paramStudentId } = useParams<{ studentId: string }>();
+  const studentId = propStudentId || paramStudentId;
   const navigate = useNavigate();
   const { data: student, isLoading, isError } = useGetStudentByIdQuery(studentId!);
 
@@ -39,10 +46,12 @@ const StudentDetails = () => {
   if (isError || !student) {
     return (
       <div className="student-profile-container">
-        <button className="back-navigator-btn" onClick={handleBack}>
-          <ArrowLeft size={18} />
-          Go Back
-        </button>
+        {!hideBackButton && (
+          <button className="back-navigator-btn" onClick={handleBack}>
+            <ArrowLeft size={18} />
+            Go Back
+          </button>
+        )}
         <div className="students-empty-state">
           <div className="empty-state-icon">⚠️</div>
           <h2 className="empty-state-title">Profile Not Found</h2>
@@ -56,10 +65,12 @@ const StudentDetails = () => {
 
   return (
     <div className="student-profile-container">
-      <button className="back-navigator-btn" onClick={handleBack}>
-        <ArrowLeft size={18} />
-        Go Back
-      </button>
+      {!hideBackButton && (
+        <button className="back-navigator-btn" onClick={handleBack}>
+          <ArrowLeft size={18} />
+          Go Back
+        </button>
+      )}
 
       <div className="student-header-banner">
         <div className="student-header-content">

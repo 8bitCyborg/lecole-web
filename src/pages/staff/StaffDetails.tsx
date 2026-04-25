@@ -7,9 +7,16 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from '../../components/ui/ta
 
 import './Staff.css';
 
-const StaffDetails = () => {
+const StaffDetails = ({
+  staffId: propStaffId,
+  hideBackButton
+}: {
+  staffId?: string,
+  hideBackButton?: boolean
+}) => {
 
-  const { staffId } = useParams<{ staffId: string }>();
+  const { staffId: paramStaffId } = useParams<{ staffId: string }>();
+  const staffId = propStaffId || paramStaffId;
   const navigate = useNavigate();
   const { data: staff, isLoading, isError } = useGetStaffMemberQuery(staffId!);
 
@@ -24,10 +31,12 @@ const StaffDetails = () => {
   if (isError || !staff) {
     return (
       <div className="staff-page-container">
-        <button className="back-navigator-btn" onClick={handleBack}>
-          <ArrowLeft size={18} />
-          Back
-        </button>
+        {!hideBackButton && (
+          <button className="back-navigator-btn" onClick={handleBack}>
+            <ArrowLeft size={18} />
+            Back
+          </button>
+        )}
         <div className="staff-empty-state">
           <div className="empty-state-icon">⚠️</div>
           <h2 className="empty-state-title">Staff Member Not Found</h2>
@@ -46,10 +55,12 @@ const StaffDetails = () => {
 
   return (
     <div className="staff-page-container">
-      <button className="back-navigator-btn" onClick={handleBack}>
-        <ArrowLeft size={18} />
-        Back
-      </button>
+      {!hideBackButton && (
+        <button className="back-navigator-btn" onClick={handleBack}>
+          <ArrowLeft size={18} />
+          Back
+        </button>
+      )}
 
       <div className="staff-header-banner">
         <div className="staff-header-content">
