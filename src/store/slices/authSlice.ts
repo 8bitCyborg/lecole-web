@@ -6,7 +6,7 @@ export interface User {
   firstName: string;
   lastName: string;
   phone: string;
-  role: 'STUDENT' | 'TEACHER' | 'ADMIN';
+  role: 'STUDENT' | 'STAFF' | 'ADMIN';
 }
 
 export interface AuthState {
