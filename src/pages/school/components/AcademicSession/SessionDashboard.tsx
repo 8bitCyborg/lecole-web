@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { CheckCircle2, AlertCircle, Edit2, Loader2, X, Save } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import LeInput from '@/components/ui/LeInput/LeInput';
+import LeDropdown from '@/components/ui/LeDropdown/LeDropdown';
 import { useUpdateSessionMutation, useEndSessionMutation, type AcademicSession } from '@/services/leApi/sessionApi';
 import SessionProgress from './SessionProgress';
 import TermCard from './TermCard';
@@ -11,23 +11,21 @@ import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal/Del
 
 interface SessionDashboardProps {
   session: AcademicSession;
+  termNames: Record<number, string>;
+  getSingular: (n: number) => string;
 }
 
-/**
- * SessionDashboard
- *
- * The "Focus View" rendered when an active academic session exists.
- *
- * Business rules enforced:
- * - If any term has status === 'active', no new term may be added.
- *   Pending slots render as locked and the "Add Term" button is replaced
- *   with a contextual notice.
- * - Only the next un-filled slot can be opened for editing at a time.
- */
-const SessionDashboard: React.FC<SessionDashboardProps> = ({ session }) => {
+const SessionDashboard: React.FC<SessionDashboardProps> = ({ session, termNames, getSingular }) => {
   const terms = session.terms ?? [];
   const total = session.termsPerSession;
   const filled = terms.length;
+
+  const currentYear = new Date().getFullYear();
+  const sessionOptions = [
+    { value: `${currentYear - 1}/${currentYear}`, label: `${currentYear - 1}/${currentYear}` },
+    { value: `${currentYear}/${currentYear + 1}`, label: `${currentYear}/${currentYear + 1}` },
+    { value: `${currentYear}`, label: `${currentYear}` },
+  ];
 
   /** The slot number currently open for input (null = none) */
   const [activeSlot, setActiveSlot] = useState<number | null>(null);
@@ -96,12 +94,13 @@ const SessionDashboard: React.FC<SessionDashboardProps> = ({ session }) => {
             <div className="as-header-edit-mode w-full border border-indigo-100 bg-indigo-50/30 p-5 rounded-2xl flex flex-col md:flex-row gap-5 items-start md:items-center justify-between shadow-sm">
               <div className="flex-1 flex flex-col md:flex-row gap-5 items-start md:items-center w-full">
                 <div className="flex-1 w-full max-w-sm">
-                  <LeInput
-                    label="Session Identifier"
+                  <LeDropdown
+                    label="Academic Year"
+                    placeholder="Select session..."
+                    options={sessionOptions}
                     value={editIdentifier}
                     onChange={(e) => setEditIdentifier(e.target.value)}
                     required
-                    placeholder="e.g. 2025 / 2026"
                   />
                 </div>
                 <div className="flex flex-col gap-1.5 w-full max-w-[14rem]">
@@ -159,18 +158,25 @@ const SessionDashboard: React.FC<SessionDashboardProps> = ({ session }) => {
         </header>
 
         {/* ── Progress Tracker ── */}
-        <SessionProgress terms={terms} total={total} />
+        <SessionProgress
+          terms={terms}
+          total={total}
+          termNames={termNames}
+          getSingular={getSingular}
+        />
 
         {/* ── Terms Section ── */}
         <section className="as-terms-section">
           <div className="as-terms-header">
-            <h2 className="as-section-title">Academic Terms</h2>
+            <h2 className="as-section-title">Academic {termNames[total] || 'Terms'}</h2>
 
             {filled < total && (
               hasActiveTerm && (
                 <div className="as-blocked-notice">
                   <AlertCircle className="as-blocked-icon" />
-                  <span>End the active term to add the next one</span>
+                  <span>
+                    End the active {getSingular(total).toLowerCase()} to add the next one
+                  </span>
                 </div>
               )
             )}
@@ -186,6 +192,7 @@ const SessionDashboard: React.FC<SessionDashboardProps> = ({ session }) => {
                     term={slot.term}
                     index={slot.slotNumber - 1}
                     totalTerms={total}
+                    getSingular={getSingular}
                   />
                 );
               }
@@ -198,6 +205,7 @@ const SessionDashboard: React.FC<SessionDashboardProps> = ({ session }) => {
                     slotNumber={slot.slotNumber}
                     sessionId={session.id}
                     totalTerms={total}
+                    getSingular={getSingular}
                     onCancel={() => setActiveSlot(null)}
                     onSuccess={() => setActiveSlot(null)}
                   />
@@ -209,6 +217,8 @@ const SessionDashboard: React.FC<SessionDashboardProps> = ({ session }) => {
                 <PendingSlotCard
                   key={`pending-${slot.slotNumber}`}
                   slotNumber={slot.slotNumber}
+                  totalTerms={total}
+                  getSingular={getSingular}
                   blocked={hasActiveTerm}
                   onAdd={() => !hasActiveTerm && setActiveSlot(slot.slotNumber)}
                 />

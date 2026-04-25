@@ -3,31 +3,28 @@ import { Plus, Lock } from 'lucide-react';
 
 interface PendingSlotCardProps {
   slotNumber: number;
+  totalTerms: number;
+  getSingular: (n: number) => string;
   /** If true, an active term is blocking new term creation. */
   blocked: boolean;
   onAdd: () => void;
 }
 
-/**
- * PendingSlotCard
- *
- * Dashed placeholder shown for each un-configured term slot.
- *
- * If `blocked` is true (an active term exists), the slot is rendered in a
- * locked state with a clear explanation — the admin must end the current
- * active term before a new one can be added.
- */
 const PendingSlotCard: React.FC<PendingSlotCardProps> = ({
   slotNumber,
+  totalTerms,
+  getSingular,
   blocked,
   onAdd,
 }) => {
+  const termName = getSingular(totalTerms);
+
   if (blocked) {
     return (
-      <div className="as-pending-slot as-pending-slot--locked" title="End the active term before adding a new one">
+      <div className="as-pending-slot as-pending-slot--locked" title={`End the active ${termName.toLowerCase()} before adding a new one`}>
         <Lock className="as-pending-icon" />
-        <span className="as-pending-label">Term {slotNumber}</span>
-        <span className="as-pending-hint">End active term first</span>
+        <span className="as-pending-label">{termName} {slotNumber}</span>
+        <span className="as-pending-hint">End active {termName.toLowerCase()} first</span>
       </div>
     );
   }
@@ -37,10 +34,10 @@ const PendingSlotCard: React.FC<PendingSlotCardProps> = ({
       className="as-pending-slot"
       onClick={onAdd}
       type="button"
-      aria-label={`Add Term ${slotNumber}`}
+      aria-label={`Add ${termName} ${slotNumber}`}
     >
       <Plus className="as-pending-icon" />
-      <span className="as-pending-label">Term {slotNumber}</span>
+      <span className="as-pending-label">{termName} {slotNumber}</span>
       <span className="as-pending-hint">Click to add</span>
     </button>
   );

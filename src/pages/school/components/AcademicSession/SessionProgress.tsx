@@ -5,6 +5,8 @@ import type { Term } from '@/services/leApi/sessionApi';
 interface SessionProgressProps {
   terms: Term[];
   total: number;
+  termNames: Record<number, string>;
+  getSingular: (n: number) => string;
 }
 
 /**
@@ -13,9 +15,11 @@ interface SessionProgressProps {
  * Thin horizontal tracker showing how many of the planned terms
  * have been configured, with a progress bar and per-step indicators.
  */
-const SessionProgress: React.FC<SessionProgressProps> = ({ terms, total }) => {
+const SessionProgress: React.FC<SessionProgressProps> = ({ terms, total, termNames, getSingular }) => {
   const filled = terms.length;
   const progressPct = total > 0 ? Math.round((filled / total) * 100) : 0;
+  const termNamePlural = termNames[total]?.toLowerCase() || 'terms';
+  const termNameSingular = getSingular(total);
 
   const steps = Array.from({ length: total }, (_, i) => ({
     slotNumber: i + 1,
@@ -30,7 +34,7 @@ const SessionProgress: React.FC<SessionProgressProps> = ({ terms, total }) => {
           <strong>
             {filled} of {total}
           </strong>{' '}
-          terms completed
+          {termNamePlural} completed
         </span>
         <span className="as-progress-pct">{progressPct}%</span>
       </div>
@@ -51,7 +55,7 @@ const SessionProgress: React.FC<SessionProgressProps> = ({ terms, total }) => {
               <span className="as-step-num">{slotNumber}</span>
             )}
             <span className="as-step-label">
-              {term ? term.identifier : `Term ${slotNumber}`}
+              {term ? term.identifier : `${termNameSingular} ${slotNumber}`}
             </span>
           </div>
         ))}

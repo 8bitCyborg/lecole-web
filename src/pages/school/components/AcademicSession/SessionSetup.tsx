@@ -13,13 +13,12 @@ import {
   BarChart3,
 } from 'lucide-react';
 
-/**
- * SessionSetup
- *
- * Shown when no academic session exists yet.
- * Two-column card: form on the left, live preview + feature list on the right.
- */
-const SessionSetup: React.FC = () => {
+interface SessionSetupProps {
+  termNames: Record<number, string>;
+  getSingular: (n: number) => string;
+}
+
+const SessionSetup: React.FC<SessionSetupProps> = ({ termNames }) => {
   const [createSession, { isLoading, error }] = useCreateSessionMutation();
 
   const [identifier, setIdentifier] = useState('');
@@ -121,7 +120,7 @@ const SessionSetup: React.FC = () => {
           <div className="as-preview-card">
             <div className="as-preview-header">
               <div className="as-preview-session-name">
-                {identifier || <span className="as-preview-placeholder">2025 / 2026</span>}
+                {identifier || <span className="as-preview-placeholder">20-- / 20--</span>}
               </div>
               <span className="as-active-badge">
                 <CheckCircle2 className="w-3 h-3" /> Active
@@ -129,7 +128,7 @@ const SessionSetup: React.FC = () => {
             </div>
 
             <div className="as-preview-terms-label">
-              {termsPerSession} academic {termsPerSession === 1 ? 'term' : 'terms'}
+              {termsPerSession} Academic {termNames[termsPerSession] || 'terms'}
             </div>
 
             <div className="as-preview-slots">

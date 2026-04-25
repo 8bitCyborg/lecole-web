@@ -13,19 +13,15 @@ interface TermCardProps {
   term: Term;
   index: number;
   totalTerms: number;
+  getSingular: (n: number) => string;
 }
 
-/**
- * TermCard
- *
- * Displays a single, fully-configured academic term.
- * Shows name, status badge, start date, and duration.
- */
-const TermCard: React.FC<TermCardProps> = ({ term, index, totalTerms }) => {
+const TermCard: React.FC<TermCardProps> = ({ term, index, totalTerms, getSingular }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isEndModalOpen, setIsEndModalOpen] = useState(false);
   const [updateTerm, { isLoading }] = useUpdateTermMutation();
   const [endTerm, { isLoading: isEnding }] = useEndTermMutation();
+  const termName = getSingular(totalTerms);
 
   const [identifier, setIdentifier] = useState(term.identifier);
   const [startDateStr, setStartDateStr] = useState(new Date(term.startDate).toISOString().split('T')[0]);
@@ -33,8 +29,8 @@ const TermCard: React.FC<TermCardProps> = ({ term, index, totalTerms }) => {
   const [estimatedEndDateEdit, setEstimatedEndDateEdit] = useState('');
 
   const termOptions = Array.from({ length: totalTerms }, (_, i) => ({
-    value: `${ordinals[i] || i + 1} Term`,
-    label: `${ordinals[i] || i + 1} Term`
+    value: `${ordinals[i] || i + 1} ${termName}`,
+    label: `${ordinals[i] || i + 1} ${termName}`
   }));
 
   useEffect(() => {
@@ -60,7 +56,7 @@ const TermCard: React.FC<TermCardProps> = ({ term, index, totalTerms }) => {
       }).unwrap();
       setIsEditing(false);
     } catch (err) {
-      console.error('Failed to update term:', err);
+      console.error(`Failed to update ${termName.toLowerCase()}:`, err);
     }
   };
 
@@ -76,7 +72,7 @@ const TermCard: React.FC<TermCardProps> = ({ term, index, totalTerms }) => {
       await endTerm(term.id).unwrap();
       setIsEndModalOpen(false);
     } catch (err) {
-      console.error('Failed to end term:', err);
+      console.error(`Failed to end ${termName.toLowerCase()}:`, err);
     }
   };
 
@@ -96,7 +92,7 @@ const TermCard: React.FC<TermCardProps> = ({ term, index, totalTerms }) => {
     return (
       <div className="as-add-term-card">
         <div className="as-add-term-header">
-          <span className="as-term-index">Term {index + 1} - Edit</span>
+          <span className="as-term-index">{termName} {index + 1} - Edit</span>
           <button className="as-cancel-btn" onClick={handleCancelEdit} type="button" aria-label="Cancel">
             <X className="w-4 h-4" />
           </button>
@@ -104,7 +100,7 @@ const TermCard: React.FC<TermCardProps> = ({ term, index, totalTerms }) => {
         <hr className="as-term-divider" />
         <form onSubmit={handleSaveEdit} className="as-add-term-form">
           <LeDropdown
-            label="Term Name"
+            label={`${termName} Name`}
             options={termOptions}
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value)}
@@ -158,12 +154,12 @@ const TermCard: React.FC<TermCardProps> = ({ term, index, totalTerms }) => {
       <div className="as-term-card-top">
         {term.status === "active" &&
           <div className="flex items-center gap-2">
-            <span className="as-term-index">Edit Term</span>
+            <span className="as-term-index">Edit {termName}</span>
             <button
               type="button"
               onClick={() => setIsEditing(true)}
               className="text-indigo-400 hover:text-indigo-600 transition-colors bg-indigo-50 hover:bg-indigo-100 p-1 rounded-md"
-              title="Edit Term Details"
+              title={`Edit ${termName} Details`}
             >
               <Edit2 className="w-3.5 h-3.5" />
             </button>
@@ -200,14 +196,14 @@ const TermCard: React.FC<TermCardProps> = ({ term, index, totalTerms }) => {
             className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2.5 shadow-sm hover:shadow-md transition-all active:scale-[0.98]"
             disabled={isEnding}
           >
-            End Term
+            End {termName}
           </Button>
         </div>
       )}
 
       <DeleteConfirmationModal
         isOpen={isEndModalOpen}
-        title="End Term"
+        title={`End ${termName}`}
         message={
           <>
             You are about to end <span className="font-semibold">{term.identifier}</span>.<br /><br />
@@ -215,7 +211,7 @@ const TermCard: React.FC<TermCardProps> = ({ term, index, totalTerms }) => {
             Once closed, these records can be viewed but not edited.
           </>
         }
-        confirmText={isEnding ? 'Ending...' : 'Yes, End Term'}
+        confirmText={isEnding ? 'Ending...' : `Yes, End ${termName}`}
         cancelText="Cancel"
         onConfirm={handleEndTerm}
         onCancel={() => setIsEndModalOpen(false)}

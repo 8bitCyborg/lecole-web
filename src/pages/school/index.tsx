@@ -8,15 +8,17 @@ import './SchoolOverview.css';
 import '../academics/Academics.css';
 import SchoolForm from "./components/SchoolDetailsForm";
 import AcademicSession from './components/AcademicSession';
+import { useFindMySchoolQuery } from '@/services/leApi/schoolApi';
 
 const School = () => {
   const [isEditing, setIsEditing] = useState(false);
+  const { data: school } = useFindMySchoolQuery();
 
   return (
     <div className="school-page-container">
       <div className="school-header-banner">
         <div className="school-header-content">
-          <h1 className="school-title">School Management</h1>
+          <h1 className="school-title">{school?.name || 'School Management'}</h1>
           <p className="school-subtitle">
             Overview and manage your institution's profile, academic framework, and administrative settings. Ensure your school's details are up-to-date.
           </p>

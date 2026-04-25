@@ -12,6 +12,7 @@ interface AddTermCardProps {
   slotNumber: number;
   sessionId: string;
   totalTerms: number;
+  getSingular: (n: number) => string;
   onCancel: () => void;
   onSuccess: () => void;
 }
@@ -23,13 +24,16 @@ interface AddTermCardProps {
  * clicks to configure a new term. Submits directly to the API and
  * calls onSuccess / onCancel to hand control back to the parent.
  */
+
 const AddTermCard: React.FC<AddTermCardProps> = ({
   sessionId,
   totalTerms,
+  getSingular,
   onCancel,
   onSuccess,
 }) => {
   const [createTerm, { isLoading }] = useCreateTermMutation();
+  const termName = getSingular(totalTerms);
 
   const [identifier, setIdentifier] = useState('');
   const [customIdentifier, setCustomIdentifier] = useState('');
@@ -39,8 +43,8 @@ const AddTermCard: React.FC<AddTermCardProps> = ({
 
   const termOptions = [
     ...Array.from({ length: totalTerms }, (_, i) => ({
-      value: `${ordinals[i] || i + 1} Term`,
-      label: `${ordinals[i] || i + 1} Term`
+      value: `${ordinals[i] || i + 1} ${termName}`,
+      label: `${ordinals[i] || i + 1} ${termName}`
     })),
     { value: 'custom', label: 'Custom...' }
   ];
@@ -69,14 +73,14 @@ const AddTermCard: React.FC<AddTermCardProps> = ({
       }).unwrap();
       onSuccess();
     } catch (err) {
-      console.error('Failed to create term:', err);
+      console.error(`Failed to create ${termName.toLowerCase()}:`, err);
     }
   };
 
   return (
     <div className="as-add-term-card">
       <div className="as-add-term-header">
-        <span className="as-term-index"></span>
+        <span className="as-term-index">Configure {termName}</span>
         <button className="as-cancel-btn" onClick={onCancel} type="button" aria-label="Cancel">
           <X className="w-4 h-4" />
         </button>
@@ -84,7 +88,7 @@ const AddTermCard: React.FC<AddTermCardProps> = ({
       <hr className="as-term-divider" />
       <form onSubmit={handleSubmit} className="as-add-term-form">
         <LeDropdown
-          label="Term Name"
+          label={`${termName} Name`}
           options={termOptions}
           value={identifier}
           onChange={(e) => setIdentifier(e.target.value)}
@@ -134,7 +138,7 @@ const AddTermCard: React.FC<AddTermCardProps> = ({
             {isLoading ? (
               <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Adding…</>
             ) : (
-              'Add Term'
+              `Add ${termName}`
             )}
           </Button>
         </div>

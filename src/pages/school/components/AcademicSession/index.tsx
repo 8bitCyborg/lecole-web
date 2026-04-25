@@ -21,6 +21,23 @@ import './style.css';
  *  - PendingSlotCard   → unconfigured term slot (with locked state)
  *  - AddTermCard       → inline term creation form
  */
+const TERM_NAMES: Record<number, string> = {
+  1: 'Year',
+  2: 'Semesters',
+  3: 'Terms',
+  4: 'Quarters',
+};
+
+const getSingular = (n: number) => {
+  switch (n) {
+    case 1: return 'Year';
+    case 2: return 'Semester';
+    case 3: return 'Term';
+    case 4: return 'Quarter';
+    default: return 'Term';
+  }
+};
+
 const AcademicSession: React.FC = () => {
   const { data: school, isLoading: schoolLoading } = useFindMySchoolQuery();
   const { data: session, isLoading } = useGetCurrentSessionQuery(undefined, {
@@ -53,10 +70,16 @@ const AcademicSession: React.FC = () => {
   }
 
   if (!session) {
-    return <SessionSetup />;
+    return <SessionSetup termNames={TERM_NAMES} getSingular={getSingular} />;
   }
 
-  return <SessionDashboard session={session} />;
+  return (
+    <SessionDashboard
+      session={session}
+      termNames={TERM_NAMES}
+      getSingular={getSingular}
+    />
+  );
 };
 
 export default AcademicSession;
