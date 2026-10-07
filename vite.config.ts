@@ -16,7 +16,7 @@ export default defineConfig({
     tailwindcss(),
     VitePWA({
       filename: 'sw.js', // ensure the service worker name is standard
-      manifestFilename: 'manifest.json', // use .json for broader compatibility
+      manifestFilename: 'manifest.webmanifest',
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
       manifest: {

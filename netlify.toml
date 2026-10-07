@@ -1,6 +1,5 @@
 [build]
   command = "yarn run build"
-  functions = "netlify/functions"
   publish = "dist"
 
 # Ensure the manifest is served with the right type and NO cache
@@ -19,7 +18,7 @@
 # 1. API Proxy (Must be ABOVE the SPA redirect)
 [[redirects]]
   from = "/api/*"
-  to = "lecole-api-production.up.railway.app/:splat"
+  to = "https://lecole-api-production.up.railway.app/:splat"
   status = 200
   force = true
 
