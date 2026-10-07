@@ -3,13 +3,13 @@ import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolk
 import { logout } from '../../store/slices/authSlice';
 
 // Use localhost API during local development, proxied `/api` when live (see netlify.toml).
-const isLocal =
-  import.meta.env.DEV ||
-  window.location.hostname === 'localhost' ||
-  window.location.hostname === '127.0.0.1';
+// const isLocal =
+//   import.meta.env.DEV ||
+//   window.location.hostname === 'localhost' ||
+//   window.location.hostname === '127.0.0.1';
 
-const API_BASE_URL: string =
-  import.meta.env.VITE_API_BASE_URL || (isLocal ? 'http://localhost:3000' : '/api');
+// const API_BASE_URL: string =
+  // import.meta.env.VITE_API_BASE_URL || (isLocal ? 'http://localhost:3000' : '/api');
 
 const baseQuery = fetchBaseQuery({
   baseUrl: 'https:lecole-api-production.up.railway.app', // API_BASE_URL,
