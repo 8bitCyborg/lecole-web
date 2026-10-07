@@ -12,7 +12,7 @@ import { logout } from '../../store/slices/authSlice';
   // import.meta.env.VITE_API_BASE_URL || (isLocal ? 'http://localhost:3000' : '/api');
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'https:lecole-api-production.up.railway.app', // API_BASE_URL,
+  baseUrl: 'https://lecole-api-production.up.railway.app', // API_BASE_URL,
   prepareHeaders: (headers) => {
     // add extra headers here.
     return headers;
