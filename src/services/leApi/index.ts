@@ -2,9 +2,14 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { BaseQueryFn, FetchArgs, FetchBaseQueryError } from '@reduxjs/toolkit/query/react';
 import { logout } from '../../store/slices/authSlice';
 
-// const API_BASE_URL = 'lecole-api-production.up.railway.app';
-const API_BASE_URL = 'http://localhost:3000';
-// const API_BASE_URL = '/api';
+// Use localhost API during local development, proxied `/api` when live (see netlify.toml).
+const isLocal =
+  import.meta.env.DEV ||
+  window.location.hostname === 'localhost' ||
+  window.location.hostname === '127.0.0.1';
+
+const API_BASE_URL: string =
+  import.meta.env.VITE_API_BASE_URL || (isLocal ? 'http://localhost:3000' : '/api');
 
 const baseQuery = fetchBaseQuery({
   baseUrl: API_BASE_URL,
