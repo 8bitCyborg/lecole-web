@@ -9,10 +9,10 @@ import { logout } from '../../store/slices/authSlice';
 //   window.location.hostname === '127.0.0.1';
 
 // const API_BASE_URL: string =
-  // import.meta.env.VITE_API_BASE_URL || (isLocal ? 'http://localhost:3000' : '/api');
+//   import.meta.env.VITE_API_BASE_URL || (isLocal ? 'http://localhost:3000' : '/api');
 
 const baseQuery = fetchBaseQuery({
-  baseUrl: 'https://lecole-api-production.up.railway.app', // API_BASE_URL,
+  baseUrl: '/api', //API_BASE_URL,
   prepareHeaders: (headers) => {
     // add extra headers here.
     return headers;
